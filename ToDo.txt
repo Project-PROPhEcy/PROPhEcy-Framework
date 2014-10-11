@@ -1,0 +1,3 @@
+- Vom Bedingungsbaum muss die getConditionId() angepasst werden mit Hilfe Arrays.hashCode(...)
+- Default Node wieder hinzufügen, wenn linkes oder rechtes Kind Null gesetzt wird
+- klasse prozessorconfigvalue mit statischen methoden

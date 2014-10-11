@@ -1,0 +1,469 @@
+/*
+PROPhEcy (c) by Christian Winkel
+
+PROPhEcy is licensed under a
+Creative Commons Attribution 4.0 International License.
+
+You should have received a copy of the license along with this
+work. If not, see <http://creativecommons.org/licenses/by/4.0/>.
+*/
+
+package com.prophecy.processing.processor.contexts.lineage.construction;
+
+import com.prophecy.processing.Task;
+import com.prophecy.processing.input.condition.*;
+import com.prophecy.processing.input.term.Attribute;
+import com.prophecy.processing.input.term.Value;
+import com.prophecy.processing.processor.IProcessorContext;
+import com.prophecy.processing.processor.ProcessorInfo;
+import com.prophecy.processing.processor.contexts.formulapattern.tree.*;
+import com.prophecy.processing.processor.contexts.inputrelation.DomainTuple;
+import com.prophecy.processing.processor.contexts.inputrelation.IInputRelation;
+import com.prophecy.processing.processor.contexts.inputrelation.InputRelationList;
+import com.prophecy.processing.processor.contexts.lineage.Event;
+import com.prophecy.processing.processor.contexts.lineage.EventManager;
+import com.prophecy.processing.processor.contexts.lineage.tree.*;
+import com.prophecy.utility.ListUtils;
+
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Created by alpha_000 on 02.05.2014.
+ */
+@ProcessorInfo(name = "Lineage Construction Processor", config = {})
+public class LineageConstructionContext implements IProcessorContext {
+
+    //----------------------------------------
+    // Class Variables
+    //----------------------------------------
+
+
+    private Map<Integer, FactorCatalog> _catalogs
+            = new HashMap<>();
+
+    private EventManager _eventManager
+            = new EventManager();
+
+
+    //----------------------------------------
+    // Class Properties
+    //----------------------------------------
+
+
+    /**
+     * Counts the number of nodes.
+     * @return The number of nodes.
+     */
+    public int getNodeCount() {
+        return ListUtils.FoldLeft(
+                0, _catalogs.values(), (a, b) -> a + b.size());
+    }
+
+
+    //----------------------------------------
+    // Class Functions
+    //----------------------------------------
+
+
+    /**
+     * Runs the processor context with the specific task.
+     * @param task The task.
+     */
+    @Override
+    public void run(Task task)
+            throws Exception {
+
+        InputRelationList relList = task.getData()
+                .require(InputRelationList.class);
+        IFPNode fpRoot = task.getData()
+                .require(IFPNode.class);
+
+        for(IInputRelation rel: relList) {
+
+            rel.prepareNextIteration();
+            for (DomainTuple d : rel) {
+                task.getInfo().measureTime("Lineage", () -> {
+                    for (FPSource source : fpRoot.getSources().values()) {
+
+                        int sourceId = source.getSourceId();
+                        if (d.getSourceType(sourceId) == 1
+                                || d.getSourceType(sourceId) == 2) {
+
+                            insertPath(null, fpRoot, d, sourceId);
+                        } else if (d.getSourceType(sourceId) == 3) {
+
+                            // Specific source needs to be factorized
+                            // for the source-type != 2, because otherwise
+                            // there is a parent node required for the gentuple.
+                            if (!source.isFactorized())
+                                throw new Exception(String.format(
+                                        "The source with relation %s and id: %d " +
+                                                "needs to be factorized to use source types != 2.",
+                                        source.getRelation(), source.getSourceId()
+                                ));
+
+                            FactorCatalog factCat
+                                    = getFactorCatalog(source.getId());
+                            GenTuple key = GenTuple.From(source, d);
+
+                            // Filter all type 3 entries
+                            // which aren't relevant.
+                            if (!factCat.contains(key))
+                                break;
+
+                            LSource lSource = (LSource)
+                                    factCat.get(key);
+
+                            Event event = _eventManager.create(
+                                    d.getBID(sourceId),
+                                    d.getTID(sourceId),
+                                    d.getPROB(sourceId)
+                            );
+
+                            lSource.add(event);
+                        }
+                    }
+                });
+            }
+        }
+
+        // Todo Event count hier auch erledigen udn nicht in calculation
+        task.getInfo().setInfo("Unique Events", _eventManager.size());
+        task.getInfo().setInfo("Nodes", getNodeCount());
+        task.getData().insert(FactorCatalog.class,
+                getFactorCatalog(fpRoot.getId()));
+        task.getData().insert(EventManager.class,
+                _eventManager);
+    }
+
+
+    /**
+     * Inserts the path into the lineage.
+     * @param lin The current lineage node.
+     * @param fp The current formula pattern node.
+     * @param d The domain tuple.
+     * @param sourceId The source id.
+     */
+    private void insertPath(ILNode lin, IFPNode fp, DomainTuple d, int sourceId)
+            throws Exception {
+
+        // If lin is null, we have an root
+        // node, which needs to be created.
+        if(lin == null)
+            lin = setupNode(fp, d, null);
+
+        // The lineage type could be false
+        // because of false condition in setupNode.
+        if(lin.getType() == LType.False)
+            return;
+
+        switch(fp.getType()) {
+
+            case NOr: {
+
+                FPNOr fpNOr = (FPNOr) fp;
+                LOr lOr = (LOr) lin;
+
+                ILNode child = setupNode(
+                        fpNOr.getChild(), d, lin);
+
+                if( ! lOr.containsChild(child) )
+                    lOr.addChild(child);
+
+                insertPath(child, fpNOr
+                        .getChild(), d, sourceId);
+
+                break;
+            }
+            case And: {
+
+                FPAnd fpAnd = (FPAnd) fp;
+                LAnd lAnd = (LAnd) lin;
+
+                if(fpAnd.getLeftChild().containsSourceId(sourceId)) {
+                    if(lAnd.getChild(0).getType() == LType.False) {
+
+                        ILNode child = setupNode(
+                                fpAnd.getLeftChild(), d, lin);
+                        lAnd.replaceChild(lAnd.getChild(0), child);
+                    }
+
+                    insertPath(lAnd.getChild(0), fpAnd
+                            .getLeftChild(), d, sourceId);
+                }
+
+                if(fpAnd.getRightChild().containsSourceId(sourceId)) {
+                    if(lAnd.getChild(1).getType() == LType.False) {
+
+                        ILNode child = setupNode(
+                                fpAnd.getRightChild(), d, lin);
+                        lAnd.replaceChild(lAnd.getChild(1), child);
+                    }
+
+                    insertPath(lAnd.getChild(1), fpAnd
+                            .getRightChild(), d, sourceId);
+                }
+
+                break;
+            }
+            case Or: {
+
+                FPOr fpOr = (FPOr) fp;
+                LOr lOr = (LOr) lin;
+
+                if(fpOr.getLeftChild().containsSourceId(sourceId)) {
+                    if(lOr.getChild(0).getType() == LType.False) {
+
+                        ILNode child = setupNode(
+                                fpOr.getLeftChild(), d, lin);
+                        lOr.replaceChild(lOr.getChild(0), child);
+                    }
+
+                    insertPath(lOr.getChild(0), fpOr
+                            .getLeftChild(), d, sourceId);
+                }
+
+                if(fpOr.getRightChild().containsSourceId(sourceId)) {
+                    if(lOr.getChild(1).getType() == LType.False) {
+
+                        ILNode child = setupNode(
+                                fpOr.getRightChild(), d, lin);
+                        lOr.replaceChild(lOr.getChild(1), child);
+                    }
+
+                    insertPath(lOr.getChild(1), fpOr
+                            .getRightChild(), d, sourceId);
+                }
+
+                break;
+            }
+            case Not: {
+
+                FPNot fpNot = (FPNot) fp;
+                LNot lNot = (LNot) lin;
+
+                if(lNot.getChild().getType() == LType.False) {
+
+                    ILNode child = setupNode(
+                            fpNot.getChild(), d, lin);
+                    lNot.setChild(child);
+                }
+
+                insertPath(lNot.getChild(),
+                        fpNot.getChild(), d, sourceId);
+
+                break;
+            }
+            case Source: {
+
+                LSource lSource = (LSource) lin;
+
+                if(d.getSourceType(sourceId) == 2) {
+
+                    Event event = _eventManager.create(
+                            d.getBID(sourceId),
+                            d.getTID(sourceId),
+                            d.getPROB(sourceId)
+                    );
+
+                    lSource.add(event);
+                }
+
+                break;
+            }
+            default:
+
+                throw new Exception(String.format(
+                        "Unknown formula pattern type: %s.",
+                                fp.getType()));
+        }
+    }
+
+
+    /**
+     * Configures the lineage node for the specific formula pattern node.
+     * @param fp The formula pattern node.
+     * @param d The domain tuple.
+     * @param parent The parent node.
+     * @return The configured lineage node.
+     */
+    private ILNode setupNode(IFPNode fp, DomainTuple d, ILNode parent)
+            throws Exception {
+
+        if( ! evaluate( fp.getCondition(), d ) ) {
+            return new LFalse();
+        }
+
+        FactorCatalog factCat
+                = getFactorCatalog(fp.getId());
+
+        GenTuple key = (fp.isFactorized() || parent == null)
+                ? GenTuple.From(fp, d)
+                : GenTuple.From(fp, d, parent.hashCode());
+
+        if(factCat.contains(key))
+            return factCat.get(key);
+
+        switch(fp.getType()) {
+
+            case NOr: return factCat.put(key, new LOr(true));
+            case Not: return factCat.put(key, new LNot());
+            case And: {
+
+                LAnd lAnd = new LAnd(false);
+
+                // We explicit need to set two child nodes,
+                // because NNode sets only one default node.
+                lAnd.addChild(new LFalse());
+                lAnd.addChild(new LFalse());
+
+                return factCat.put(key, lAnd);
+            }
+            case Or: {
+
+                LOr lOr = new LOr(false);
+
+                // We explicit need to set two child nodes,
+                // because NNode sets only one default node.
+                lOr.addChild(new LFalse());
+                lOr.addChild(new LFalse());
+
+                return factCat.put(key, lOr);
+            }
+            case Source: {
+
+                FPSource fpSource = (FPSource)fp;
+                LSource lSource = new LSource();
+
+                // The mask priority is later used
+                // for the probability calculation
+                // in order to decide which bid's
+                // need to be masked first.
+
+                lSource.setMaskPriority(
+                        fpSource.getMaskPriority());
+
+                return factCat.put(key, lSource);
+            }
+            default:
+
+                throw new Exception(String.format(
+                        "Unknown formula pattern type: %s.",
+                                fp.getType()));
+        }
+    }
+
+
+    /**
+     * Gets the id specific factor catalog.
+     * @param id The id.
+     * @return The factor catalog.
+     */
+    private FactorCatalog getFactorCatalog(int id) {
+
+        if(!_catalogs.containsKey(id))
+            _catalogs.put(id, new FactorCatalog());
+
+        return _catalogs.get(id);
+    }
+
+
+    /**
+     * Evaluates the condition tree with the specific domain tuple.
+     * @param condition The condition tree.
+     * @param d The domain tuple.
+     * @return The boolean value.
+     */
+    private boolean evaluate(ICNode condition, DomainTuple d)
+            throws Exception {
+
+        switch(condition.getType()) {
+            case And:
+
+                CAnd and = (CAnd) condition;
+
+                return evaluate(and.getLeftChild(), d)
+                        && evaluate(and.getRightChild(), d);
+
+            case Or:
+
+                COr or = (COr) condition;
+
+                return evaluate(or.getLeftChild(), d)
+                        || evaluate(or.getRightChild(), d);
+
+            case Not:
+
+                CNot not = (CNot) condition;
+
+                return !evaluate(not.getChild(), d);
+
+            case Op:
+
+                COp op = (COp) condition;
+
+                Object value1;
+                Object value2;
+
+                if(op.getLTerm() instanceof Attribute)
+                    value1 = d.getAttr(((Attribute) op.getLTerm()).getName());
+                else if(op.getLTerm() instanceof Value)
+                    value1 = ((Value) op.getLTerm()).getInner();
+                else
+                    throw new Exception(
+                            String.format("Unknown term type: %s",
+                                    op.getLTerm().getClass()));
+
+                if(op.getRTerm() instanceof Attribute)
+                    value2 = d.getAttr(((Attribute) op.getRTerm()).getName());
+                else if(op.getRTerm() instanceof Value)
+                    value2 = ((Value) op.getRTerm()).getInner();
+                else
+                    throw new Exception(
+                            String.format("Unknown term type: %s",
+                                    op.getRTerm().getClass()));
+
+                if(value1 instanceof BigDecimal)
+                    value1 = ((BigDecimal) value1).doubleValue();
+                if(value2 instanceof BigDecimal)
+                    value2 = ((BigDecimal) value2).doubleValue();
+                if(value1 instanceof Integer)
+                    value1 = ((Integer) value1).doubleValue();
+                if(value2 instanceof Integer)
+                    value2 = ((Integer) value2).doubleValue();
+
+                switch(op.getOpType()) {
+
+                    case Equal: return value1.equals(value2);
+                    case Unequal: return !value1.equals(value2);
+                    case Greater: return ((Double)value1) > ((Double)value2);
+                    case Less: return ((Double)value1) < ((Double)value2);
+                    case GreaterEqual: return ((Double)value1) >= ((Double)value2);
+                    case LessEqual: return ((Double)value1) <= ((Double)value2);
+
+                    default:
+
+                        throw new Exception(
+                                String.format("Unknown operation type: %s.",
+                                        op.getOpType()));
+                }
+
+            case True:
+
+                return true;
+
+            case False:
+
+                return false;
+
+            default:
+
+                throw new Exception(
+                        String.format("Unknown condition type: %s.",
+                                condition.getType()));
+        }
+    }
+
+}
