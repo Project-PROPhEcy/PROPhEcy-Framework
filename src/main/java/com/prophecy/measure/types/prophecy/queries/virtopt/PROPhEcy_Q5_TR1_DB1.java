@@ -6,7 +6,7 @@ import com.prophecy.processing.processor.contexts.formulapattern.tree.IFPNode;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PROPhEcy_Q5_TR1_DB1 extends PROPhEcyMeasureInput {
+public final class PROPhEcy_Q5_TR1_DB1 extends PROPhEcyMeasureInput {
 
     //----------------------------------------
     // Class Properties
@@ -17,7 +17,7 @@ public class PROPhEcy_Q5_TR1_DB1 extends PROPhEcyMeasureInput {
      * Gets the query name.
      */
     @Override
-    public String getName() {
+    final public String getName() {
         return "TR1_DB1_Q5";
     }
 
@@ -25,7 +25,7 @@ public class PROPhEcy_Q5_TR1_DB1 extends PROPhEcyMeasureInput {
      * Gets the query typing.
      */
     @Override
-    public String getTyping() {
+    final public String getTyping() {
         return "-";
     }
 
@@ -33,7 +33,7 @@ public class PROPhEcy_Q5_TR1_DB1 extends PROPhEcyMeasureInput {
      * Gets the input relation query.
      */
     @Override
-    public String getInputRelation() {
+    final public String getInputRelation() {
         return "SELECT * FROM TR1_DB1_PROPHECY_Q5_INNER";
     }
 
@@ -41,7 +41,7 @@ public class PROPhEcy_Q5_TR1_DB1 extends PROPhEcyMeasureInput {
      * Gets the additional input relation queries.
      */
     @Override
-    public Map<Integer, String> getType3InputRelations() {
+    final public Map<Integer, String> getType3InputRelations() {
         return new HashMap<Integer, String>() {{
             put(1, "SELECT * FROM TR1_DB1_PROPHECY_Q5_S1");
             put(5, "SELECT * FROM TR1_DB1_PROPHECY_Q5_S5");
@@ -60,7 +60,7 @@ public class PROPhEcy_Q5_TR1_DB1 extends PROPhEcyMeasureInput {
      * @return The formula pattern.
      */
     @Override
-    public IFPNode getFormulaPattern(boolean factorize) {
+    final public IFPNode getFormulaPattern(final boolean factorize) {
 
         return FPAnd(factorize,
             FPSource(1, "ev_lineitem", true, 0, HeadAttrs("suppkey")),

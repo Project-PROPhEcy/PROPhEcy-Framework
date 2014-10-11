@@ -14,7 +14,7 @@ import com.prophecy.processing.output.TupleResults;
 /**
  * Created by alpha_000 on 21.08.2014.
  */
-public class PROPhEcyTestApp {
+public final class PROPhEcyTestApp {
 
     //----------------------------------------
     // Static Functions
@@ -30,21 +30,21 @@ public class PROPhEcyTestApp {
         while(true) {
             try {
 
-                DBAccess dbAccess = Prophecy.GetDBAccessManager().open(
+                final DBAccess dbAccess = Prophecy.GetDBAccessManager().open(
                         "driver = oracle.jdbc.driver.OracleDriver; " +
                                 "url = jdbc:oracle:thin:@vanilla.informatik.tu-cottbus.de:1521:orcl; " +
                                 "user = PROQUA_TPC-H_0.01; password = proqua"
                 );
 
-                PROPhEcyMeasureRunner runner
+                final PROPhEcyMeasureRunner runner
                         = new PROPhEcyMeasureRunner(dbAccess);
 
-                Task task = runner.calculate(
-                        new PROPhEcy_Q_P3_Hard(), true, true);
+                final Task task = runner.calculate(
+                        new PROPhEcy_Q_P2_Hard(), true, true);
 
                 if (task.getData().contains(TupleResults.class)) {
 
-                    TupleResults results = task.getData()
+                    final TupleResults results = task.getData()
                             .require(TupleResults.class);
 
                     System.out.println("Results: ");
@@ -52,19 +52,19 @@ public class PROPhEcyTestApp {
                     System.out.println(results);
                 }
 
-                TaskInfo info = task.getInfo();
+                final TaskInfo info = task.getInfo();
 
                 System.out.println();
                 System.out.println("Information: ");
                 System.out.println("-------------------------------------------------------");
-                for (String scope : info.getInfoScopes()) {
+                for (final String scope : info.getInfoScopes()) {
                     System.out.println(String.format("%s: %s", scope, info.getInfo(scope)));
                 }
 
                 System.out.println();
                 System.out.println("Time Measure: ");
                 System.out.println("-------------------------------------------------------");
-                for (String scope : info.getMeasureScopes()) {
+                for (final String scope : info.getMeasureScopes()) {
                     System.out.println(String.format("%s: %s ms", scope, info.getMeasure(scope)));
                 }
                 System.out.println();

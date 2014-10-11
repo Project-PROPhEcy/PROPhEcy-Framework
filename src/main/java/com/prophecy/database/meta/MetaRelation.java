@@ -17,7 +17,7 @@ import java.util.Set;
 /**
  * Created by alpha_000 on 06.05.2014.
  */
-public class MetaRelation {
+public final class MetaRelation {
 
     //----------------------------------------
     // Class Variables
@@ -27,13 +27,13 @@ public class MetaRelation {
     /**
      * Saves the relation name.
      */
-    private String _name = null;
+    private final String _name;
 
 
     /**
      * Saves the relation attributes.
      */
-    private Set<String> _attributes
+    private final Set<String> _attributes
             = new HashSet<>();
 
 
@@ -45,7 +45,7 @@ public class MetaRelation {
     /**
      * Gets the relation name.
      */
-    public String getName() {
+    final public String getName() {
         return _name;
     }
 
@@ -53,7 +53,7 @@ public class MetaRelation {
     /**
      * Gets the relation attributes.
      */
-    public Set<String> getAttributes() {
+    final public Set<String> getAttributes() {
         return _attributes;
     }
 
@@ -67,7 +67,7 @@ public class MetaRelation {
      * Constructor
      * @param name The relation name.
      */
-    public MetaRelation(String name) {
+    public MetaRelation(final String name) {
         _name = name;
     }
 
@@ -76,7 +76,7 @@ public class MetaRelation {
      * Adds the attributes to the relation.
      * @param attrs The attributes.
      */
-    public void addAttributes(String... attrs) {
+    final public void addAttributes(final String... attrs) {
         Collections.addAll(_attributes, attrs);
     }
 }

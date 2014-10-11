@@ -13,7 +13,7 @@ import java.util.Map;
  * Created by alpha_000 on 29.08.2014.
  */
 @ProcessorInfo(name = "PROPhEcy Measure Processor", config = {})
-public class PROPhEcyMeasureContext implements IProcessorContext {
+public final class PROPhEcyMeasureContext implements IProcessorContext {
 
     //----------------------------------------
     // Class Functions
@@ -25,20 +25,20 @@ public class PROPhEcyMeasureContext implements IProcessorContext {
      * @param task The task.
      */
     @Override
-    public void run(Task task)
+    final public void run(Task task)
             throws Exception {
 
-        PROPhEcyMeasureInput measureInput
+        final PROPhEcyMeasureInput measureInput
                 = task.getData().require(PROPhEcyMeasureInput.class);
-        boolean factorize = task.getConfig().require("Factorize").equals("1");
+        final boolean factorize = task.getConfig().require("Factorize").equals("1");
 
-        InputRelationList inputRelations = new InputRelationList();
+        final InputRelationList inputRelations = new InputRelationList();
         InputRelation inputRelation = new InputRelation(
                 task.getDBAccess(), measureInput.getInputRelation());
         inputRelations.add(inputRelation);
 
         if( measureInput.getType3InputRelations() != null ) {
-            for (Map.Entry<Integer, String> type3InputRelationData :
+            for (final Map.Entry<Integer, String> type3InputRelationData :
                     measureInput.getType3InputRelations().entrySet()) {
 
                 inputRelation = new InputRelation(task.getDBAccess(),

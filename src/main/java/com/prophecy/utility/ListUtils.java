@@ -7,7 +7,7 @@ import java.util.function.Function;
 /**
  * Created by alpha_000 on 29.06.2014.
  */
-public class ListUtils {
+public final class ListUtils {
 
     //----------------------------------------
     // Static Functions
@@ -19,11 +19,12 @@ public class ListUtils {
      * @param list The list.
      * @return The same list without duplicates.
      */
-    public static <T> List<T> RemoveDuplicates(List<T> list)
+    public static <T> List<T> RemoveDuplicates(final List<T> list)
     {
-        Set<T> uniqueEntries = new HashSet<T>();
-        for (Iterator<T> it = list.iterator(); it.hasNext(); ) {
-            T element = it.next();
+        T element = null;
+        final Set<T> uniqueEntries = new HashSet<T>();
+        for (final Iterator<T> it = list.iterator(); it.hasNext(); ) {
+            element = it.next();
             if (!uniqueEntries.add(element))
                 it.remove();
         }
@@ -37,12 +38,12 @@ public class ListUtils {
      * @param group The group function.
      * @return The resulting map.
      */
-    public static <S, T> Map<S, List<T>> GroupBy(Collection<T> list, Function<T, S> group) {
+    public static <S, T> Map<S, List<T>> GroupBy(final Collection<T> list, final Function<T, S> group) {
 
-        Map<S, List<T>> groups = new HashMap<>();
-        for(T item: list) {
-
-            S key = group.apply(item);
+        S key = null;
+        final Map<S, List<T>> groups = new HashMap<>();
+        for(final T item: list) {
+            key = group.apply(item);
             if(!groups.containsKey(key))
                 groups.put(key, new ArrayList<>());
 
@@ -59,10 +60,10 @@ public class ListUtils {
      * @param xs The list.
      * @return The result.
      */
-    public static <A, B> A FoldLeft(A z, Iterable<B> xs, BiFunction<A, B, A> f)
+    public static <A, B> A FoldLeft(final A z, final Iterable<B> xs, final BiFunction<A, B, A> f)
     {
         A p = z;
-        for (B x: xs) {
+        for (final B x: xs) {
             p = f.apply(p, x);
         }
         return p;

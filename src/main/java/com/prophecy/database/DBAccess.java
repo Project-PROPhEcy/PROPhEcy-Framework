@@ -19,7 +19,7 @@ import java.util.function.Consumer;
 /**
  * Created by alpha_000 on 06.05.2014.
  */
-public class DBAccess {
+public final class DBAccess {
 
     //----------------------------------------
     // Class Variables
@@ -29,37 +29,37 @@ public class DBAccess {
     /**
      * Saves the connection driver.
      */
-    private String _driver = null;
+    private final String _driver;
 
 
     /**
      * Saves the connection url.
      */
-    private String _url = null;
+    private final String _url;
 
 
     /**
      * Saves the connection user.
      */
-    private String _user = null;
+    private final String _user;
 
 
     /**
      * Saves the connection password.
      */
-    private String _password = null;
+    private final String _password;
 
 
     /**
      * Saves the responsible meta manager.
      */
-    private MetaManager _meta = null;
+    private final MetaManager _meta;
 
 
     /**
      * Saves the current sql connection.
      */
-    private Connection _connection = null;
+    private Connection _connection;
 
 
     //----------------------------------------
@@ -72,7 +72,7 @@ public class DBAccess {
      * is identical for equal driver,
      * url and user.
      */
-    public int getId() {
+    final public int getId() {
         return (getDriver() + getUrl() + getUser()).hashCode();
     }
 
@@ -80,7 +80,7 @@ public class DBAccess {
     /**
      * Gets the connection driver.
      */
-    public String getDriver() {
+    final public String getDriver() {
         return _driver;
     }
 
@@ -88,7 +88,7 @@ public class DBAccess {
     /**
      * Gets the connection url.
      */
-    public String getUrl() {
+    final public String getUrl() {
         return _url;
     }
 
@@ -96,7 +96,7 @@ public class DBAccess {
     /**
      * Gets the connection user.
      */
-    public String getUser() {
+    final public String getUser() {
         return _user;
     }
 
@@ -104,7 +104,7 @@ public class DBAccess {
     /**
      * Gets responsible meta manager.
      */
-    public MetaManager getMeta() {
+    final public MetaManager getMeta() {
         return _meta;
     }
 
@@ -121,7 +121,7 @@ public class DBAccess {
      * @param user The connection user.
      * @param password The connection password.
      */
-    public DBAccess(String driver, String url, String user, String password)
+    public DBAccess(final String driver, final String url, final String user, final String password)
             throws ClassNotFoundException {
 
         _url = url;
@@ -141,7 +141,7 @@ public class DBAccess {
      * which is managed by the session.
      */
     // TODO Verbindung nach einem Timeout wieder schließen
-    public void requestConnection(ThrowableConsumer<Connection, Exception> consumer)
+    final public void requestConnection(final ThrowableConsumer<Connection, Exception> consumer)
             throws Exception {
 
         if(_connection == null

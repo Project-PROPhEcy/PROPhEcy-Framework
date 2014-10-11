@@ -26,7 +26,7 @@ public abstract class PROPhEcyMeasureInput implements IMeasureInput {
      * @param headAttrs The head attributes.
      * @return The head attributes list.
      */
-    public static List<String> HeadAttrs(String... headAttrs) {
+    public static List<String> HeadAttrs(final String... headAttrs) {
 
         List< String > headAttrsList = new ArrayList<>();
         Collections.addAll(headAttrsList, headAttrs);
@@ -40,7 +40,7 @@ public abstract class PROPhEcyMeasureInput implements IMeasureInput {
      * @param rightChild The right child.
      * @return The formula pattern node.
      */
-    public static FPAnd FPAnd(boolean factorize, IFPNode leftChild, IFPNode rightChild) {
+    public static FPAnd FPAnd(final boolean factorize, final IFPNode leftChild, final IFPNode rightChild) {
         return FPAnd(factorize, new CTrue(), leftChild, rightChild);
     }
 
@@ -52,7 +52,7 @@ public abstract class PROPhEcyMeasureInput implements IMeasureInput {
      * @param rightChild The right child.
      * @return The formula pattern node.
      */
-    public static FPAnd FPAnd(boolean factorize, ICNode condition, IFPNode leftChild, IFPNode rightChild) {
+    public static FPAnd FPAnd(final boolean factorize, final ICNode condition, final IFPNode leftChild, final IFPNode rightChild) {
 
         FPAnd fpAnd = new FPAnd(factorize, condition);
 
@@ -69,7 +69,7 @@ public abstract class PROPhEcyMeasureInput implements IMeasureInput {
      * @param child The formula pattern child.
      * @return The formula pattern n-or.
      */
-    public static FPNOr FPNOr( boolean factorize, List<String> headAttrs, IFPNode child ) {
+    public static FPNOr FPNOr( final boolean factorize, final List<String> headAttrs, final IFPNode child ) {
         return FPNOr(factorize, headAttrs, new CTrue(), child);
     }
 
@@ -81,7 +81,7 @@ public abstract class PROPhEcyMeasureInput implements IMeasureInput {
      * @param child The formula pattern child.
      * @return The formula pattern n-or.
      */
-    public static FPNOr FPNOr( boolean factorize, List<String> headAttrs, ICNode condition, IFPNode child ) {
+    public static FPNOr FPNOr( final boolean factorize, final List<String> headAttrs, final ICNode condition, final IFPNode child ) {
 
         FPNOr fpNOr = new FPNOr( factorize, headAttrs, condition );
         fpNOr.setChild( child );
@@ -94,7 +94,7 @@ public abstract class PROPhEcyMeasureInput implements IMeasureInput {
      * @param child The child.
      * @return The formula pattern node.
      */
-    public static FPNot FPNot(boolean factorize, IFPNode child) {
+    public static FPNot FPNot( final boolean factorize, final IFPNode child) {
         return FPNot(factorize, new CTrue(), child);
     }
 
@@ -105,7 +105,7 @@ public abstract class PROPhEcyMeasureInput implements IMeasureInput {
      * @param child The child.
      * @return The formula pattern node.
      */
-    public static FPNot FPNot(boolean factorize, ICNode condition, IFPNode child) {
+    public static FPNot FPNot(final boolean factorize, final ICNode condition, final IFPNode child) {
 
         FPNot fpNot = new FPNot( factorize, condition );
         fpNot.setChild( child );
@@ -119,7 +119,7 @@ public abstract class PROPhEcyMeasureInput implements IMeasureInput {
      * @param rightChild The right child.
      * @return The formula pattern node.
      */
-    public static FPOr FPOr(boolean factorize, IFPNode leftChild, IFPNode rightChild) {
+    public static FPOr FPOr( final boolean factorize, final IFPNode leftChild, final IFPNode rightChild) {
         return FPOr(factorize, new CTrue(), leftChild, rightChild);
     }
 
@@ -131,7 +131,7 @@ public abstract class PROPhEcyMeasureInput implements IMeasureInput {
      * @param rightChild The right child.
      * @return The formula pattern node.
      */
-    public static FPOr FPOr(boolean factorize, ICNode condition, IFPNode leftChild, IFPNode rightChild) {
+    public static FPOr FPOr(final boolean factorize, final ICNode condition, final IFPNode leftChild, final IFPNode rightChild) {
 
         FPOr fpOr = new FPOr(factorize, condition);
 
@@ -150,7 +150,7 @@ public abstract class PROPhEcyMeasureInput implements IMeasureInput {
      * @param headAttrs The head attributes.
      * @return The formula pattern source.
      */
-    public static FPSource FPSource(int sourceId, String relation, boolean factorize, int maskPriority, List<String> headAttrs) {
+    public static FPSource FPSource(final int sourceId, final String relation, final boolean factorize, final int maskPriority, final List<String> headAttrs) {
         return new FPSource( sourceId, relation, factorize, maskPriority, headAttrs, new CTrue() );
     }
 
@@ -164,7 +164,7 @@ public abstract class PROPhEcyMeasureInput implements IMeasureInput {
      * @param headAttrs The head attributes.
      * @return The formula pattern source.
      */
-    public static FPSource FPSource(int sourceId, String relation, boolean factorize, int maskPriority, List<String> headAttrs, ICNode condition) {
+    public static FPSource FPSource(final int sourceId, final String relation,final boolean factorize, final int maskPriority, final List<String> headAttrs, final ICNode condition) {
         return new FPSource( sourceId, relation, factorize, maskPriority, headAttrs, condition );
     }
 
@@ -174,7 +174,7 @@ public abstract class PROPhEcyMeasureInput implements IMeasureInput {
      * @param rightChild The right child.
      * @return The condition node.
      */
-    public static CAnd CAnd( ICNode leftChild, ICNode rightChild ) {
+    public static CAnd CAnd( final ICNode leftChild, final ICNode rightChild ) {
 
         CAnd cAnd = new CAnd();
 
@@ -197,7 +197,7 @@ public abstract class PROPhEcyMeasureInput implements IMeasureInput {
      * @param child The child.
      * @return The condition node.
      */
-    public static CNot CNot( ICNode child ) {
+    public static CNot CNot( final ICNode child ) {
 
         CNot cNot = new CNot();
         cNot.setChild( child );
@@ -210,7 +210,7 @@ public abstract class PROPhEcyMeasureInput implements IMeasureInput {
      * @param rightTerm The right term.
      * @return The condition node.
      */
-    public static COp COp( ITerm leftTerm, COpType opType, ITerm rightTerm ) {
+    public static COp COp( final ITerm leftTerm, final COpType opType, final ITerm rightTerm ) {
         return new COp(leftTerm, opType, rightTerm);
     }
 
@@ -220,7 +220,7 @@ public abstract class PROPhEcyMeasureInput implements IMeasureInput {
      * @param rightChild The right child.
      * @return The condition node.
      */
-    public static COr COr( ICNode leftChild, ICNode rightChild ) {
+    public static COr COr( final ICNode leftChild, final ICNode rightChild ) {
 
         COr cOr = new COr();
 
@@ -243,7 +243,7 @@ public abstract class PROPhEcyMeasureInput implements IMeasureInput {
      * @param name The name.
      * @return The attribute.
      */
-    public static Attribute Attribute( String name ) {
+    public static Attribute Attribute( final String name ) {
         return new Attribute( name );
     }
 
@@ -252,7 +252,7 @@ public abstract class PROPhEcyMeasureInput implements IMeasureInput {
      * @param inner The inner value.
      * @return The value.
      */
-    public static Value Value( Object inner ) {
+    public static Value Value( final Object inner ) {
         return new Value( inner );
     }
 
@@ -266,7 +266,7 @@ public abstract class PROPhEcyMeasureInput implements IMeasureInput {
      * Gets the query engine.
      */
     @Override
-    public String getEngine() {
+    final public String getEngine() {
         return "PROPhEcy";
     }
 
@@ -291,5 +291,5 @@ public abstract class PROPhEcyMeasureInput implements IMeasureInput {
      * @param factorize Use factorization for the lineage construction.
      * @return The formula pattern.
      */
-    public abstract IFPNode getFormulaPattern(boolean factorize);
+    public abstract IFPNode getFormulaPattern(final boolean factorize);
 }

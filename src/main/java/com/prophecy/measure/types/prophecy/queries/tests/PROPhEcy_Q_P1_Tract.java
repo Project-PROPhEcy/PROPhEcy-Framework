@@ -59,12 +59,11 @@ public final class PROPhEcy_Q_P1_Tract extends PROPhEcyMeasureInput {
 
     /**
      * Gets the formula pattern.
-     *
      * @param factorize Use factorization for the lineage construction.
      * @return The formula pattern.
      */
     @Override
-    public IFPNode getFormulaPattern(boolean factorize) {
+    final public IFPNode getFormulaPattern(final boolean factorize) {
 
         return FPAnd( factorize,
             FPSource( 1, "R1", true, 0, HeadAttrs( "A" ) ),

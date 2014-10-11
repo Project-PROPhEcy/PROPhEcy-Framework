@@ -20,7 +20,7 @@ import java.util.Map;
 /**
  * Created by alpha_000 on 06.05.2014.
  */
-public class MetaManager {
+public final class MetaManager {
 
     //----------------------------------------
     // Class Variables
@@ -30,7 +30,7 @@ public class MetaManager {
     /**
      * Saves the database access.
      */
-    private DBAccess _dbAccess = null;
+    private final DBAccess _dbAccess;
 
 
     /**

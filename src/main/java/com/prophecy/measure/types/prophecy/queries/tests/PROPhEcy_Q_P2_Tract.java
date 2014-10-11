@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  * Created by alpha_000 on 15.09.2014.
  */
-public class PROPhEcy_Q_P2_Tract extends PROPhEcyMeasureInput {
+public final class PROPhEcy_Q_P2_Tract extends PROPhEcyMeasureInput {
 
     //----------------------------------------
     // Class Properties
@@ -21,7 +21,7 @@ public class PROPhEcy_Q_P2_Tract extends PROPhEcyMeasureInput {
      * Gets the query name.
      */
     @Override
-    public String getName() {
+    final public String getName() {
         return "Paper_Q2";
     }
 
@@ -30,7 +30,7 @@ public class PROPhEcy_Q_P2_Tract extends PROPhEcyMeasureInput {
      * Gets the query typing.
      */
     @Override
-    public String getTyping() {
+    final public String getTyping() {
         return "test";
     }
 
@@ -39,7 +39,7 @@ public class PROPhEcy_Q_P2_Tract extends PROPhEcyMeasureInput {
      * Gets the input relation query.
      */
     @Override
-    public String getInputRelation() {
+    final public String getInputRelation() {
         return "SELECT * FROM PROPHECY_Q_P2_EVENT";
     }
 
@@ -48,7 +48,7 @@ public class PROPhEcy_Q_P2_Tract extends PROPhEcyMeasureInput {
      * Gets the additional input relation queries.
      */
     @Override
-    public Map<Integer, String> getType3InputRelations() {
+    final public Map<Integer, String> getType3InputRelations() {
         return new HashMap<>();
     }
 
@@ -60,12 +60,11 @@ public class PROPhEcy_Q_P2_Tract extends PROPhEcyMeasureInput {
 
     /**
      * Gets the formula pattern.
-     *
      * @param factorize Use factorization for the lineage construction.
      * @return The formula pattern.
      */
     @Override
-    public IFPNode getFormulaPattern(boolean factorize) {
+    final public IFPNode getFormulaPattern(final boolean factorize) {
 
         return FPOr( factorize,
 

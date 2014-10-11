@@ -18,25 +18,25 @@ public abstract class MeasureTest {
     /**
      * Saves a unique test id.
      */
-    private String _id = UUID.randomUUID().toString();
+    final private String _id = UUID.randomUUID().toString();
 
 
     /**
      * Saves the measure input.
      */
-    private IMeasureInput _input = null;
+    final private IMeasureInput _input;
 
 
     /**
      * Saves the number of iteration.
      */
-    private int _iterate = -1;
+    final private int _iterate;
 
 
     /**
      * Saves the duration before an timeout occurs in minuets.
      */
-    private long _timeout = -1;
+    final private long _timeout;
 
 
     //----------------------------------------
@@ -47,7 +47,7 @@ public abstract class MeasureTest {
     /**
      * Gets the unique test id.
      */
-    public String getId() {
+    final public String getId() {
         return _id;
     }
 
@@ -63,7 +63,7 @@ public abstract class MeasureTest {
      * @param iterate The number of iterations.
      * @param timeout The duration before an timeout occurs in minuets.
      */
-    public MeasureTest(IMeasureInput input, int iterate, long timeout) {
+    public MeasureTest(final IMeasureInput input, final int iterate, final long timeout) {
 
         _input = input;
         _iterate = iterate;
@@ -75,7 +75,7 @@ public abstract class MeasureTest {
      * Runs the measure test.
      * @param suite The responsible measure suite.
      */
-    public void run(MeasureSuit suite) {
+    final public void run(final MeasureSuit suite) {
 
         System.out.println("---------------------------------------------");
         System.out.println(String.format(
@@ -84,10 +84,10 @@ public abstract class MeasureTest {
 
         for(int i = 1; i <= _iterate; i++) {
 
-            ExecutorService executor
+            final ExecutorService executor
                     = Executors.newSingleThreadExecutor();
 
-            Future future = executor
+            final Future future = executor
                     .submit(this::process);
 
             // This does not cancel
@@ -96,7 +96,7 @@ public abstract class MeasureTest {
 
             try {
 
-                TaskInfo info = (TaskInfo)future
+                final TaskInfo info = (TaskInfo)future
                         .get(_timeout, TimeUnit.MINUTES);
 
                 System.out.println(String.format(

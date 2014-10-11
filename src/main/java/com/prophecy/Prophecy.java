@@ -15,7 +15,7 @@ import com.prophecy.database.DBAccessManager;
 /**
  * Created by Christian Winkel on 23.04.14.
  */
-public class Prophecy {
+public final class Prophecy {
 
     //----------------------------------------
     // Static Variables
@@ -25,7 +25,7 @@ public class Prophecy {
     /**
      * Saves the database access manager.
      */
-    private static DBAccessManager _DBAccessManager = null;
+    final private static DBAccessManager _DBAccessManager;
 
 
     //----------------------------------------

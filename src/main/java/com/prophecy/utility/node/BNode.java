@@ -31,7 +31,7 @@ public class BNode<TypeT, NodeT> extends Node<TypeT> implements IBNode<TypeT, No
      * Gets the left child node.
      */
     @Override
-    public NodeT getLeftChild() {
+    final public NodeT getLeftChild() {
         return _leftChild;
     }
 
@@ -40,7 +40,7 @@ public class BNode<TypeT, NodeT> extends Node<TypeT> implements IBNode<TypeT, No
      * Sets the left child node.
      */
     @Override
-    public void setLeftChild(NodeT value) {
+    final public void setLeftChild(final NodeT value) {
         _leftChild = value;
     }
 
@@ -49,7 +49,7 @@ public class BNode<TypeT, NodeT> extends Node<TypeT> implements IBNode<TypeT, No
      * Gets the right child node.
      */
     @Override
-    public NodeT getRightChild() {
+    final public NodeT getRightChild() {
         return _rightChild;
     }
 
@@ -58,7 +58,7 @@ public class BNode<TypeT, NodeT> extends Node<TypeT> implements IBNode<TypeT, No
      * Sets the right child node.
      */
     @Override
-    public void setRightChild(NodeT value) {
+    final public void setRightChild(final NodeT value) {
         _rightChild = value;
     }
 
@@ -72,7 +72,7 @@ public class BNode<TypeT, NodeT> extends Node<TypeT> implements IBNode<TypeT, No
      * Constructor
      * @param type The node type.
      */
-    public BNode(TypeT type) {
+    public BNode(final TypeT type) {
         super(type);
     }
 }

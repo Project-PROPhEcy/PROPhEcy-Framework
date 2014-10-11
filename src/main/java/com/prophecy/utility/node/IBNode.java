@@ -19,7 +19,7 @@ public interface IBNode<TypeT, NodeT> extends INode<TypeT> {
     /**
      * Sets the left child node.
      */
-    public void setLeftChild(NodeT value);
+    public void setLeftChild(final NodeT value);
 
 
     /**
@@ -31,5 +31,5 @@ public interface IBNode<TypeT, NodeT> extends INode<TypeT> {
     /**
      * Sets the right child node.
      */
-    public void setRightChild(NodeT value);
+    public void setRightChild(final NodeT value);
 }

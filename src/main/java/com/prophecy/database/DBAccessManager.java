@@ -16,17 +16,14 @@ import java.util.regex.Pattern;
 /**
  * Created by alpha_000 on 06.05.2014.
  */
-public class DBAccessManager {
+public final class DBAccessManager {
 
     //----------------------------------------
     // Class Variables
     //----------------------------------------
 
 
-    /**
-     * Saves the command pattern to split key and value.
-     */
-    private Pattern _commandPattern = null;
+    private final Pattern _commandPattern;
 
 
     //----------------------------------------
@@ -38,8 +35,6 @@ public class DBAccessManager {
      * Constructor
      */
     public DBAccessManager() {
-
-        // Initialize command pattern to split key and value.
         _commandPattern = Pattern.compile(
                 "\\s*(driver|url|user|password)\\s*=\\s*(.*)");
     }
@@ -50,7 +45,7 @@ public class DBAccessManager {
      * @param connectionString The connection string.
      * @return The database access object.
      */
-    public DBAccess open(String connectionString)
+    final public DBAccess open(final String connectionString)
             throws ClassNotFoundException {
 
         String user = null;
@@ -59,11 +54,11 @@ public class DBAccessManager {
         String url = null;
 
         // Split the connection string into commands.
-        String[] commands = connectionString.split(";");
+        final String[] commands = connectionString.split(";");
 
-        for(String command: commands) {
+        for(final String command: commands) {
 
-            Matcher m = _commandPattern
+            final Matcher m = _commandPattern
                     .matcher(command);
 
             if(m.matches()) {

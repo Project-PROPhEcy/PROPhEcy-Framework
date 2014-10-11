@@ -9,14 +9,14 @@ import com.prophecy.processing.processor.contexts.lineage.construction.LineageCo
 /**
  * Created by alpha_000 on 21.08.2014.
  */
-public class PROPhEcyMeasureRunner {
+public final class PROPhEcyMeasureRunner {
 
     //----------------------------------------
     // Class Variables
     //----------------------------------------
 
 
-    private DBAccess _dbAccess = null;
+    final private DBAccess _dbAccess;
 
 
     //----------------------------------------
@@ -28,7 +28,7 @@ public class PROPhEcyMeasureRunner {
      * Constructor
      * @param dbAccess The database access.
      */
-    public PROPhEcyMeasureRunner(DBAccess dbAccess) {
+    public PROPhEcyMeasureRunner(final DBAccess dbAccess) {
         _dbAccess = dbAccess;
     }
 
@@ -39,14 +39,14 @@ public class PROPhEcyMeasureRunner {
      * @param measureInputRelation Measure the time for the input relation.
      * @return The task info data.
      */
-    public Task calculate(PROPhEcyMeasureInput input, boolean factorize, boolean measureInputRelation) {
+    final public Task calculate(final PROPhEcyMeasureInput input, final boolean factorize, final boolean measureInputRelation) {
 
-        ProcessorManager manager = new ProcessorManager(
+        final ProcessorManager manager = new ProcessorManager(
                 PROPhEcyMeasureContext.class,
                 LineageConstructionContext.class,
                 CalculationContext.class);
 
-        Task task = new Task(null, _dbAccess);
+        final Task task = new Task(null, _dbAccess);
 
         task.getData().insert(PROPhEcyMeasureInput.class, input);
 
@@ -66,14 +66,14 @@ public class PROPhEcyMeasureRunner {
      * @param measureInputRelation Measure the time for the input relation.
      * @return The task info data.
      */
-    public Task approximate(PROPhEcyMeasureInput input, double errorConstant, boolean isRelativeError, boolean factorize, boolean measureInputRelation) {
+    final public Task approximate(final PROPhEcyMeasureInput input, final double errorConstant, final boolean isRelativeError, final boolean factorize, final boolean measureInputRelation) {
 
-        ProcessorManager manager = new ProcessorManager(
+        final ProcessorManager manager = new ProcessorManager(
                 PROPhEcyMeasureContext.class,
                 LineageConstructionContext.class,
                 CalculationContext.class);
 
-        Task task = new Task(null, _dbAccess);
+        final Task task = new Task(null, _dbAccess);
 
         task.getData().insert(PROPhEcyMeasureInput.class, input);
 
@@ -94,13 +94,13 @@ public class PROPhEcyMeasureRunner {
      * @param measureInputRelation Measure the time for the input relation.
      * @return The task info data.
      */
-    public Task constructLineage(PROPhEcyMeasureInput input, boolean factorize, boolean measureInputRelation) {
+    final public Task constructLineage(final PROPhEcyMeasureInput input, final boolean factorize, final boolean measureInputRelation) {
 
-        ProcessorManager manager = new ProcessorManager(
+        final ProcessorManager manager = new ProcessorManager(
                 PROPhEcyMeasureContext.class,
                 LineageConstructionContext.class);
 
-        Task task = new Task(null, _dbAccess);
+        final Task task = new Task(null, _dbAccess);
 
         task.getData().insert(PROPhEcyMeasureInput.class, input);
 

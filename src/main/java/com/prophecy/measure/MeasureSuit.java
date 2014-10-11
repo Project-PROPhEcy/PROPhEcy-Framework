@@ -15,7 +15,7 @@ import com.prophecy.database.DBAccess;
 /**
  * Created by alpha_000 on 15.08.2014.
  */
-public class MeasureSuit {
+public final class MeasureSuit {
 
     //----------------------------------------
     // Class Variables
@@ -25,7 +25,7 @@ public class MeasureSuit {
     /**
      * Saves the database access.
      */
-    private DBAccess _dbAccess = null;
+    final private DBAccess _dbAccess;
 
 
     //----------------------------------------
@@ -36,7 +36,7 @@ public class MeasureSuit {
     /**
      * Gets the database access.
      */
-    public DBAccess getDBAccess() {
+    final public DBAccess getDBAccess() {
         return _dbAccess;
     }
 
@@ -50,7 +50,7 @@ public class MeasureSuit {
      * Constructor
      * @param dbAccess The database access.
      */
-    public MeasureSuit(DBAccess dbAccess) {
+    public MeasureSuit(final DBAccess dbAccess) {
         _dbAccess = dbAccess;
     }
 
@@ -60,7 +60,7 @@ public class MeasureSuit {
      * @param groupId The test group id.
      * @param tests The measure tests.
      */
-    public void run(String groupId, MeasureTest... tests) {
+    final public void run(final String groupId, final MeasureTest... tests) {
 
         System.out.println(String.format(
                 "Start Measure Suit with %d Measure Tests.", tests.length));
