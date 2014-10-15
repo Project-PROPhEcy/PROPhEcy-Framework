@@ -10,7 +10,6 @@ work. If not, see <http://creativecommons.org/licenses/by/4.0/>.
 
 package com.prophecy.processing.processor.contexts.calculation.exact;
 
-import com.prophecy.processing.output.TupleResults;
 import com.prophecy.processing.processor.contexts.calculation.Calculation;
 import com.prophecy.processing.processor.contexts.calculation.Mask;
 import com.prophecy.processing.processor.contexts.calculation.Probability;
@@ -28,7 +27,7 @@ import java.util.Set;
 /**
  * Created by alpha_000 on 18.07.2014.
  */
-public class ExactCalculation extends Calculation {
+public final class ExactCalculation extends Calculation {
 
     //----------------------------------------
     // Class Variables
@@ -49,7 +48,7 @@ public class ExactCalculation extends Calculation {
      * @param factorCatalog The used root factor catalog.
      * @param eventManager  The used event manager.
      */
-    public ExactCalculation(FactorCatalog factorCatalog, EventManager eventManager) {
+    public ExactCalculation(final FactorCatalog factorCatalog, final EventManager eventManager) {
         super(factorCatalog, eventManager);
     }
 
@@ -58,7 +57,7 @@ public class ExactCalculation extends Calculation {
      * Executes the probability calculations.
      */
     @Override
-    public void execute()
+    public final void execute()
             throws Exception {
         computeProbs(Mask.INIT);
     }
@@ -68,22 +67,23 @@ public class ExactCalculation extends Calculation {
      * Computes the probabilities for a specific mask level.
      * @param mask The current used mask.
      */
-    private void computeProbs(Mask mask)
+    private void computeProbs(final Mask mask)
             throws Exception {
 
         if( mask.getLevel() > 0 ) {
             _maskCount++;
         }
 
-        for(Map.Entry<GenTuple, ILNode> entry:
+        for(final Map.Entry<GenTuple, ILNode> entry:
                 getFactorCatalog().getNodes().entrySet()) {
 
-            GenTuple genTuple = entry.getKey();
-            ILNode root = entry.getValue();
+            // TODo rausziehen?
+            final GenTuple genTuple = entry.getKey();
+            final ILNode root = entry.getValue();
 
             if(root.getMaskLevel() == -1) {
 
-                Double exactProb = simplAndCalc(
+                final Double exactProb = simplAndCalc(
                         root, root, mask);
 
                 if(exactProb != -1) {
@@ -91,7 +91,7 @@ public class ExactCalculation extends Calculation {
                     if(!getTupleResults().contains(genTuple))
                         getTupleResults().add(genTuple);
 
-                    Probability resultProb = getTupleResults()
+                    final Probability resultProb = getTupleResults()
                             .getProbability(genTuple);
 
                     resultProb.addExact(
@@ -106,14 +106,14 @@ public class ExactCalculation extends Calculation {
             // to reset the global values but need
             // the bid later in this code block in
             // order to reset the events.
-            int nextMaskBIDCopy = _nextMaskBID;
+            final int nextMaskBIDCopy = _nextMaskBID;
 
-            Set<Mask> masks = genMasks(nextMaskBIDCopy, mask);
+            final Set<Mask> masks = genMasks(nextMaskBIDCopy, mask);
 
             _nextMaskSource = null;
             _nextMaskBID = -1;
 
-            for(Mask nextMask: masks) {
+            for(final Mask nextMask: masks) {
 
                 setMask(nextMask);
                 computeProbs(nextMask);
@@ -133,7 +133,7 @@ public class ExactCalculation extends Calculation {
      * @return The calculated probability.
      */
     // TODO: Mit Probability arbeiten
-    private Double simplAndCalc(ILNode root, ILNode current, Mask mask)
+    private Double simplAndCalc(final ILNode root, final ILNode current, final Mask mask)
             throws Exception {
 
         // If this node was already calculated,
@@ -148,13 +148,13 @@ public class ExactCalculation extends Calculation {
         switch(current.getType()) {
             case And: {
 
-                LAnd lAnd = (LAnd)current;
+                final LAnd lAnd = (LAnd)current;
 
                 prob = 1.0;
 
-                for(ILNode child: lAnd.getChildren()) {
+                for(final ILNode child: lAnd.getChildren()) {
 
-                    Double cProb = simplAndCalc(
+                    final Double cProb = simplAndCalc(
                             root, child, mask);
 
                     // And can't be fulfilled.
@@ -174,13 +174,13 @@ public class ExactCalculation extends Calculation {
             }
             case Or: {
 
-                LOr lOr = (LOr)current;
+                final LOr lOr = (LOr)current;
 
                 prob = 1.0;
 
-                for(ILNode child: lOr.getChildren()) {
+                for(final ILNode child: lOr.getChildren()) {
 
-                    Double cProb = simplAndCalc(
+                    final Double cProb = simplAndCalc(
                             root, child, mask);
 
                     // Or is already fulfilled.
@@ -204,7 +204,7 @@ public class ExactCalculation extends Calculation {
             }
             case Not: {
 
-                LNot lNot = (LNot)current;
+                final LNot lNot = (LNot)current;
 
                 prob = simplAndCalc(
                         root, lNot.getChild(), mask);
@@ -217,15 +217,15 @@ public class ExactCalculation extends Calculation {
             }
             case Source: {
 
-                LSource lSource = (LSource)current;
+                final LSource lSource = (LSource)current;
 
                 prob = 1.0;
 
-                for(Map.Entry<Integer, List<Event>> entry: ListUtils.GroupBy(
+                for(final Map.Entry<Integer, List<Event>> entry: ListUtils.GroupBy(
                         lSource.getEvents(), Event::getBID).entrySet()) {
 
-                    int bid = entry.getKey();
-                    List<Event> events = entry.getValue();
+                    final int bid = entry.getKey();
+                    final List<Event> events = entry.getValue();
 
                     // Check if the mask level is 0.
                     // If it's true the event isn't
@@ -248,7 +248,7 @@ public class ExactCalculation extends Calculation {
                     }
                     else {
 
-                        Double bidProb = events.stream()
+                        final Double bidProb = events.stream()
                                 .mapToDouble(Event::getCurrentProb).sum();
 
                         if(bidProb == 1.0)

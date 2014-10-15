@@ -30,10 +30,10 @@ public abstract class Calculation implements ICalculation {
     //----------------------------------------
 
 
-    private FactorCatalog _factorCatalog = null;
-    private EventManager _eventManager = null;
+    private final FactorCatalog _factorCatalog;
+    private final EventManager _eventManager;
 
-    private TupleResults _tupleResults
+    private final TupleResults _tupleResults
             = new TupleResults();
 
     private int _eventCount = 0;
@@ -49,42 +49,42 @@ public abstract class Calculation implements ICalculation {
     /**
      * Gets the used root factor catalog.
      */
-    public FactorCatalog getFactorCatalog() {
+    public final FactorCatalog getFactorCatalog() {
         return _factorCatalog;
     }
 
     /**
      * Gets the used event manager.
      */
-    public EventManager getEventManager() {
+    public final EventManager getEventManager() {
         return _eventManager;
     }
 
     /**
      * Gets the tuple results.
      */
-    public TupleResults getTupleResults() {
+    public final TupleResults getTupleResults() {
         return _tupleResults;
     }
 
     /**
      * Gets the number of events in lineage formula.
      */
-    public int getEventCount() {
+    public final int getEventCount() {
         return _eventCount;
     }
 
     /**
      * Gets the number of variables in the lineage formula.
      */
-    public int getVariablesCount() {
+    public final int getVariablesCount() {
         return _variablesCount;
     }
 
     /**
      * Gets the number of used masks to calculate the lineage formula.
      */
-    public int getMaskCount() {
+    public final int getMaskCount() {
         return _maskCount;
     }
 
@@ -98,7 +98,7 @@ public abstract class Calculation implements ICalculation {
      * @param factorCatalog The used root factor catalog.
      * @param eventManager The used event manager.
      */
-    public Calculation(FactorCatalog factorCatalog, EventManager eventManager) {
+    public Calculation(final FactorCatalog factorCatalog, final EventManager eventManager) {
 
         _factorCatalog = factorCatalog;
         _eventManager = eventManager;
@@ -107,7 +107,8 @@ public abstract class Calculation implements ICalculation {
     /**
      * Initializes the probability calculations.
      */
-    public void initialize() throws Exception {
+    public final void initialize()
+            throws Exception {
 
         countEvents();
         initEvents();
@@ -120,7 +121,7 @@ public abstract class Calculation implements ICalculation {
     private void countEvents()
             throws Exception {
 
-        for(ILNode root: _factorCatalog
+        for(final ILNode root: _factorCatalog
                 .getNodes().values()){
                 countEvents(root, root, new HashSet<>());}
     }
@@ -131,7 +132,7 @@ public abstract class Calculation implements ICalculation {
      * @param current The current lineage node.
      * @param rootBlockIds All current known block ids.
      */
-    private void countEvents(final ILNode root, final ILNode current, Set<Integer> rootBlockIds)
+    private void countEvents(final ILNode root, final ILNode current, final Set<Integer> rootBlockIds)
             throws Exception {
 
         switch(current.getType()) {
@@ -139,7 +140,7 @@ public abstract class Calculation implements ICalculation {
 
                 final LAnd lAnd = (LAnd) current;
 
-                for (ILNode child : lAnd.getChildren())
+                for (final ILNode child : lAnd.getChildren())
                     countEvents(root, child, rootBlockIds);
 
                 break;
@@ -148,7 +149,7 @@ public abstract class Calculation implements ICalculation {
 
                 final LOr lOr = (LOr) current;
 
-                for (ILNode child : lOr.getChildren())
+                for (final ILNode child : lOr.getChildren())
                     countEvents(root, child, rootBlockIds);
 
                 break;
@@ -172,9 +173,9 @@ public abstract class Calculation implements ICalculation {
                 // block ids which occur just in one source don't
                 // need to be masked. They can just be calculated
                 // as exclusive or.
-                HashSet<Integer> sourceBlockIds = new HashSet<>();
+                final HashSet<Integer> sourceBlockIds = new HashSet<>();
 
-                for(Event event: lSource.getEvents()) {
+                for(final Event event: lSource.getEvents()) {
 
                     _eventCount++;
 
@@ -185,7 +186,7 @@ public abstract class Calculation implements ICalculation {
                         // specific block id.
 
                         if(!event.needMask(root)) {
-                            for (Event bidEvent : _eventManager
+                            for (final Event bidEvent : _eventManager
                                     .getAll(event.getBID())) {
                                 bidEvent.addNeedMask(root);
                                 _variablesCount++;
@@ -242,13 +243,13 @@ public abstract class Calculation implements ICalculation {
      * Resets the events for the specific block id.
      * @param bid The block id.
      */
-    public void resetEvents(int bid) {
+    public final void resetEvents(final int bid) {
 
         // The event with maximum probability
         // within the specific block id.
         Event selected = null;
 
-        for(Event event: _eventManager.getAll(bid)) {
+        for(final Event event: _eventManager.getAll(bid)) {
 
             event.setMaskLevel(0);
             event.setCurrentProb(
@@ -271,28 +272,26 @@ public abstract class Calculation implements ICalculation {
      * @param currentMask The current mask.
      * @return The resulting mask set.
      */
-    public Set<Mask> genMasks(int bid, Mask currentMask) {
+    public final Set<Mask> genMasks(final int bid, final Mask currentMask) {
 
-        Set<Mask> masks = new LinkedHashSet<>();
+        final Set<Mask> masks = new LinkedHashSet<>();
 
-        Mask fMask = new Mask(bid, -1, 0.0,
-                currentMask.getLevel() + 1,
-                currentMask.getLevelProb());
+        double fMaskProb = 0.0;
+        for(final Event event: _eventManager.getAll(bid)) {
 
-        for(Event event: _eventManager.getAll(bid)) {
-
-            fMask.setProb(fMask.getProb()
-                    + event.getProb());
-
-            Mask mask = new Mask(bid, event.getTID(),
+            fMaskProb += event.getProb();
+            // TODO rausziehen?
+            final Mask mask = new Mask(bid, event.getTID(),
                     event.getProb(), currentMask.getLevel() + 1,
                     currentMask.getLevelProb() * event.getProb());
 
             masks.add(mask);
         }
 
-        fMask.setProb(1.0 - fMask.getProb());
-        fMask.setLevelProb(fMask.getLevelProb() * fMask.getProb());
+        fMaskProb = 1.0 - fMaskProb;
+        final Mask fMask = new Mask(bid, -1, fMaskProb,
+                currentMask.getLevel() + 1,
+                currentMask.getLevelProb() * fMaskProb);
 
         masks.add(fMask);
 
@@ -304,7 +303,7 @@ public abstract class Calculation implements ICalculation {
      * and optimize the logical parent nodes.
      * @param mask The mask.
      */
-    public void setMask(Mask mask){
+    public final void setMask(final Mask mask){
         setMask(mask, null, 0.0);
     }
 
@@ -315,11 +314,11 @@ public abstract class Calculation implements ICalculation {
      * @param current The current node.
      * @param childProb The child probability.
      */
-    private void setMask(Mask mask, ILNode current, Double childProb) {
+    private void setMask(final Mask mask, final ILNode current, final Double childProb) {
 
         if(current == null) {
 
-            for(Event event: _eventManager
+            for(final Event event: _eventManager
                     .getAll(mask.getBID())) {
 
                 // Set the mask level of the
@@ -332,7 +331,7 @@ public abstract class Calculation implements ICalculation {
                         mask.getProb(event.getTID()));
 
                 // Optimize the parents.
-                for(ILNode parent: event.getParents())
+                for(final ILNode parent: event.getParents())
                     setMask(mask, parent, event.getCurrentProb());
             }
         }
@@ -344,7 +343,7 @@ public abstract class Calculation implements ICalculation {
             switch(current.getType()) {
                 case And: {
 
-                    LAnd lAnd = (LAnd) current;
+                    final LAnd lAnd = (LAnd) current;
 
                     if (childProb == 0.0)
                         optimize = true;
@@ -356,7 +355,7 @@ public abstract class Calculation implements ICalculation {
                 }
                 case Or: {
 
-                    LOr lOr = (LOr) current;
+                    final LOr lOr = (LOr) current;
 
                     if (childProb == 1.0)
                         optimize = true;
@@ -382,7 +381,7 @@ public abstract class Calculation implements ICalculation {
                 }
                 case Source: {
 
-                    LSource source = (LSource) current;
+                    final LSource source = (LSource) current;
 
                     if (childProb == 1.0)
                         optimize = true;
@@ -408,7 +407,7 @@ public abstract class Calculation implements ICalculation {
                 // Mark the node for de-masking.
                 mask.addInvolvedNode(current);
 
-                for(ILNode parent: current.getParents())
+                for(final ILNode parent: current.getParents())
                     setMask(mask, parent, currentProb);
 
             }
@@ -420,9 +419,9 @@ public abstract class Calculation implements ICalculation {
      * the calculations for the specific mask.
      * @param mask The mask.
      */
-    public void unsetMask(Mask mask) {
+    public final void unsetMask(final Mask mask) {
 
-        for(ILNode node: mask.getInvolvedNodes()) {
+        for(final ILNode node: mask.getInvolvedNodes()) {
 
             node.setCurrentProb(-1.0);
             node.setMaskLevel(-1);

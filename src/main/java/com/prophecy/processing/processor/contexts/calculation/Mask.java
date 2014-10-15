@@ -19,7 +19,7 @@ import java.util.Set;
 /**
  * Created by alpha_000 on 25.07.2014.
  */
-public class Mask implements Comparable<Mask> {
+public final class Mask implements Comparable<Mask> {
 
     //----------------------------------------
     // Static Constants
@@ -41,37 +41,37 @@ public class Mask implements Comparable<Mask> {
     /**
      * Saves the block id.
      */
-    private int _bid = -1;
+    private final int _bid;
 
 
     /**
      * Saves the tuple id.
      */
-    private int _tid = -1;
+    private final int _tid;
 
 
     /**
      * Saves the probability.
      */
-    private Double _prob = -1.0;
+    private final Double _prob;
 
 
     /**
      * Saves the mask level.
      */
-    private int _level = -1;
+    private final int _level;
 
 
     /**
      * Saves the mask level probability.
      */
-    private Double _levelProb = -1.0;
+    private final Double _levelProb;
 
 
     /**
      * Saves the involved nodes for this mask.
      */
-    private Set<ILNode> _involvedNodes
+    private final Set<ILNode> _involvedNodes
             = new HashSet<>();
 
 
@@ -79,7 +79,7 @@ public class Mask implements Comparable<Mask> {
      * Saves the remembered block ids for this mask.
      * This is required for the approximation algorithm.
      */
-    private Set<Integer> _rememberedBIDs
+    private final Set<Integer> _rememberedBIDs
             = new HashSet<>();
 
 
@@ -91,7 +91,7 @@ public class Mask implements Comparable<Mask> {
     /**
      * Gets the block id.
      */
-    public int getBID() {
+    public final int getBID() {
         return _bid;
     }
 
@@ -99,7 +99,7 @@ public class Mask implements Comparable<Mask> {
     /**
      * Gets the tuple id.
      */
-    public int getTID() {
+    public final int getTID() {
         return _tid;
     }
 
@@ -107,23 +107,15 @@ public class Mask implements Comparable<Mask> {
     /**
      * Gets the probability.
      */
-    public Double getProb() {
+    public final Double getProb() {
         return _prob;
-    }
-
-
-    /**
-     * Sets the probability.
-     */
-    public void setProb(Double value) {
-        _prob = value;
     }
 
 
     /**
      * Gets the mask level.
      */
-    public int getLevel() {
+    public final int getLevel() {
         return _level;
     }
 
@@ -131,23 +123,15 @@ public class Mask implements Comparable<Mask> {
     /**
      * Gets the mask level probability.
      */
-    public Double getLevelProb() {
+    public final Double getLevelProb() {
         return _levelProb;
-    }
-
-
-    /**
-     * Sets the level probability.
-     */
-    public void setLevelProb(Double value) {
-        _levelProb = value;
     }
 
 
     /**
      * Gets the involved nodes for this mask.
      */
-    public Set<ILNode> getInvolvedNodes() {
+    public final Set<ILNode> getInvolvedNodes() {
         return Collections.unmodifiableSet(_involvedNodes);
     }
 
@@ -155,7 +139,8 @@ public class Mask implements Comparable<Mask> {
     /**
      * Gets the remembered block ids for this mask.
      */
-    public Set<Integer> getRememberedBID() {
+    // TODO wofür war das nochmal?
+    public final Set<Integer> getRememberedBID() {
         return Collections.unmodifiableSet(_rememberedBIDs);
     }
 
@@ -173,7 +158,7 @@ public class Mask implements Comparable<Mask> {
      * @param level The mask level.
      * @param levelProb The mask level probability.
      */
-    public Mask(int bid, int tid, Double prob, int level, Double levelProb) {
+    public Mask(final int bid, final int tid, final Double prob, final int level, final Double levelProb) {
 
         _bid = bid;
         _tid = tid;
@@ -188,7 +173,7 @@ public class Mask implements Comparable<Mask> {
      * @param tid The tuple id.
      * @return The probability.
      */
-    public Double getProb(int tid) {
+    public final Double getProb(final int tid) {
 
         // If the tuple id is the
         // selected tuple id for
@@ -205,7 +190,7 @@ public class Mask implements Comparable<Mask> {
      * @param node The involved node.
      * @return The boolean value.
      */
-    public boolean addInvolvedNode(ILNode node) {
+    public final boolean addInvolvedNode(final ILNode node) {
         return _involvedNodes.add(node);
     }
 
@@ -215,7 +200,7 @@ public class Mask implements Comparable<Mask> {
      * @param node The involved node.
      * @return The boolean value.
      */
-    public boolean removeInvolvedNode(ILNode node) {
+    public final boolean removeInvolvedNode(final ILNode node) {
         return _involvedNodes.remove(node);
     }
 
@@ -225,7 +210,7 @@ public class Mask implements Comparable<Mask> {
      * @param bid The block id.
      * @return The boolean value.
      */
-    public boolean containsRememberedBID(int bid) {
+    public final boolean containsRememberedBID(final int bid) {
         return _rememberedBIDs.contains(bid);
     }
 
@@ -235,7 +220,7 @@ public class Mask implements Comparable<Mask> {
      * @param bid The block id.
      * @return The boolean value.
      */
-    public boolean addRememberedBID(int bid) {
+    public final boolean addRememberedBID(final int bid) {
         return _rememberedBIDs.add(bid);
     }
 
@@ -245,7 +230,7 @@ public class Mask implements Comparable<Mask> {
      * @param bid The block id.
      * @return The boolean value.
      */
-    public boolean removeRememberedBID(int bid) {
+    public final boolean removeRememberedBID(final int bid) {
         return _rememberedBIDs.remove(bid);
     }
 
@@ -257,7 +242,7 @@ public class Mask implements Comparable<Mask> {
      */
     @Override
     @SuppressWarnings("NullableProblems")
-    public int compareTo(Mask o) {
+    public final int compareTo(Mask o) {
 
         if(_prob - o._prob < 0.0)
             return 1;
@@ -268,7 +253,7 @@ public class Mask implements Comparable<Mask> {
     /**
      * Clear the involved nodes and the involved block ids.
      */
-    public void clear() {
+    public final void clear() {
 
         _involvedNodes.clear();
         _rememberedBIDs.clear();

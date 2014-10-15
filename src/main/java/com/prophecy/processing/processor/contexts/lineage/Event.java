@@ -103,20 +103,20 @@ public final class Event implements Comparable<Event> {
     /**
      * Saves the hash code.
      */
-    private int _hashCode = 0;
+    private final int _hashCode;
 
 
     /**
      * Saves the need mask state.
      */
-    private Set<ILNode> _needMask
+    private final Set<ILNode> _needMask
             = new HashSet<>();
 
 
     /**
      * Saves the responsible source parents.
      */
-    private Set<LSource> _parents
+    private final Set<LSource> _parents
             = new LinkedHashSet<>();
 
 
@@ -128,7 +128,7 @@ public final class Event implements Comparable<Event> {
     /**
      * Gets the block id.
      */
-    public int getBID() {
+    public final int getBID() {
         return _bid;
     }
 
@@ -136,7 +136,7 @@ public final class Event implements Comparable<Event> {
     /**
      * Gets the tuple id.
      */
-    public int getTID() {
+    public final int getTID() {
         return _tid;
     }
 
@@ -144,7 +144,7 @@ public final class Event implements Comparable<Event> {
     /**
      * Gets the initial probability.
      */
-    public double getProb() {
+    public final double getProb() {
         return _prob;
     }
 
@@ -152,7 +152,7 @@ public final class Event implements Comparable<Event> {
     /**
      * Gets the responsible source parents.
      */
-    public Set<LSource> getParents() {
+    public final Set<LSource> getParents() {
         return _parents;
     }
 
@@ -161,7 +161,7 @@ public final class Event implements Comparable<Event> {
      * Determines whether this event has the
      * maximum probability within the block id.
      */
-    public boolean hasMaxProb() {
+    public final boolean hasMaxProb() {
         return _hasMaxProb;
     }
 
@@ -170,7 +170,7 @@ public final class Event implements Comparable<Event> {
      * Sets the value whether this event has
      * the maximum probability within the block id.
      */
-    public void hasMaxProb(boolean value) {
+    public final void hasMaxProb(final boolean value) {
         _hasMaxProb = value;
     }
 
@@ -178,7 +178,7 @@ public final class Event implements Comparable<Event> {
     /**
      * Gets the current mask level.
      */
-    public int getMaskLevel() {
+    public final int getMaskLevel() {
         return _maskLevel;
     }
 
@@ -186,7 +186,7 @@ public final class Event implements Comparable<Event> {
     /**
      * Sets the current mask level.
      */
-    public void setMaskLevel(int value) {
+    public final void setMaskLevel(final int value) {
         _maskLevel = value;
     }
 
@@ -194,7 +194,7 @@ public final class Event implements Comparable<Event> {
     /**
      * Gets the current probability.
      */
-    public double getCurrentProb() {
+    public final double getCurrentProb() {
         return _currentProb;
     }
 
@@ -202,7 +202,7 @@ public final class Event implements Comparable<Event> {
     /**
      * Sets the current probability.
      */
-    public void setCurrentProb(double value) {
+    public final void setCurrentProb(final double value) {
         _currentProb = value;
     }
 
@@ -210,7 +210,7 @@ public final class Event implements Comparable<Event> {
     /**
      * Gets the current upper bound.
      */
-    public double getCurrentUB() {
+    public final double getCurrentUB() {
         return _currentUB;
     }
 
@@ -218,7 +218,7 @@ public final class Event implements Comparable<Event> {
     /**
      * Sets the current upper bound.
      */
-    public void setCurrentUB(double value) {
+    public final void setCurrentUB(final double value) {
         _currentUB = value;
     }
 
@@ -226,7 +226,7 @@ public final class Event implements Comparable<Event> {
     /**
      * Gets the current lower bound.
      */
-    public double getCurrentLB() {
+    public final double getCurrentLB() {
         return _currentLB;
     }
 
@@ -234,7 +234,7 @@ public final class Event implements Comparable<Event> {
     /**
      * Sets the current lower bound.
      */
-    public void setCurrentLB(double value) {
+    public final void setCurrentLB(final double value) {
         _currentLB = value;
     }
 
@@ -243,7 +243,7 @@ public final class Event implements Comparable<Event> {
      * Gets the hash code for the event.
      */
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         return _hashCode;
     }
 
@@ -279,7 +279,7 @@ public final class Event implements Comparable<Event> {
      * @param source The parent source.
      * @return The boolean value.
      */
-    public boolean addParent(LSource source) {
+    public final boolean addParent(final LSource source) {
         return _parents.add(source);
     }
 
@@ -289,7 +289,7 @@ public final class Event implements Comparable<Event> {
      * @param source The parent source.
      * @return The boolean value.
      */
-    public boolean removeParent(LSource source) {
+    public final boolean removeParent(final LSource source) {
         return _parents.remove(source);
     }
 
@@ -298,7 +298,7 @@ public final class Event implements Comparable<Event> {
      * Adds a root node for which the event needs a mask.
      * @param root The root node.
      */
-    public void addNeedMask(ILNode root) {
+    public final void addNeedMask(final ILNode root) {
         _needMask.add(root);
     }
 
@@ -307,7 +307,7 @@ public final class Event implements Comparable<Event> {
      * Removes a root node for which the event needs a mask.
      * @param root The root node.
      */
-    public void removeNeedMask(ILNode root) {
+    public final void removeNeedMask(final ILNode root) {
         _needMask.remove(root);
     }
 
@@ -319,7 +319,7 @@ public final class Event implements Comparable<Event> {
      * check the mask level which is greater than zero
      * if the block id is masked.
      */
-    public boolean needMask(ILNode root) {
+    public final boolean needMask(final ILNode root) {
         return _needMask.contains(root);
     }
 
@@ -330,7 +330,7 @@ public final class Event implements Comparable<Event> {
      * @return The compare result.
      */
     @Override
-    public int compareTo(Event o) {
+    public final int compareTo(final Event o) {
 
         // Check if this event
         // is after the other event.
@@ -345,18 +345,16 @@ public final class Event implements Comparable<Event> {
      * @return The boolean value.
      */
     @Override
-    public boolean equals(Object o) {
+    public final boolean equals(final Object o) {
 
         if (this == o) return true;
         if (o == null || getClass() != o.getClass())
             return false;
 
-        Event event = (Event) o;
+        final Event event = (Event) o;
 
         return _bid == event._bid
                 && Double.compare(event._prob, _prob) == 0
                 && _tid == event._tid;
-
     }
-
 }

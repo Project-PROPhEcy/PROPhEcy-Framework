@@ -19,7 +19,7 @@ import java.util.Set;
 /**
  * Created by alpha_000 on 07.09.2014.
  */
-public class TaskInfo {
+public final class TaskInfo {
 
     //----------------------------------------
     // Class Variables
@@ -29,13 +29,13 @@ public class TaskInfo {
     /**
      * Saves the time measures for various scopes.
      */
-    private Map<String, Double> _measures = new HashMap<>();
+    private final Map<String, Double> _measures = new HashMap<>();
 
 
     /**
      * Saves the infos for various scopes.
      */
-    private Map<String, Object> _infos = new HashMap<>();
+    private final Map<String, Object> _infos = new HashMap<>();
 
 
     //----------------------------------------
@@ -46,7 +46,7 @@ public class TaskInfo {
     /**
      * Gets the available time scopes.
      */
-    public Set<String> getMeasureScopes() {
+    public final Set<String> getMeasureScopes() {
         return _measures.keySet();
     }
 
@@ -54,7 +54,7 @@ public class TaskInfo {
     /**
      * Gets the available value scopes.
      */
-    public Set<String> getInfoScopes() {
+    public final Set<String> getInfoScopes() {
         return _infos.keySet();
     }
 
@@ -69,7 +69,7 @@ public class TaskInfo {
      * @param scope The scope.
      * @param info The info data.
      */
-    public void setInfo(String scope, Object info) {
+    final public void setInfo(final String scope, final Object info) {
         _infos.put(scope, info);
     }
 
@@ -77,7 +77,7 @@ public class TaskInfo {
      * Unsets the info data for the specific scope.
      * @param scope The scope.
      */
-    public void unsetInfo(String scope) {
+    final public void unsetInfo(final String scope) {
 
         if(scope == null)
             _infos.clear();
@@ -88,7 +88,7 @@ public class TaskInfo {
     /**
      * Unsets all info data.
      */
-    public void unsetInfo() {
+    final public void unsetInfo() {
         unsetInfo(null);
     }
 
@@ -97,7 +97,7 @@ public class TaskInfo {
      * @param scope The scope.
      * @return The info data or null.
      */
-    public Object getInfo(String scope) {
+    final  public Object getInfo(final String scope) {
         return _infos.getOrDefault(scope, null);
     }
 
@@ -105,7 +105,7 @@ public class TaskInfo {
      * Resets the scope specific measures.
      * @param scope The scope.
      */
-    public void resetMeasure(String scope) {
+    final public void resetMeasure(final String scope) {
 
         if(scope == null)
             _measures.clear();
@@ -116,7 +116,7 @@ public class TaskInfo {
     /**
      * Resets all measures.
      */
-    public void resetMeasure() {
+    final public void resetMeasure() {
         resetMeasure(null);
     }
 
@@ -125,14 +125,14 @@ public class TaskInfo {
      * @param scope The scope.
      * @param block The code block.
      */
-    public void measureTime(String scope, ThrowableRunnable block)
+    final public void measureTime(final String scope, final ThrowableRunnable block)
             throws Exception {
 
-        long t0 = System.nanoTime();
+        final long t0 = System.nanoTime();
         block.apply();
-        long t1 = System.nanoTime();
+        final long t1 = System.nanoTime();
 
-        Double elapsed = (t1 - t0) / 1000000.0;
+        final Double elapsed = (t1 - t0) / 1000000.0;
         measureTime(scope, elapsed);
     }
 
@@ -141,7 +141,7 @@ public class TaskInfo {
      * @param scope The scope.
      * @param time The time.
      */
-    public void measureTime(String scope, Double time) {
+    final public void measureTime(final String scope, final Double time) {
 
         if(!(_measures.containsKey(scope)))
             _measures.put(scope, 0.0);
@@ -155,7 +155,7 @@ public class TaskInfo {
      * @param scope The scope.
      * @return The measure data or -1.0.
      */
-    public Double getMeasure(String scope) {
+    final public Double getMeasure(final String scope) {
         return _measures.getOrDefault(scope, -1.0);
     }
 }

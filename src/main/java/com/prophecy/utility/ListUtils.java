@@ -40,7 +40,7 @@ public final class ListUtils {
      */
     public static <S, T> Map<S, List<T>> GroupBy(final Collection<T> list, final Function<T, S> group) {
 
-        S key = null;
+        S key;
         final Map<S, List<T>> groups = new HashMap<>();
         for(final T item: list) {
             key = group.apply(item);

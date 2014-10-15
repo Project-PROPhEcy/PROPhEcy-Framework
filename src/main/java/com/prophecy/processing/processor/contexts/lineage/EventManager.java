@@ -5,17 +5,17 @@ import java.util.*;
 /**
  * Created by alpha_000 on 04.07.2014.
  */
-public class EventManager {
+public final class EventManager {
 
     //----------------------------------------
     // Class Variables
     //----------------------------------------
 
 
-    private Map<Integer, Event> _events
+    private final Map<Integer, Event> _events
             = new HashMap<>();
 
-    private Map<Integer, List<Event>> _blockIds
+    private final Map<Integer, List<Event>> _blockIds
             = new HashMap<>();
 
 
@@ -27,14 +27,14 @@ public class EventManager {
     /**
      * Gets all available block ids.
      */
-    public Set<Integer> getBIDs() {
+    public final Set<Integer> getBIDs() {
         return _blockIds.keySet();
     }
 
     /**
      * Gets the number of events.
      */
-    public int size() {
+    public final int size() {
         return _events.size();
     }
 
@@ -52,14 +52,14 @@ public class EventManager {
      * @param prob The probability.
      * @return The event.
      */
-    public Event create(int bid, int tid, Double prob) {
+    public final Event create(final int bid, final int tid, final Double prob) {
 
-        int hashCode = Event
+        final int hashCode = Event
                 .HashCode(bid, tid, prob);
 
         if (!_events.containsKey(hashCode)) {
 
-            Event event = new Event(
+            final Event event = new Event(
                     bid, tid, prob);
 
             _events.put(hashCode, event);
@@ -78,7 +78,7 @@ public class EventManager {
      * @param bid The block id.
      * @return A list of events or null.
      */
-    public List<Event> getAll(int bid) {
+    public final List<Event> getAll(final int bid) {
        return  _blockIds.getOrDefault(bid, null);
     }
 }

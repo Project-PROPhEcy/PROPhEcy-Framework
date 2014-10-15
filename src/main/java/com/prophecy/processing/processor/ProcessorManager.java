@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Created by Christian Winkel on 23.04.14.
  */
-public class ProcessorManager {
+public final class ProcessorManager {
 
     //----------------------------------------
     // Class Variables
@@ -28,7 +28,7 @@ public class ProcessorManager {
     /**
      * Saves the available processors.
      */
-    private List<Processor<?>> _processors
+    private final List<Processor<?>> _processors
             = new ArrayList<>();
 
 
@@ -46,9 +46,8 @@ public class ProcessorManager {
      * @param contexts The processor contexts which should be chained.
      */
     @SafeVarargs
-    public <T extends IProcessorContext> ProcessorManager(Class<? extends T> ...contexts){
-
-        for (Class<? extends T> context: contexts)
+    public <T extends IProcessorContext> ProcessorManager(final Class<? extends T> ...contexts){
+        for (final Class<? extends T> context: contexts)
             _processors.add(new Processor<>(context));
     }
 
@@ -56,14 +55,13 @@ public class ProcessorManager {
      * Processes the specific task.
      * @param task The task.
      */
-    public void process(Task task) {
-
+    public final void process(final Task task) {
         try {
-            for(Processor<?> processor: _processors) {
+            for(final Processor<?> processor: _processors) {
                 processor.process(task);
             }
         }
-        catch (Exception e) {
+        catch (final Exception e) {
             e.printStackTrace();
         }
     }

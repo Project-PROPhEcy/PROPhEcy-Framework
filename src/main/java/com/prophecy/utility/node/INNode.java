@@ -41,7 +41,7 @@ public interface INNode<TypeT, NodeT> extends INode<TypeT> {
      * @param child The child node.
      * @return The boolean value.
      */
-    public boolean containsChild(NodeT child);
+    public boolean containsChild(final NodeT child);
 
 
     /**
@@ -49,7 +49,7 @@ public interface INNode<TypeT, NodeT> extends INode<TypeT> {
      * @param child The node.
      * @return The boolean value.
      */
-    public boolean addChild(NodeT child);
+    public boolean addChild(final NodeT child);
 
 
     /**
@@ -58,7 +58,7 @@ public interface INNode<TypeT, NodeT> extends INode<TypeT> {
      * @param index The index.
      * @return The boolean value.
      */
-    public boolean addChild(NodeT child, int index);
+    public boolean addChild(final NodeT child, final int index);
 
 
     /**
@@ -66,7 +66,7 @@ public interface INNode<TypeT, NodeT> extends INode<TypeT> {
      * @param child The node.
      * @return The boolean value.
      */
-    public boolean removeChild(NodeT child);
+    public boolean removeChild(final NodeT child);
 
 
     /**
@@ -74,7 +74,7 @@ public interface INNode<TypeT, NodeT> extends INode<TypeT> {
      * @param index The index.
      * @return The child node or null.
      */
-    public NodeT getChild(int index);
+    public NodeT getChild(final int index);
 
 
     /**
@@ -83,5 +83,5 @@ public interface INNode<TypeT, NodeT> extends INode<TypeT> {
      * @param newChild The new child node.
      * @return The boolean value.
      */
-    public boolean replaceChild(NodeT oldChild, NodeT newChild);
+    public boolean replaceChild(final NodeT oldChild, final NodeT newChild);
 }

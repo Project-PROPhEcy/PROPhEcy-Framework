@@ -13,7 +13,7 @@ public abstract class Node<TypeT> implements INode<TypeT> {
     /**
      * Saves the node type.
      */
-    private TypeT _type = null;
+    private final TypeT _type;
 
 
     //----------------------------------------
@@ -25,7 +25,7 @@ public abstract class Node<TypeT> implements INode<TypeT> {
      * Gets the node type.
      */
     @Override
-    public TypeT getType() {
+    final public TypeT getType() {
         return _type;
     }
 
@@ -39,7 +39,7 @@ public abstract class Node<TypeT> implements INode<TypeT> {
      * Constructor
      * @param type The node type.
      */
-    public Node(TypeT type) {
+    public Node(final TypeT type) {
         _type = type;
     }
 }

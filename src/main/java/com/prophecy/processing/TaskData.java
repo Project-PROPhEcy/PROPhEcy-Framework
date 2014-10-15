@@ -16,7 +16,7 @@ import java.util.Map;
 /**
  * Created by alpha_000 on 03.05.2014.
  */
-public class TaskData {
+public final class TaskData {
 
     //----------------------------------------
     // Class Variables
@@ -26,7 +26,7 @@ public class TaskData {
     /**
      * Saves the available data.
      */
-    private Map<Class<?>, Object> _data
+    private final Map<Class<?>, Object> _data
             = new HashMap<>();
 
 
@@ -40,7 +40,7 @@ public class TaskData {
      * @param key The key.
      * @return The boolean value.
      */
-    public <T> boolean contains(Class<T> key) {
+    public final <T> boolean contains(final Class<T> key) {
         return _data.containsKey(key);
     }
 
@@ -51,7 +51,7 @@ public class TaskData {
      * @param value The value.
      * @return The boolean value.
      */
-    public <T> boolean insert(Class<T> key, T value) {
+    public final <T> boolean insert(final Class<T> key, T value) {
 
         if(contains(key))
             return false;
@@ -67,7 +67,7 @@ public class TaskData {
      * @param value The value.
      * @return The boolean value.
      */
-    public <T> boolean update(Class<T> key, T value) {
+    public final <T> boolean update(final Class<T> key, final T value) {
 
         if(!contains(key))
             return false;
@@ -82,7 +82,7 @@ public class TaskData {
      * @param key The key.
      * @return The boolean value.
      */
-    public <T> boolean delete(Class<T> key) {
+    public final <T> boolean delete(final Class<T> key) {
 
         if(!contains(key))
             return false;
@@ -98,7 +98,7 @@ public class TaskData {
      * @return The value.
      */
     @SuppressWarnings("unchecked")
-    public <T> T require(Class<T> key)
+    public final <T> T require(final Class<T> key)
             throws Exception {
 
         if(!contains(key)) throw new Exception(
@@ -107,5 +107,4 @@ public class TaskData {
 
         return (T) _data.get(key);
     }
-
 }

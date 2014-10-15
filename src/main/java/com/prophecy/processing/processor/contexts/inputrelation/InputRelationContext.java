@@ -23,7 +23,7 @@ import java.sql.ResultSet;
  * Created by alpha_000 on 03.05.2014.
  */
 @ProcessorInfo(name = "Input Relation Processor", config = {})
-public class InputRelationContext implements IProcessorContext {
+public final class InputRelationContext implements IProcessorContext {
 
     //----------------------------------------
     // Class Variables

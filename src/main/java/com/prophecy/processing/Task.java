@@ -16,7 +16,7 @@ import com.prophecy.processing.input.sql.SQLRoot;
 /**
  * Created by alpha_000 on 04.05.2014.
  */
-public class Task {
+public final class Task {
 
     //----------------------------------------
     // Class Variables
@@ -26,31 +26,31 @@ public class Task {
     /**
      * Saves the sql request.
      */
-    private SQLRoot _sql = null;
+    private final SQLRoot _sql;
 
 
     /**
      * Saves the task data.
      */
-    private TaskData _data = null;
+    private final TaskData _data;
 
 
     /**
      * Saves the task config.
      */
-    private TaskConfig _config = null;
+    private final TaskConfig _config;
 
 
     /**
      * Saves the task infos.
      */
-    private TaskInfo _info = null;
+    private final TaskInfo _info;
 
 
     /**
      * Saves the database access.
      */
-    private DBAccess _dbAccess = null;
+    private final DBAccess _dbAccess;
 
 
     //----------------------------------------
@@ -61,7 +61,7 @@ public class Task {
     /**
      * Gets the sql request.
      */
-    public SQLRoot getSQL() {
+    public final SQLRoot getSQL() {
         return _sql;
     }
 
@@ -69,7 +69,7 @@ public class Task {
     /**
      * Gets the task data.
      */
-    public TaskData getData() {
+    public final TaskData getData() {
         return _data;
     }
 
@@ -77,7 +77,7 @@ public class Task {
     /**
      * Gets the task config.
      */
-    public TaskConfig getConfig() {
+    public final TaskConfig getConfig() {
         return _config;
     }
 
@@ -85,7 +85,7 @@ public class Task {
     /**
      * Gets the task info.
      */
-    public TaskInfo getInfo() {
+    public final TaskInfo getInfo() {
         return _info;
     }
 
@@ -93,7 +93,7 @@ public class Task {
     /**
      * Gets the database access.
      */
-    public DBAccess getDBAccess() {
+    public final DBAccess getDBAccess() {
         return _dbAccess;
     }
 
@@ -108,7 +108,7 @@ public class Task {
      * @param sql The sql request.
      * @param dbAccess The database access.
      */
-    public Task(SQLRoot sql, DBAccess dbAccess) {
+    public Task(final SQLRoot sql, final DBAccess dbAccess) {
 
         _sql = sql;
         _dbAccess = dbAccess;
@@ -123,7 +123,7 @@ public class Task {
      * The task can't be completed because of error.
      * @param message The error message.
      */
-    public void error(String message) {
+    public final void error(final String message) {
         System.out.println("Error: " + message);
     }
 }

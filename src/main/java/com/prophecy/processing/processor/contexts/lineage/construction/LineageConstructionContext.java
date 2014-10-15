@@ -33,17 +33,17 @@ import java.util.Map;
  * Created by alpha_000 on 02.05.2014.
  */
 @ProcessorInfo(name = "Lineage Construction Processor", config = {})
-public class LineageConstructionContext implements IProcessorContext {
+public final class LineageConstructionContext implements IProcessorContext {
 
     //----------------------------------------
     // Class Variables
     //----------------------------------------
 
 
-    private Map<Integer, FactorCatalog> _catalogs
+    private final Map<Integer, FactorCatalog> _catalogs
             = new HashMap<>();
 
-    private EventManager _eventManager
+    private final EventManager _eventManager
             = new EventManager();
 
 
@@ -56,7 +56,7 @@ public class LineageConstructionContext implements IProcessorContext {
      * Counts the number of nodes.
      * @return The number of nodes.
      */
-    public int getNodeCount() {
+    public final int getNodeCount() {
         return ListUtils.FoldLeft(
                 0, _catalogs.values(), (a, b) -> a + b.size());
     }
@@ -72,22 +72,22 @@ public class LineageConstructionContext implements IProcessorContext {
      * @param task The task.
      */
     @Override
-    public void run(Task task)
+    public final void run(Task task)
             throws Exception {
 
-        InputRelationList relList = task.getData()
+        final InputRelationList relList = task.getData()
                 .require(InputRelationList.class);
-        IFPNode fpRoot = task.getData()
+        final IFPNode fpRoot = task.getData()
                 .require(IFPNode.class);
 
-        for(IInputRelation rel: relList) {
+        for(final IInputRelation rel: relList) {
 
             rel.prepareNextIteration();
-            for (DomainTuple d : rel) {
+            for (final DomainTuple d : rel) {
                 task.getInfo().measureTime("Lineage", () -> {
-                    for (FPSource source : fpRoot.getSources().values()) {
+                    for (final FPSource source : fpRoot.getSources().values()) {
 
-                        int sourceId = source.getSourceId();
+                        final int sourceId = source.getSourceId();
                         if (d.getSourceType(sourceId) == 1
                                 || d.getSourceType(sourceId) == 2) {
 
@@ -104,19 +104,19 @@ public class LineageConstructionContext implements IProcessorContext {
                                         source.getRelation(), source.getSourceId()
                                 ));
 
-                            FactorCatalog factCat
+                            final FactorCatalog factCat
                                     = getFactorCatalog(source.getId());
-                            GenTuple key = GenTuple.From(source, d);
+                            final GenTuple key = GenTuple.From(source, d);
 
                             // Filter all type 3 entries
                             // which aren't relevant.
                             if (!factCat.contains(key))
                                 break;
 
-                            LSource lSource = (LSource)
+                            final LSource lSource = (LSource)
                                     factCat.get(key);
 
-                            Event event = _eventManager.create(
+                            final Event event = _eventManager.create(
                                     d.getBID(sourceId),
                                     d.getTID(sourceId),
                                     d.getPROB(sourceId)
@@ -146,7 +146,7 @@ public class LineageConstructionContext implements IProcessorContext {
      * @param d The domain tuple.
      * @param sourceId The source id.
      */
-    private void insertPath(ILNode lin, IFPNode fp, DomainTuple d, int sourceId)
+    private void insertPath(ILNode lin, final IFPNode fp, final DomainTuple d, final int sourceId)
             throws Exception {
 
         // If lin is null, we have an root
@@ -163,10 +163,10 @@ public class LineageConstructionContext implements IProcessorContext {
 
             case NOr: {
 
-                FPNOr fpNOr = (FPNOr) fp;
-                LOr lOr = (LOr) lin;
+                final FPNOr fpNOr = (FPNOr) fp;
+                final LOr lOr = (LOr) lin;
 
-                ILNode child = setupNode(
+                final ILNode child = setupNode(
                         fpNOr.getChild(), d, lin);
 
                 if( ! lOr.containsChild(child) )
@@ -179,13 +179,13 @@ public class LineageConstructionContext implements IProcessorContext {
             }
             case And: {
 
-                FPAnd fpAnd = (FPAnd) fp;
-                LAnd lAnd = (LAnd) lin;
+                final FPAnd fpAnd = (FPAnd) fp;
+                final LAnd lAnd = (LAnd) lin;
 
                 if(fpAnd.getLeftChild().containsSourceId(sourceId)) {
                     if(lAnd.getChild(0).getType() == LType.False) {
 
-                        ILNode child = setupNode(
+                        final ILNode child = setupNode(
                                 fpAnd.getLeftChild(), d, lin);
                         lAnd.replaceChild(lAnd.getChild(0), child);
                     }
@@ -197,7 +197,7 @@ public class LineageConstructionContext implements IProcessorContext {
                 if(fpAnd.getRightChild().containsSourceId(sourceId)) {
                     if(lAnd.getChild(1).getType() == LType.False) {
 
-                        ILNode child = setupNode(
+                        final ILNode child = setupNode(
                                 fpAnd.getRightChild(), d, lin);
                         lAnd.replaceChild(lAnd.getChild(1), child);
                     }
@@ -210,13 +210,13 @@ public class LineageConstructionContext implements IProcessorContext {
             }
             case Or: {
 
-                FPOr fpOr = (FPOr) fp;
-                LOr lOr = (LOr) lin;
+                final FPOr fpOr = (FPOr) fp;
+                final LOr lOr = (LOr) lin;
 
                 if(fpOr.getLeftChild().containsSourceId(sourceId)) {
                     if(lOr.getChild(0).getType() == LType.False) {
 
-                        ILNode child = setupNode(
+                        final ILNode child = setupNode(
                                 fpOr.getLeftChild(), d, lin);
                         lOr.replaceChild(lOr.getChild(0), child);
                     }
@@ -228,7 +228,7 @@ public class LineageConstructionContext implements IProcessorContext {
                 if(fpOr.getRightChild().containsSourceId(sourceId)) {
                     if(lOr.getChild(1).getType() == LType.False) {
 
-                        ILNode child = setupNode(
+                        final ILNode child = setupNode(
                                 fpOr.getRightChild(), d, lin);
                         lOr.replaceChild(lOr.getChild(1), child);
                     }
@@ -241,12 +241,12 @@ public class LineageConstructionContext implements IProcessorContext {
             }
             case Not: {
 
-                FPNot fpNot = (FPNot) fp;
-                LNot lNot = (LNot) lin;
+                final FPNot fpNot = (FPNot) fp;
+                final LNot lNot = (LNot) lin;
 
                 if(lNot.getChild().getType() == LType.False) {
 
-                    ILNode child = setupNode(
+                    final ILNode child = setupNode(
                             fpNot.getChild(), d, lin);
                     lNot.setChild(child);
                 }
@@ -258,11 +258,11 @@ public class LineageConstructionContext implements IProcessorContext {
             }
             case Source: {
 
-                LSource lSource = (LSource) lin;
+                final LSource lSource = (LSource) lin;
 
                 if(d.getSourceType(sourceId) == 2) {
 
-                    Event event = _eventManager.create(
+                    final Event event = _eventManager.create(
                             d.getBID(sourceId),
                             d.getTID(sourceId),
                             d.getPROB(sourceId)
@@ -289,17 +289,17 @@ public class LineageConstructionContext implements IProcessorContext {
      * @param parent The parent node.
      * @return The configured lineage node.
      */
-    private ILNode setupNode(IFPNode fp, DomainTuple d, ILNode parent)
+    private ILNode setupNode(final IFPNode fp, final DomainTuple d, final ILNode parent)
             throws Exception {
 
         if( ! evaluate( fp.getCondition(), d ) ) {
             return new LFalse();
         }
 
-        FactorCatalog factCat
+        final FactorCatalog factCat
                 = getFactorCatalog(fp.getId());
 
-        GenTuple key = (fp.isFactorized() || parent == null)
+        final GenTuple key = (fp.isFactorized() || parent == null)
                 ? GenTuple.From(fp, d)
                 : GenTuple.From(fp, d, parent.hashCode());
 
@@ -312,7 +312,7 @@ public class LineageConstructionContext implements IProcessorContext {
             case Not: return factCat.put(key, new LNot());
             case And: {
 
-                LAnd lAnd = new LAnd(false);
+                final LAnd lAnd = new LAnd(false);
 
                 // We explicit need to set two child nodes,
                 // because NNode sets only one default node.
@@ -323,7 +323,7 @@ public class LineageConstructionContext implements IProcessorContext {
             }
             case Or: {
 
-                LOr lOr = new LOr(false);
+                final LOr lOr = new LOr(false);
 
                 // We explicit need to set two child nodes,
                 // because NNode sets only one default node.
@@ -334,8 +334,8 @@ public class LineageConstructionContext implements IProcessorContext {
             }
             case Source: {
 
-                FPSource fpSource = (FPSource)fp;
-                LSource lSource = new LSource();
+                final FPSource fpSource = (FPSource)fp;
+                final LSource lSource = new LSource();
 
                 // The mask priority is later used
                 // for the probability calculation
@@ -361,7 +361,7 @@ public class LineageConstructionContext implements IProcessorContext {
      * @param id The id.
      * @return The factor catalog.
      */
-    private FactorCatalog getFactorCatalog(int id) {
+    private FactorCatalog getFactorCatalog(final int id) {
 
         if(!_catalogs.containsKey(id))
             _catalogs.put(id, new FactorCatalog());
@@ -376,33 +376,33 @@ public class LineageConstructionContext implements IProcessorContext {
      * @param d The domain tuple.
      * @return The boolean value.
      */
-    private boolean evaluate(ICNode condition, DomainTuple d)
+    private boolean evaluate(final ICNode condition, final DomainTuple d)
             throws Exception {
 
         switch(condition.getType()) {
             case And:
 
-                CAnd and = (CAnd) condition;
+                final CAnd and = (CAnd) condition;
 
                 return evaluate(and.getLeftChild(), d)
                         && evaluate(and.getRightChild(), d);
 
             case Or:
 
-                COr or = (COr) condition;
+                final COr or = (COr) condition;
 
                 return evaluate(or.getLeftChild(), d)
                         || evaluate(or.getRightChild(), d);
 
             case Not:
 
-                CNot not = (CNot) condition;
+                final CNot not = (CNot) condition;
 
                 return !evaluate(not.getChild(), d);
 
             case Op:
 
-                COp op = (COp) condition;
+                final COp op = (COp) condition;
 
                 Object value1;
                 Object value2;

@@ -32,7 +32,7 @@ public final class FPNOr extends UNode<FPType, IFPNode> implements IFPNode {
     /**
      * Saves the factorized state.
      */
-    private boolean _factorized = false;
+    private final boolean _factorized;
 
     /**
      * Saves the head attributes.
@@ -42,7 +42,7 @@ public final class FPNOr extends UNode<FPType, IFPNode> implements IFPNode {
     /**
      * Saves the condition.
      */
-    private ICNode _condition = new CTrue();
+    private final ICNode _condition;
 
 
     //----------------------------------------
@@ -55,7 +55,7 @@ public final class FPNOr extends UNode<FPType, IFPNode> implements IFPNode {
      * @return The head attributes.
      */
     @Override
-    public List<String> getHeadAttrs() throws Exception {
+    public final List<String> getHeadAttrs() throws Exception {
         return _headAttrs;
     }
 
@@ -63,7 +63,7 @@ public final class FPNOr extends UNode<FPType, IFPNode> implements IFPNode {
      * Gets the formula pattern sources.
      */
     @Override
-    public Map<Integer, FPSource> getSources() {
+    public final Map<Integer, FPSource> getSources() {
         return getChild().getSources();
     }
 
@@ -71,7 +71,7 @@ public final class FPNOr extends UNode<FPType, IFPNode> implements IFPNode {
      * Gets the construction condition.
      */
     @Override
-    public ICNode getCondition() {
+    public final ICNode getCondition() {
         return _condition;
     }
 
@@ -80,7 +80,7 @@ public final class FPNOr extends UNode<FPType, IFPNode> implements IFPNode {
      * nodes should be factorized.
      */
     @Override
-    public boolean isFactorized() {
+    public final boolean isFactorized() {
         return _factorized;
     }
 
@@ -89,7 +89,7 @@ public final class FPNOr extends UNode<FPType, IFPNode> implements IFPNode {
      * formula patterns has the same id.
      */
     @Override
-    public int getId() {
+    public final int getId() {
 
         return Arrays.hashCode(new int[]{
                 getType().hashCode(),
@@ -110,7 +110,7 @@ public final class FPNOr extends UNode<FPType, IFPNode> implements IFPNode {
      * @param headAttrs The projection head attributes.
      * @param condition The construction Condition.
      */
-    public FPNOr(boolean factorize, List<String> headAttrs, ICNode condition) {
+    public FPNOr(final boolean factorize, final List<String> headAttrs, final ICNode condition) {
         super(FPType.NOr);
 
         _factorized = factorize;

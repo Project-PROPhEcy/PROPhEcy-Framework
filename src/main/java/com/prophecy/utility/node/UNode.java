@@ -25,7 +25,7 @@ public class UNode<TypeT, NodeT> extends Node<TypeT> implements IUNode<TypeT, No
      * Gets the child node.
      */
     @Override
-    public NodeT getChild() {
+    final public NodeT getChild() {
         return _child;
     }
 
@@ -34,7 +34,7 @@ public class UNode<TypeT, NodeT> extends Node<TypeT> implements IUNode<TypeT, No
      * Sets the child node.
      */
     @Override
-    public void setChild(NodeT value) {
+    public void setChild(final NodeT value) {
         _child = value;
     }
 
@@ -48,7 +48,7 @@ public class UNode<TypeT, NodeT> extends Node<TypeT> implements IUNode<TypeT, No
      * Constructor
      * @param type The node type.
      */
-    public UNode(TypeT type) {
+    public UNode(final TypeT type) {
         super(type);
     }
 }

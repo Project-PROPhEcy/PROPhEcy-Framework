@@ -31,22 +31,22 @@ public final class FPSource extends Node<FPType> implements IFPNode {
      * Saves the source id for the
      * later vertical construction.
      */
-    private int _sourceId = -1;
+    private final int _sourceId;
 
     /**
      * Saves the source relation.
      */
-    private String _relation = null;
+    private final String _relation;
 
     /**
      * Saves the factorized state.
      */
-    private boolean _factorized = false;
+    private final boolean _factorized;
 
     /**
      * Saves the mask priority.
      */
-    private int _maskPriority = 0;
+    private final int _maskPriority;
 
     /**
      * Saves the head attributes.
@@ -56,7 +56,7 @@ public final class FPSource extends Node<FPType> implements IFPNode {
     /**
      * Saves the condition.
      */
-    private ICNode _condition = new CTrue();
+    private final ICNode _condition;
 
 
     //----------------------------------------
@@ -68,7 +68,7 @@ public final class FPSource extends Node<FPType> implements IFPNode {
      * Gets the source id for the
      * later vertical construction.
      */
-    public int getSourceId() {
+    public final int getSourceId() {
         return _sourceId;
     }
 
@@ -76,7 +76,7 @@ public final class FPSource extends Node<FPType> implements IFPNode {
     /**
      * Gets the source relation.
      */
-    public String getRelation() {
+    public final String getRelation() {
         return _relation;
     }
 
@@ -85,7 +85,7 @@ public final class FPSource extends Node<FPType> implements IFPNode {
      * Gets the formula pattern head attributes.
      */
     @Override
-    public List<String> getHeadAttrs() throws Exception {
+    public final List<String> getHeadAttrs() throws Exception {
         return _headAttrs;
     }
 
@@ -93,7 +93,7 @@ public final class FPSource extends Node<FPType> implements IFPNode {
      * Gets the formula pattern sources.
      */
     @Override
-    public Map<Integer, FPSource> getSources() {
+    public final Map<Integer, FPSource> getSources() {
 
         Map<Integer, FPSource> sources
                 = new HashMap<>();
@@ -105,7 +105,7 @@ public final class FPSource extends Node<FPType> implements IFPNode {
      * Gets the construction condition.
      */
     @Override
-    public ICNode getCondition() {
+    public final ICNode getCondition() {
         return _condition;
     }
 
@@ -114,14 +114,14 @@ public final class FPSource extends Node<FPType> implements IFPNode {
      * nodes should be factorized.
      */
     @Override
-    public boolean isFactorized() {
+    public final boolean isFactorized() {
         return _factorized;
     }
 
     /**
      * Gets the mask priority.
      */
-    public int getMaskPriority() {
+    public final int getMaskPriority() {
         return _maskPriority;
     }
 
@@ -130,7 +130,7 @@ public final class FPSource extends Node<FPType> implements IFPNode {
      * formula patterns has the same id.
      */
     @Override
-    public int getId() {
+    public final int getId() {
         return Arrays.hashCode(new int[]{
                 getSourceId(),
                 getCondition().getId(),
@@ -152,7 +152,9 @@ public final class FPSource extends Node<FPType> implements IFPNode {
      * @param headAttrs The head attributes.
      * @param condition The construction Condition.
      */
-    public FPSource(int sourceId, String relation, boolean factorize, int maskPriority, List<String> headAttrs, ICNode condition) {
+    public FPSource(final int sourceId, final String relation,
+                    final boolean factorize, final int maskPriority,
+                    final List<String> headAttrs, final ICNode condition) {
         super(FPType.Source);
 
         _sourceId = sourceId;

@@ -31,7 +31,7 @@ public class LUNode extends UNode<LType, ILNode> implements ILNode {
     /**
      * Saves the node parents.
      */
-    private Set<ILNode> _parents
+    private final Set<ILNode> _parents
             = new LinkedHashSet<>();
 
 
@@ -44,7 +44,7 @@ public class LUNode extends UNode<LType, ILNode> implements ILNode {
      * Gets the mask level of current calculations.
      */
     @Override
-    public int getMaskLevel() {
+    public final int getMaskLevel() {
         return _maskLevel;
     }
 
@@ -52,7 +52,7 @@ public class LUNode extends UNode<LType, ILNode> implements ILNode {
      * Sets the mask level of current calculations.
      */
     @Override
-    public void setMaskLevel(int value) {
+    public final void setMaskLevel(final int value) {
         _maskLevel = value;
     }
 
@@ -60,7 +60,7 @@ public class LUNode extends UNode<LType, ILNode> implements ILNode {
      * Gets the current calculated probability.
      */
     @Override
-    public Double getCurrentProb() {
+    public final Double getCurrentProb() {
         return _currentProb;
     }
 
@@ -68,7 +68,7 @@ public class LUNode extends UNode<LType, ILNode> implements ILNode {
      * Sets the current calculation probability.
      */
     @Override
-    public void setCurrentProb(Double value) {
+    public final void setCurrentProb(final Double value) {
         _currentProb = value;
     }
 
@@ -76,7 +76,7 @@ public class LUNode extends UNode<LType, ILNode> implements ILNode {
      * Sets the child node.
      */
     @Override
-    public void setChild(ILNode value) {
+    public final void setChild(final ILNode value) {
 
         // Remove this node
         // from child parents.
@@ -95,7 +95,7 @@ public class LUNode extends UNode<LType, ILNode> implements ILNode {
      * Gets the parent nodes.
      */
     @Override
-    public Set<ILNode> getParents() {
+    public final Set<ILNode> getParents() {
         return Collections.unmodifiableSet(_parents);
     }
 
@@ -110,7 +110,7 @@ public class LUNode extends UNode<LType, ILNode> implements ILNode {
      * @param type The node type.
      * @param defaultChild The default child node.
      */
-    public LUNode(LType type, ILNode defaultChild) {
+    public LUNode(final LType type, final ILNode defaultChild) {
         super(type);
 
         // We need to set the
@@ -123,7 +123,7 @@ public class LUNode extends UNode<LType, ILNode> implements ILNode {
      * @param parent The parent node.
      * @return The boolean value.
      */
-    public boolean addParent(ILNode parent) {
+    public final boolean addParent(final ILNode parent) {
         return _parents.add(parent);
     }
 
@@ -132,7 +132,7 @@ public class LUNode extends UNode<LType, ILNode> implements ILNode {
      * @param parent The parent node.
      * @return The boolean value.
      */
-    public boolean removeParent(ILNode parent) {
+    public final boolean removeParent(final ILNode parent) {
         return _parents.remove(parent);
     }
 
@@ -141,7 +141,7 @@ public class LUNode extends UNode<LType, ILNode> implements ILNode {
      * @return The lineage tree representation.
      */
     @Override
-    public String toTreeString() {
+    public final String toTreeString() {
         return String.format( "%s { %s }",
                 toString(), getChild().toTreeString() );
     }

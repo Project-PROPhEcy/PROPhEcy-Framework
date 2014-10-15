@@ -7,7 +7,7 @@ import java.util.Iterator;
 /**
  * Created by alpha_000 on 02.06.2014.
  */
-public class InputRelationIterator implements Iterator<DomainTuple> {
+public final class InputRelationIterator implements Iterator<DomainTuple> {
 
     //----------------------------------------
     // Class Variables
@@ -17,13 +17,13 @@ public class InputRelationIterator implements Iterator<DomainTuple> {
     /**
      * Saves the responsible result set.
      */
-    private ResultSet _resultSet = null;
+    private final ResultSet _resultSet;
 
 
     /**
      * Saves the responsible source id for this type 3 input relation.
      */
-    private int _type3SourceId = -1;
+    private final int _type3SourceId;
 
 
     //----------------------------------------
@@ -36,7 +36,7 @@ public class InputRelationIterator implements Iterator<DomainTuple> {
      * domain tuple available.
      */
     @Override
-    public boolean hasNext() {
+    public final boolean hasNext() {
         try {
             return _resultSet.next();
         } catch (SQLException e) {
@@ -56,7 +56,7 @@ public class InputRelationIterator implements Iterator<DomainTuple> {
      * @param resultSet The responsible result set.
      * @param type3SourceId The responsible source id for this type 3 input relation.
      */
-    public InputRelationIterator(ResultSet resultSet, int type3SourceId) {
+    public InputRelationIterator(final ResultSet resultSet, final int type3SourceId) {
         _resultSet = resultSet;
         _type3SourceId = type3SourceId;
     }
@@ -67,7 +67,8 @@ public class InputRelationIterator implements Iterator<DomainTuple> {
      * @return The next domain tuple.
      */
     @Override
-    public DomainTuple next() {
+    public final DomainTuple next() {
+        // TODO nicht imemr ein neues Domain Tuple erzeugen
         return new DomainTuple(
                 _resultSet, _type3SourceId);
     }

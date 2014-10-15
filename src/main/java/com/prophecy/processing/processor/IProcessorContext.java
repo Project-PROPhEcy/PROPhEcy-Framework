@@ -21,12 +21,10 @@ public interface IProcessorContext {
     // Interface Functions
     //----------------------------------------
 
-
     /**
      * Runs the processor context with the specific task.
      * @param task The task.
      */
-    public void run(Task task)
+    public void run(final Task task)
             throws Exception;
-
 }

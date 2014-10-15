@@ -9,14 +9,14 @@ import java.util.Map;
 /**
  * Created by alpha_000 on 04.07.2014.
  */
-public class FactorCatalog {
+public final class FactorCatalog {
 
     //----------------------------------------
     // Class Variables
     //----------------------------------------
 
 
-    private Map<GenTuple, ILNode> _nodes
+    private final Map<GenTuple, ILNode> _nodes
             = new HashMap<>();
 
 
@@ -28,14 +28,14 @@ public class FactorCatalog {
     /**
      * Gets the number of nodes in the node catalog.
      */
-    public int size() {
+    public final int size() {
         return _nodes.size();
     }
 
     /**
      * Gets the already known nodes in this catalog.
      */
-    public Map<GenTuple, ILNode> getNodes() {
+    public final Map<GenTuple, ILNode> getNodes() {
         return Collections.unmodifiableMap(_nodes);
     }
 
@@ -51,7 +51,7 @@ public class FactorCatalog {
      * @param key The gentuple key.
      * @return The boolean value.
      */
-    public boolean contains(GenTuple key) {
+    public final boolean contains(final GenTuple key) {
         return _nodes.containsKey(key);
     }
 
@@ -61,7 +61,7 @@ public class FactorCatalog {
      * @param key The gentuple key.
      * @return The node.
      */
-    public ILNode get(GenTuple key) {
+    public final ILNode get(final GenTuple key) {
         return _nodes.get(key);
     }
 
@@ -73,7 +73,7 @@ public class FactorCatalog {
      * @param node The node
      * @return The node.
      */
-    public ILNode put(GenTuple key, ILNode node) {
+    public final ILNode put(final GenTuple key, final ILNode node) {
         _nodes.putIfAbsent(key, node);
         return _nodes.get(key);
     }

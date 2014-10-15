@@ -15,7 +15,7 @@ import com.prophecy.processing.Task;
 /**
  * Created by Christian Winkel on 15.04.14.
  */
-public class Processor<T extends IProcessorContext> {
+public final class Processor<T extends IProcessorContext> {
 
     //----------------------------------------
     // Class Variables
@@ -25,13 +25,13 @@ public class Processor<T extends IProcessorContext> {
     /**
      * Saves the processor context.
      */
-    private Class<T> _context = null;
+    private final Class<T> _context;
 
 
     /**
      * Saves the processor info.
      */
-    private ProcessorInfo _info = null;
+    private final ProcessorInfo _info;
 
 
     //----------------------------------------
@@ -42,7 +42,7 @@ public class Processor<T extends IProcessorContext> {
     /**
      * Gets the processor name.
      */
-    public String getName() {
+    public final String getName() {
         return _info.name();
     }
 
@@ -50,7 +50,7 @@ public class Processor<T extends IProcessorContext> {
     /**
      * Gets the processor description.
      */
-    public String getDescription() {
+    public final String getDescription() {
         return _info.description();
     }
 
@@ -58,7 +58,7 @@ public class Processor<T extends IProcessorContext> {
     /**
      * Gets the default processor config.
      */
-    public ProcessorConfig[] getDefaultProcessorConfig() {
+    public final ProcessorConfig[] getDefaultProcessorConfig() {
         return _info.config();
     }
 
@@ -72,7 +72,7 @@ public class Processor<T extends IProcessorContext> {
      * Constructor
      * @param context The processor context.
      */
-    public Processor(Class<T> context) {
+    public Processor(final Class<T> context) {
 
         _context = context;
         _info = context.getAnnotation(
@@ -84,7 +84,8 @@ public class Processor<T extends IProcessorContext> {
      * Processes the specific task.
      * @param task The task.
      */
-    public void process(Task task) throws Exception{
+    public final void process(final Task task)
+            throws Exception{
 
         if(_info == null) {
             throw new Exception("There is no Processor " +
@@ -95,7 +96,7 @@ public class Processor<T extends IProcessorContext> {
         task.getConfig().setDefaultConfig(
                 _info.config());
 
-        T context = _context.newInstance();
+        final T context = _context.newInstance();
         context.run(task);
     }
 }

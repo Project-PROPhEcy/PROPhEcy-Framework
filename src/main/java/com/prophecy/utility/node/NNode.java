@@ -12,23 +12,12 @@ public class NNode<TypeT, NodeT> extends Node<TypeT> implements INNode<TypeT, No
     //----------------------------------------
 
 
-    /**
-     * Saves the unique state.
-     */
-    private boolean _unique = false;
+    private final boolean _unique;
 
-
-    /**
-     * Saves how many times a child node has been added.
-     */
-    private Map<NodeT, Integer> _contains
+    private final Map<NodeT, Integer> _contains
             = new HashMap<>();
 
-
-    /**
-     * Saves the available node children.
-     */
-    private List<NodeT> _children
+    private final List<NodeT> _children
             = new ArrayList<>();
 
 
@@ -42,7 +31,7 @@ public class NNode<TypeT, NodeT> extends Node<TypeT> implements INNode<TypeT, No
      * can only be added once.
      */
     @Override
-    public boolean isUnique() {
+    final public boolean isUnique() {
         return _unique;
     }
 
@@ -51,7 +40,7 @@ public class NNode<TypeT, NodeT> extends Node<TypeT> implements INNode<TypeT, No
      * Gets the number of children.
      */
     @Override
-    public int childCount() {
+    final public int childCount() {
         return _children.size();
     }
 
@@ -60,7 +49,7 @@ public class NNode<TypeT, NodeT> extends Node<TypeT> implements INNode<TypeT, No
      * Gets all children from the node.
      */
     @Override
-    public List<NodeT> getChildren() {
+    final public List<NodeT> getChildren() {
         return Collections
                 .unmodifiableList(_children);
     }
@@ -76,7 +65,7 @@ public class NNode<TypeT, NodeT> extends Node<TypeT> implements INNode<TypeT, No
      * @param type The node type.
      * @param unique Child nodes can only be added once.
      */
-    public NNode(TypeT type, boolean unique) {
+    public NNode(final TypeT type, final boolean unique) {
         super(type);
 
         _unique = unique;
@@ -89,7 +78,7 @@ public class NNode<TypeT, NodeT> extends Node<TypeT> implements INNode<TypeT, No
      * @return The boolean value.
      */
     @Override
-    public boolean containsChild(NodeT child) {
+    final public boolean containsChild(final NodeT child) {
         return _contains.containsKey(child);
     }
 
@@ -100,7 +89,7 @@ public class NNode<TypeT, NodeT> extends Node<TypeT> implements INNode<TypeT, No
      * @return The boolean value.
      */
     @Override
-    public boolean addChild(NodeT child) {
+    final public boolean addChild(final NodeT child) {
         return addChild(child, _children.size());
     }
 
@@ -112,7 +101,7 @@ public class NNode<TypeT, NodeT> extends Node<TypeT> implements INNode<TypeT, No
      * @return The boolean value.
      */
     @Override
-    public boolean addChild(NodeT child, int index) {
+    public boolean addChild(final NodeT child, final int index) {
 
         if(_unique && _contains
                 .containsKey(child))
@@ -120,7 +109,7 @@ public class NNode<TypeT, NodeT> extends Node<TypeT> implements INNode<TypeT, No
 
         // Get the current number of
         // the specific child node.
-        int count = _contains
+        final int count = _contains
                 .getOrDefault(child, 0);
 
         // Update the number of the
@@ -138,14 +127,14 @@ public class NNode<TypeT, NodeT> extends Node<TypeT> implements INNode<TypeT, No
      * @return The boolean value.
      */
     @Override
-    public boolean removeChild(NodeT child) {
+    public boolean removeChild(final NodeT child) {
 
         if(!_contains.containsKey(child))
             return false;
 
         // Get the current number of
         // the specific child node.
-        int count = _contains.get(child);
+        final int count = _contains.get(child);
 
         // If the count is 0 then delete
         // the child node completely.
@@ -165,7 +154,7 @@ public class NNode<TypeT, NodeT> extends Node<TypeT> implements INNode<TypeT, No
      * @return The boolean value.
      */
     @Override
-    public boolean replaceChild(NodeT oldChild, NodeT newChild) {
+    final public boolean replaceChild(final NodeT oldChild, final NodeT newChild) {
         return addChild(newChild,
             _children.indexOf(oldChild))
                 && removeChild(oldChild);
@@ -178,7 +167,7 @@ public class NNode<TypeT, NodeT> extends Node<TypeT> implements INNode<TypeT, No
      * @return The child node or null.
      */
     @Override
-    public NodeT getChild(int index) {
+    final public NodeT getChild(final int index) {
         return _children.get(index);
     }
 }

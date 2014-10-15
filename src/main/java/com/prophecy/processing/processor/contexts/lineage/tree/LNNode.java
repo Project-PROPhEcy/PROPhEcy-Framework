@@ -29,7 +29,7 @@ public class LNNode extends NNode<LType, ILNode> implements ILNode {
     /**
      * Saves the default child node.
      */
-    private ILNode _defaultChild = new LFalse();
+    private final ILNode _defaultChild;
 
 
     /**

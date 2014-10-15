@@ -17,7 +17,7 @@ import java.util.HashMap;
 /**
  * Created by alpha_000 on 03.05.2014.
  */
-public class DomainTuple {
+public final class DomainTuple {
 
     //----------------------------------------
     // Class Variables
@@ -27,18 +27,18 @@ public class DomainTuple {
     /**
      * Saves teh specific result set.
      */
-    private ResultSet _resultSet = null;
+    private final ResultSet _resultSet;
 
 
     /**
      * Saves the responsible source id for this type 3 domain tuple.
      */
-    private int _type3SourceId = -1;
+    private final int _type3SourceId;
 
     /**
      * Used to cache the head attributes.
      */
-    private HashMap<String, Object> _headAttrs
+    private final HashMap<String, Object> _headAttrs
             = new HashMap<>();
 
 
@@ -52,7 +52,7 @@ public class DomainTuple {
      * @param resultSet The specific result set.
      * @param type3SourceId The responsible source id for this domain tuple.
      */
-    public DomainTuple(ResultSet resultSet, int type3SourceId) {
+    public DomainTuple(final ResultSet resultSet, final int type3SourceId) {
         _resultSet = resultSet;
         _type3SourceId = type3SourceId;
     }
@@ -63,7 +63,7 @@ public class DomainTuple {
      * @param name The attribute name.
      * @return The attribute or default.
      */
-    public Object getAttr(String name)
+    public final Object getAttr(final String name)
             throws SQLException {
         return getAttr(name, null);
     }
@@ -74,7 +74,7 @@ public class DomainTuple {
      * @param name The attribute name.
      * @return The attribute or default.
      */
-    public Object getAttr(String name, Object otherwise)
+    public final Object getAttr(final String name, final Object otherwise)
             throws SQLException {
 
         if( ! _headAttrs.containsKey( name ) )
@@ -89,7 +89,7 @@ public class DomainTuple {
      * @param sourceId The source id.
      * @return The source type.
      */
-    public int getSourceType(int sourceId)
+    public final int getSourceType(final int sourceId)
             throws SQLException {
 
         if(_type3SourceId == -1
@@ -105,7 +105,7 @@ public class DomainTuple {
      * @param sourceId The source id.
      * @return The block id.
      */
-    public int getBID(int sourceId)
+    public final int getBID(final int sourceId)
             throws SQLException {
         return _resultSet.getInt(
                 String.format("E#BID%s", sourceId));
@@ -117,7 +117,7 @@ public class DomainTuple {
      * @param sourceId The source id.
      * @return The tuple id.
      */
-    public int getTID(int sourceId)
+    public final int getTID(final int sourceId)
             throws SQLException {
         return _resultSet.getInt(
                 String.format("E#TID%s", sourceId));
@@ -129,7 +129,7 @@ public class DomainTuple {
      * @param sourceId The source id.
      * @return The probability.
      */
-    public Double getPROB(int sourceId)
+    public final Double getPROB(final int sourceId)
             throws SQLException {
         return _resultSet.getDouble(
                 String.format("E#PROB%s", sourceId));

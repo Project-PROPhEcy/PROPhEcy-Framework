@@ -29,7 +29,7 @@ import com.prophecy.processing.processor.contexts.lineage.construction.FactorCat
         @ProcessorConfig(key = "IsRelativeError", value = "1"),
         @ProcessorConfig(key = "ErrorConstant", value = "0.0")
 })
-public class CalculationContext implements IProcessorContext {
+public final class CalculationContext implements IProcessorContext {
 
     //----------------------------------------
     // Class Functions
@@ -41,18 +41,19 @@ public class CalculationContext implements IProcessorContext {
      * @param task The task.
      */
     @Override
-    public void run(Task task) throws Exception {
+    public final void run(final Task task)
+            throws Exception {
 
-        FactorCatalog factorCatalog = task.getData()
+        final FactorCatalog factorCatalog = task.getData()
                 .require(FactorCatalog.class);
-        EventManager eventManager = task.getData()
+        final EventManager eventManager = task.getData()
                 .require(EventManager.class);
 
         // TODO gewisse Einstellungen mit Bitflags lösen
-        String errorConstant = task.getConfig().require("ErrorConstant");
-        String isRelativeError = task.getConfig().require("IsRelativeError");
-        String calculationEnabled = task.getConfig().require("CalculationEnabled");
-        String approximationEnabled = task.getConfig().require("ApproximationEnabled");
+        final String errorConstant = task.getConfig().require("ErrorConstant");
+        final String isRelativeError = task.getConfig().require("IsRelativeError");
+        final String calculationEnabled = task.getConfig().require("CalculationEnabled");
+        final String approximationEnabled = task.getConfig().require("ApproximationEnabled");
 
         ICalculation calculation;
 

@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * Created by alpha_000 on 03.06.2014.
  */
-public class GenTuple {
+public final class GenTuple {
 
     //----------------------------------------
     // Static Constants
@@ -46,17 +46,17 @@ public class GenTuple {
      * @param additions Optional keys.
      * @return The gentuple.
      */
-    public static GenTuple From(IFPNode fp, DomainTuple d, Object... additions)
+    public static GenTuple From(final IFPNode fp, final DomainTuple d, final Object... additions)
             throws Exception {
 
-        List<String> headAttrs
+        final List<String> headAttrs
                 = fp.getHeadAttrs();
 
         if(headAttrs.size() == 0
                 && additions.length == 0)
             return GenTuple.EMPTY;
 
-        Object[] keys = new Object[
+        final Object[] keys = new Object[
                 headAttrs.size() + additions.length];
 
         int i = 0;
@@ -64,8 +64,8 @@ public class GenTuple {
         for(; i < headAttrs.size(); i++)
             keys[i] = d.getAttr(headAttrs.get(i));
 
-        for(int j = 0; j < additions.length; j++)
-            keys[i + j] = additions[j];
+        System.arraycopy(additions, 0,
+                keys, i, additions.length);
 
         return new GenTuple(keys);
     }
@@ -79,7 +79,7 @@ public class GenTuple {
     /**
      * Saves the gentuple keys.
      */
-    private Object[] _keys = null;
+    private final Object[] _keys;
 
 
     //----------------------------------------
@@ -90,7 +90,7 @@ public class GenTuple {
     /**
      * Gets the gentuple keys.
      */
-    public Object[] getKeys() {
+    public final Object[] getKeys() {
         return _keys;
     }
 
@@ -99,7 +99,7 @@ public class GenTuple {
      * Gets the hash code for the event.
      */
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         return Arrays.hashCode(_keys);
     }
 
@@ -113,7 +113,7 @@ public class GenTuple {
      * Constructor
      * @param keys The keys.
      */
-    public GenTuple(Object[] keys) {
+    public GenTuple(final Object[] keys) {
         _keys = keys;
     }
 
@@ -124,14 +124,14 @@ public class GenTuple {
      * @return The boolean value.
      */
     @Override
-    public boolean equals(Object o) {
+    public final boolean equals(final Object o) {
 
         if (this == o) return true;
         if (o == null
                 || getClass() != o.getClass())
             return false;
 
-        GenTuple genTuple = (GenTuple) o;
+        final GenTuple genTuple = (GenTuple) o;
 
         // Probably incorrect - comparing
         // Object[] arrays with Arrays.equals
@@ -142,9 +142,9 @@ public class GenTuple {
      * Returns teh string representation.
      * @return The string representation.
      */
-    public String toString() {
+    public final String toString() {
 
-        StringBuilder buffer = new StringBuilder("(");
+        final StringBuilder buffer = new StringBuilder("(");
         for(int i = 0; i < _keys.length; i++) {
             buffer.append((i == 0)? _keys[i] : " | " + _keys[i]);
         }

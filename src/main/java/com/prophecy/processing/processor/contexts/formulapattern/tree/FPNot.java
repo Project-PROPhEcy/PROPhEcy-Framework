@@ -29,7 +29,7 @@ public final class FPNot extends UNode<FPType, IFPNode> implements IFPNode {
     /**
      * Saves the factorized state.
      */
-    private boolean _factorized = false;
+    private final boolean _factorized;
 
     /**
      * Saves the head attributes.
@@ -39,7 +39,7 @@ public final class FPNot extends UNode<FPType, IFPNode> implements IFPNode {
     /**
      * Saves the condition.
      */
-    private ICNode _condition = new CTrue();
+    private final ICNode _condition;
 
 
     //----------------------------------------
@@ -52,7 +52,7 @@ public final class FPNot extends UNode<FPType, IFPNode> implements IFPNode {
      * @return The head attributes.
      */
     @Override
-    public List<String> getHeadAttrs() throws Exception {
+    public final List<String> getHeadAttrs() throws Exception {
 
         if(_headAttrs == null) {
             _headAttrs = new ArrayList<String>() {{
@@ -67,7 +67,7 @@ public final class FPNot extends UNode<FPType, IFPNode> implements IFPNode {
      * Gets the formula pattern sources.
      */
     @Override
-    public Map<Integer, FPSource> getSources() {
+    public final Map<Integer, FPSource> getSources() {
         return getChild().getSources();
     }
 
@@ -75,7 +75,7 @@ public final class FPNot extends UNode<FPType, IFPNode> implements IFPNode {
      * Gets the construction condition.
      */
     @Override
-    public ICNode getCondition() {
+    public final ICNode getCondition() {
         return _condition;
     }
 
@@ -84,7 +84,7 @@ public final class FPNot extends UNode<FPType, IFPNode> implements IFPNode {
      * nodes should be factorized.
      */
     @Override
-    public boolean isFactorized() {
+    public final boolean isFactorized() {
         return _factorized;
     }
 
@@ -93,7 +93,7 @@ public final class FPNot extends UNode<FPType, IFPNode> implements IFPNode {
      * formula patterns has the same id.
      */
     @Override
-    public int getId() {
+    public final int getId() {
 
         return Arrays.hashCode(new int[]{
                 getType().hashCode(),
@@ -113,7 +113,7 @@ public final class FPNot extends UNode<FPType, IFPNode> implements IFPNode {
      * @param factorize Use factorization for the lineage construction.
      * @param condition The construction Condition.
      */
-    public FPNot(boolean factorize, ICNode condition) {
+    public FPNot(final boolean factorize, final ICNode condition) {
         super(FPType.Not);
 
         _factorized = factorize;

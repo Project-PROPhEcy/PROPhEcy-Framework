@@ -19,5 +19,5 @@ public interface IUNode<TypeT, NodeT> extends INode<TypeT> {
     /**
      * Sets the child node.
      */
-    public void setChild(NodeT value);
+    public void setChild(final NodeT value);
 }

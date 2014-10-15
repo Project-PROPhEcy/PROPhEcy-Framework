@@ -18,7 +18,7 @@ import java.util.Map;
 /**
  * Created by alpha_000 on 04.05.2014.
  */
-public class TaskConfig {
+public final class TaskConfig {
 
     //----------------------------------------
     // Class Variables
@@ -28,7 +28,7 @@ public class TaskConfig {
     /**
      * Saves the available config.
      */
-    private Map<String, String> _config
+    private final Map<String, String> _config
             = new HashMap<>();
 
 
@@ -42,7 +42,7 @@ public class TaskConfig {
      * configs if the keys doesn't exist.
      * @param processorConfigs The default processor configs.
      */
-    public void setDefaultConfig(ProcessorConfig[] processorConfigs) {
+    public final void setDefaultConfig(final ProcessorConfig[] processorConfigs) {
 
         for(ProcessorConfig processorConfig: processorConfigs)
             _config.putIfAbsent(
@@ -57,7 +57,7 @@ public class TaskConfig {
      * @param key The key.
      * @return The boolean value.
      */
-    public boolean contains(String key) {
+    public final boolean contains(final String key) {
         return _config.containsKey(key);
     }
 
@@ -68,7 +68,7 @@ public class TaskConfig {
      * @param value The value.
      * @return The boolean value.
      */
-    public boolean insert(String key, String value) {
+    public final boolean insert( final String key, final String value) {
 
         if(contains(key))
             return false;
@@ -84,7 +84,7 @@ public class TaskConfig {
      * @param value The value.
      * @return The boolean value.
      */
-    public boolean update(String key, String value) {
+    public final boolean update(final String key, final String value) {
 
         if(!contains(key))
             return false;
@@ -99,7 +99,7 @@ public class TaskConfig {
      * @param key The key.
      * @return The boolean value.
      */
-    public boolean delete(String key) {
+    public final boolean delete(final String key) {
 
         if(!contains(key))
             return false;
@@ -115,7 +115,7 @@ public class TaskConfig {
      * @return The value.
      */
     @SuppressWarnings("unchecked")
-    public String require(String key)
+    public final String require(final String key)
             throws Exception {
 
         if(!contains(key)) throw new Exception(
@@ -124,5 +124,4 @@ public class TaskConfig {
 
         return _config.get(key);
     }
-
 }

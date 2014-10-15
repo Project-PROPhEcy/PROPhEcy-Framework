@@ -3,7 +3,7 @@ package com.prophecy.processing.processor.contexts.calculation;
 /**
  * Created by alpha_000 on 05.08.2014.
  */
-public class Probability {
+public final class Probability {
 
     //----------------------------------------
     // Class Variables
@@ -23,42 +23,42 @@ public class Probability {
     /**
      * Gets the exact probability.
      */
-    public Double getExact() {
+    public final Double getExact() {
         return _exact;
     }
 
     /**
      * Sets the exact probability.
      */
-    public void setExact(Double value) {
+    public final void setExact(final Double value) {
         _exact = value;
     }
 
     /**
      * Gets the upper bound probability.
      */
-    public Double getUB() {
+    public final Double getUB() {
         return _ub;
     }
 
     /**
      * Sets the upper bound probability.
      */
-    public void setUB(Double value) {
+    public final void setUB(final Double value) {
         _ub = value;
     }
 
     /**
      * Gets the lower bound probability.
      */
-    public Double getLB() {
+    public final Double getLB() {
         return _lb;
     }
 
     /**
      * Sets the lower bound probability.
      */
-    public void setLB(Double value) {
+    public final void setLB(final Double value) {
         _lb = value;
     }
 
@@ -79,7 +79,7 @@ public class Probability {
      * Constructor
      * @param defaultValue The default value.
      */
-    public Probability(Double defaultValue) {
+    public Probability(final Double defaultValue) {
         this(defaultValue, defaultValue, defaultValue);
     }
 
@@ -89,7 +89,7 @@ public class Probability {
      * @param ub The upper bound probability.
      * @param lb The lower bound probability.
      */
-    public Probability(Double exact, Double ub, Double lb) {
+    public Probability(final Double exact, final Double ub, final Double lb) {
 
         _exact = exact;
         _ub = ub;
@@ -101,7 +101,7 @@ public class Probability {
      * @param factor The factor.
      * @return The new exact probability.
      */
-    public Double mulExact(Double factor) {
+    public final Double mulExact(final Double factor) {
         return _exact *= factor;
     }
 
@@ -110,7 +110,7 @@ public class Probability {
      * @param factor The factor.
      * @return The new upper bound probability.
      */
-    public Double mulUB(Double factor) {
+    public final Double mulUB(final Double factor) {
         return _ub *= factor;
     }
 
@@ -119,7 +119,7 @@ public class Probability {
      * @param factor The factor.
      * @return The new lower bound probability.
      */
-    public Double mulLB(Double factor) {
+    public final Double mulLB(final Double factor) {
         return _lb *= factor;
     }
 
@@ -128,7 +128,7 @@ public class Probability {
      * @param addend The addend.
      * @return The new exact probability.
      */
-    public Double addExact(Double addend) {
+    public final Double addExact(final Double addend) {
         return _exact += addend;
     }
 
@@ -137,7 +137,7 @@ public class Probability {
      * @param addend The addend.
      * @return The new upper bound probability.
      */
-    public Double addUB(Double addend) {
+    public final Double addUB(final Double addend) {
         return _ub += addend;
     }
 
@@ -146,7 +146,7 @@ public class Probability {
      * @param addend The addend.
      * @return The new lower bound probability.
      */
-    public Double addLB(Double addend) {
+    public final Double addLB(final Double addend) {
         return _lb += addend;
     }
 
@@ -154,7 +154,7 @@ public class Probability {
      * Sets the probability for all Properties.
      * @param value The probability value.
      */
-    public void setAll(Double value) {
+    public final void setAll(final Double value) {
 
         _exact = value;
         _ub = value;
@@ -165,7 +165,7 @@ public class Probability {
      * Returns the string representation.
      * @return The string representation.
      */
-    public String toString() {
+    public final String toString() {
         return String.format(
                 "[ P: %s | LB: %s | UB: %s ]", _exact, _lb, _ub);
     }

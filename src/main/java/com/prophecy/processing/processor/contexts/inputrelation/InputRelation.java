@@ -22,7 +22,7 @@ import java.util.Iterator;
 /**
  * Created by alpha_000 on 28.05.2014.
  */
-public class InputRelation implements IInputRelation {
+public final class InputRelation implements IInputRelation {
 
     //----------------------------------------
     // Class Variables
@@ -32,19 +32,19 @@ public class InputRelation implements IInputRelation {
     /**
      * Saves the database access object.
      */
-    private DBAccess _dbAccess = null;
+    private final DBAccess _dbAccess;
 
 
     /**
      * Saves the sql query which is used to create the result set.
      */
-    private String _sqlQuery = null;
+    private final String _sqlQuery;
 
 
     /**
      * Saves the responsible source id for this type 3 input relation.
      */
-    private int _type3SourceId = -1;
+    private final int _type3SourceId;
 
 
     /**
@@ -62,7 +62,7 @@ public class InputRelation implements IInputRelation {
      * Determines whether this input relation represents a type 3.
      */
     @Override
-    public boolean isType3() {
+    public final boolean isType3() {
         return _type3SourceId != -1;
     }
 
@@ -70,7 +70,7 @@ public class InputRelation implements IInputRelation {
      * Gets the responsible source id for this type 3 input relation.
      */
     @Override
-    public int getType3SourceId() {
+    public final int getType3SourceId() {
         return _type3SourceId;
     }
 
@@ -78,7 +78,7 @@ public class InputRelation implements IInputRelation {
      * Gets the sql query which is used to create the result set.
      */
     @Override
-    public String getSqlQuery() {
+    public final String getSqlQuery() {
         return _sqlQuery;
     }
 
@@ -93,7 +93,7 @@ public class InputRelation implements IInputRelation {
      * @param dbAccess The database access object.
      * @param sqlQuery The sql query which is used to create the result set.
      */
-    public InputRelation(DBAccess dbAccess, String sqlQuery) {
+    public InputRelation(final DBAccess dbAccess, final String sqlQuery) {
         this(dbAccess, sqlQuery, -1);
     }
 
@@ -104,7 +104,7 @@ public class InputRelation implements IInputRelation {
      * @param sqlQuery The sql query which is used to create the result set.
      * @param type3SourceId The responsible source id for this type 3 input relation.
      */
-    public InputRelation(DBAccess dbAccess, String sqlQuery, int type3SourceId) {
+    public InputRelation(final DBAccess dbAccess, final String sqlQuery, final int type3SourceId) {
 
         _dbAccess = dbAccess;
         _sqlQuery = sqlQuery;
@@ -117,12 +117,13 @@ public class InputRelation implements IInputRelation {
      * to return an iterator for looping.
      */
     @Override
-    public void prepareNextIteration() throws Exception {
+    public final void prepareNextIteration()
+            throws Exception {
 
         _dbAccess.requestConnection(
-                (Connection connection) -> {
+                (final Connection connection) -> {
 
-                Statement statement = connection
+                final Statement statement = connection
                         .createStatement();
 
                 _nextResults = statement
@@ -137,12 +138,12 @@ public class InputRelation implements IInputRelation {
      * @return The iterator.
      */
     @Override
-    public Iterator<DomainTuple> iterator() {
+    public final Iterator<DomainTuple> iterator() {
 
         if(_nextResults == null)
             return null;
 
-        InputRelationIterator it = new InputRelationIterator(
+        final InputRelationIterator it = new InputRelationIterator(
                 _nextResults, _type3SourceId);
 
         _nextResults = null;
