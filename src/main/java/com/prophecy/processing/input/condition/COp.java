@@ -16,7 +16,7 @@ import com.prophecy.utility.node.Node;
 /**
  * Created by alpha_000 on 05.05.2014.
  */
-public class COp extends Node<CType> implements ICNode {
+public final class COp extends Node<CType> implements ICNode {
 
     //----------------------------------------
     // Class Variables
@@ -26,19 +26,19 @@ public class COp extends Node<CType> implements ICNode {
     /**
      * Saves the operation type.
      */
-    private COpType _opType = null;
+    private final COpType _opType;
 
 
     /**
      * Saves the left term.
      */
-    private ITerm _lTerm = null;
+    private final ITerm _lTerm;
 
 
     /**
-     * Saves teh right term.
+     * Saves the right term.
      */
-    private ITerm _rTerm = null;
+    private final ITerm _rTerm;
 
 
     //----------------------------------------
@@ -49,21 +49,21 @@ public class COp extends Node<CType> implements ICNode {
     /**
      * Gets the operation type.
      */
-    public COpType getOpType() {
+    public final COpType getOpType() {
         return _opType;
     }
 
     /**
      * Gets the left term.
      */
-    public ITerm getLTerm() {
+    public final ITerm getLTerm() {
         return _lTerm;
     }
 
     /**
      * Gets the right term.
      */
-    public ITerm getRTerm() {
+    public final ITerm getRTerm() {
         return _rTerm;
     }
 
@@ -72,7 +72,7 @@ public class COp extends Node<CType> implements ICNode {
      * conditions has the same id.
      */
     @Override
-    public int getId() {
+    public final int getId() {
         return String.format("%s %s %s",
                 getLTerm(),
                 getOpType().getSign(),
@@ -89,10 +89,10 @@ public class COp extends Node<CType> implements ICNode {
     /**
      * Constructor
      * @param lTerm The left term.
-     * @param rTerm The rigth term.
+     * @param rTerm The right term.
      * @param opType The operation type.
      */
-    public COp(ITerm lTerm, COpType opType, ITerm rTerm) {
+    public COp(final ITerm lTerm, final COpType opType, final ITerm rTerm) {
         super(CType.Op);
 
         _opType = opType;

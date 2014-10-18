@@ -17,32 +17,29 @@ import java.util.Arrays;
 /**
  * Created by alpha_000 on 05.05.2014.
  */
-public class CAnd extends BNode<CType, ICNode> implements ICNode {
+public final class CAnd extends BNode<CType, ICNode> implements ICNode {
 
     //----------------------------------------
     // Class Properties
     //----------------------------------------
-
 
     /**
      * Gets the condition id. Equal
      * conditions has the same id.
      */
     @Override
-    public int getId() {
+    public final int getId() {
 
         return Arrays.asList(getType(),
                 getLeftChild().getId(),
                 getRightChild().getId()
         ).hashCode();
 
-    } // getConditionId
-
+    }
 
     //----------------------------------------
     // Class Functions
     //----------------------------------------
-
 
     /**
      * Constructor
@@ -53,6 +50,5 @@ public class CAnd extends BNode<CType, ICNode> implements ICNode {
         setLeftChild(new CTrue());
         setRightChild(new CTrue());
 
-    } // Constructor
-
-} // class CAnd
+    }
+}

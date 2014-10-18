@@ -33,27 +33,6 @@ public final class ListUtils {
     }
 
     /**
-     * This function is used to group a list.
-     * @param list The list.
-     * @param group The group function.
-     * @return The resulting map.
-     */
-    public static <S, T> Map<S, List<T>> GroupBy(final Collection<T> list, final Function<T, S> group) {
-
-        S key;
-        final Map<S, List<T>> groups = new HashMap<>();
-        for(final T item: list) {
-            key = group.apply(item);
-            if(!groups.containsKey(key))
-                groups.put(key, new ArrayList<>());
-
-            groups.get(key).add(item);
-        }
-
-        return groups;
-    }
-
-    /**
      * Used to fold left the list.
      * @param f The fold function.
      * @param z The initial value.

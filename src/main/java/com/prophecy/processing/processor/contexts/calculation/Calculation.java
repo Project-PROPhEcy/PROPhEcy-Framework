@@ -18,6 +18,7 @@ import com.prophecy.processing.processor.contexts.lineage.tree.*;
 
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -272,28 +273,27 @@ public abstract class Calculation implements ICalculation {
      * @param currentMask The current mask.
      * @return The resulting mask set.
      */
-    public final Set<Mask> genMasks(final int bid, final Mask currentMask) {
+    public final Mask[] genMasks(final int bid, final Mask currentMask) {
 
-        final Set<Mask> masks = new LinkedHashSet<>();
+        final List<Event> events = _eventManager.getAll(bid);
+        final int eventsSize = events.size();
+        final Mask[] masks = new Mask[eventsSize + 1];
 
+        Event event;
         double fMaskProb = 0.0;
-        for(final Event event: _eventManager.getAll(bid)) {
-
+        for(int i = 0; i < eventsSize; i++) {
+            event = events.get(i);
             fMaskProb += event.getProb();
-            // TODO rausziehen?
-            final Mask mask = new Mask(bid, event.getTID(),
+            masks[i] = new Mask(bid, event.getTID(),
                     event.getProb(), currentMask.getLevel() + 1,
                     currentMask.getLevelProb() * event.getProb());
-
-            masks.add(mask);
         }
 
+        // False mask
         fMaskProb = 1.0 - fMaskProb;
-        final Mask fMask = new Mask(bid, -1, fMaskProb,
+        masks[eventsSize] = new Mask(bid, -1, fMaskProb,
                 currentMask.getLevel() + 1,
                 currentMask.getLevelProb() * fMaskProb);
-
-        masks.add(fMask);
 
         return masks;
     }

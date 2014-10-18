@@ -20,14 +20,14 @@ import java.util.Map;
 /**
  * Created by alpha_000 on 29.07.2014.
  */
-public class TupleResults {
+public final class TupleResults {
 
     //----------------------------------------
     // Class Variables
     //----------------------------------------
 
 
-    private Map<GenTuple, Probability> _results
+    private final Map<GenTuple, Probability> _results
             = new HashMap<>();
 
 
@@ -39,7 +39,7 @@ public class TupleResults {
     /**
      * Gets the tuple results with their probabilities.
      */
-    public Map<GenTuple, Probability> getResults() {
+    public final Map<GenTuple, Probability> getResults() {
         return Collections.unmodifiableMap(_results);
     }
 
@@ -54,7 +54,7 @@ public class TupleResults {
      * @param tuple The tuple.
      * @return The boolean value.
      */
-    public boolean contains(GenTuple tuple) {
+    public final boolean contains(final GenTuple tuple) {
         return _results.containsKey(tuple);
     }
 
@@ -63,7 +63,7 @@ public class TupleResults {
      * @param tuple The tuple.
      * @return The boolean value.
      */
-    public boolean add(GenTuple tuple) {
+    public final boolean add(final GenTuple tuple) {
 
         if(contains(tuple))
             return false;
@@ -77,7 +77,7 @@ public class TupleResults {
      * @param tuple The tuple.
      * @return The boolean value.
      */
-    public boolean remove(GenTuple tuple) {
+    public final boolean remove(final GenTuple tuple) {
 
         if(!contains(tuple))
             return false;
@@ -91,7 +91,7 @@ public class TupleResults {
      * @param tuple The tuple.
      * @return The probability.
      */
-    public Probability getProbability(GenTuple tuple) {
+    public final Probability getProbability(final GenTuple tuple) {
 
         if(!contains(tuple))
             return new Probability();
@@ -103,10 +103,10 @@ public class TupleResults {
      * Returns the string representation.
      * @return The string representation.
      */
-    public String toString() {
+    public final String toString() {
 
-        StringBuilder buffer = new StringBuilder();
-        for(Map.Entry<GenTuple, Probability> entry: _results.entrySet()) {
+        final StringBuilder buffer = new StringBuilder();
+        for(final Map.Entry<GenTuple, Probability> entry: _results.entrySet()) {
             buffer.append(String.format("{ %s -> %s }\n", entry.getKey(), entry.getValue()));
         }
 

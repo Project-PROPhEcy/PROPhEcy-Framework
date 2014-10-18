@@ -17,29 +17,26 @@ import java.util.Arrays;
 /**
  * Created by alpha_000 on 05.05.2014.
  */
-public class CNot extends UNode<CType, ICNode> implements ICNode {
+public final class CNot extends UNode<CType, ICNode> implements ICNode {
 
     //----------------------------------------
     // Class Properties
     //----------------------------------------
-
 
     /**
      * Gets the condition id. Equal
      * conditions has the same id.
      */
     @Override
-    public int getId() {
+    public final int getId() {
         return Arrays.asList(getType(),
                 getChild().getId()
         ).hashCode();
     }
 
-
     //----------------------------------------
     // Class Functions
     //----------------------------------------
-
 
     /**
      * Constructor

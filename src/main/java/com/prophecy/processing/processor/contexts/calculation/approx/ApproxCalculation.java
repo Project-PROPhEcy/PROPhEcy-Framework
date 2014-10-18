@@ -24,6 +24,7 @@ import com.prophecy.utility.ListUtils;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by alpha_000 on 24.07.2014.
@@ -38,9 +39,9 @@ public class ApproxCalculation extends Calculation {
     private int _nextMaskBID = -1;
     private LSource _nextMaskSource = null;
 
-    private boolean _isRelativeError = true;
-    private Double _absoluteError = -1.0;
-    private Double _relativeError = -1.0;
+    private final boolean _isRelativeError;
+    private final Double _absoluteError;
+    private final Double _relativeError;
 
 
     //----------------------------------------
@@ -55,7 +56,7 @@ public class ApproxCalculation extends Calculation {
      * @param error The error constant.
      * @param isRelativeError Is relative error.
      */
-    public ApproxCalculation(FactorCatalog factorCatalog, EventManager eventManager, Double error, boolean isRelativeError) {
+    public ApproxCalculation(final FactorCatalog factorCatalog, final EventManager eventManager, final Double error, final boolean isRelativeError) {
         super(factorCatalog, eventManager);
 
         _isRelativeError = isRelativeError;
@@ -68,7 +69,7 @@ public class ApproxCalculation extends Calculation {
      * Executes the probability calculations.
      */
     @Override
-    public void execute()
+    public final void execute()
             throws Exception {
         computeProbs(Mask.INIT);
     }
@@ -77,7 +78,7 @@ public class ApproxCalculation extends Calculation {
      * Computes the probabilities for a specific mask level.
      * @param mask The current used mask.
      */
-    private void computeProbs(Mask mask)
+    private final void computeProbs(Mask mask)
             throws Exception {
 
         boolean masking = false;
@@ -85,15 +86,15 @@ public class ApproxCalculation extends Calculation {
             _maskCount++;
         }
 
-        for(Map.Entry<GenTuple, ILNode> entry:
+        for(final Map.Entry<GenTuple, ILNode> entry:
                 getFactorCatalog().getNodes().entrySet()) {
 
-            GenTuple genTuple = entry.getKey();
-            ILNode root = entry.getValue();
+            final GenTuple genTuple = entry.getKey();
+            final ILNode root = entry.getValue();
 
             if(root.getMaskLevel() == -1) {
 
-                Probability prob = simplAndApprox(
+                final Probability prob = simplAndApprox(
                         root, root, mask);
 
                 if(prob.getUB() - prob.getLB() == 0
@@ -103,7 +104,7 @@ public class ApproxCalculation extends Calculation {
                     if(!getTupleResults().contains(genTuple))
                         getTupleResults().add(genTuple);
 
-                    Probability resultProb = getTupleResults()
+                    final Probability resultProb = getTupleResults()
                             .getProbability(genTuple);
 
                     resultProb.addLB(prob.getLB() * mask.getLevelProb());
@@ -129,9 +130,9 @@ public class ApproxCalculation extends Calculation {
             // to reset the global values but need
             // the bid later in this code block in
             // order to reset the events.
-            int nextMaskBIDCopy = _nextMaskBID;
+            final int nextMaskBIDCopy = _nextMaskBID;
 
-            Set<Mask> masks = genMasks(nextMaskBIDCopy, mask);
+            final Mask[] masks = genMasks(nextMaskBIDCopy, mask);
 
             _nextMaskSource = null;
             _nextMaskBID = -1;
@@ -174,13 +175,13 @@ public class ApproxCalculation extends Calculation {
         switch(current.getType()) {
             case And: {
 
-                LAnd lAnd = (LAnd)current;
+                final LAnd lAnd = (LAnd)current;
 
                 prob.setAll(1.0);
 
-                for(ILNode child: lAnd.getChildren()) {
+                for(final ILNode child: lAnd.getChildren()) {
 
-                    Probability cProb = simplAndApprox(
+                    final Probability cProb = simplAndApprox(
                             root, child, mask);
 
                     // And can't be fulfilled.
@@ -204,11 +205,11 @@ public class ApproxCalculation extends Calculation {
             }
             case Or: {
 
-                LOr lOr = (LOr)current;
+                final LOr lOr = (LOr)current;
 
                 prob.setAll(1.0);
 
-                for(ILNode child: lOr.getChildren()) {
+                for(final ILNode child: lOr.getChildren()) {
 
                     Probability cProb = simplAndApprox(
                             root, child, mask);
@@ -242,7 +243,7 @@ public class ApproxCalculation extends Calculation {
             }
             case Not: {
 
-                LNot lNot = (LNot)current;
+                final LNot lNot = (LNot)current;
 
                 prob = simplAndApprox(
                         root, lNot.getChild(), mask);
@@ -258,15 +259,20 @@ public class ApproxCalculation extends Calculation {
             }
             case Source: {
 
-                LSource lSource = (LSource)current;
+                final LSource lSource = (LSource)current;
 
                 prob.setAll(1.0);
 
-                for(Map.Entry<Integer, List<Event>> entry: ListUtils.GroupBy(
-                        lSource.getEvents(), Event::getBID).entrySet()) {
+                Map<Integer, List<Event>> bidGroups = lSource.getEvents().stream()
+                        .collect(Collectors.groupingBy(Event::getBID));
 
-                    int bid = entry.getKey();
-                    List<Event> events = entry.getValue();
+                int bid;
+                List<Event> events;
+
+                for(final Map.Entry<Integer, List<Event>> entry: bidGroups.entrySet()) {
+
+                    bid = entry.getKey();
+                    events = entry.getValue();
 
                     // Check if the mask level is 0.
                     // If it's true the event isn't
@@ -287,7 +293,7 @@ public class ApproxCalculation extends Calculation {
 
                         prob.setExact(-1.0);
 
-                        for(Event event: events) {
+                        for(final Event event: events) {
                             if(event.hasMaxProb()
                                     && !(mask.containsRememberedBID(event.getBID()))) {
 
@@ -316,7 +322,7 @@ public class ApproxCalculation extends Calculation {
                     }
                     else {
 
-                        Double bidProb = events.stream()
+                        final Double bidProb = events.stream()
                                 .mapToDouble(Event::getCurrentProb).sum();
 
                         if(bidProb == 1.0)

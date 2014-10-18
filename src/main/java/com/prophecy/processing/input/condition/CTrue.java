@@ -15,7 +15,7 @@ import com.prophecy.utility.node.Node;
 /**
  * Created by alpha_000 on 05.05.2014.
  */
-public class CTrue extends Node<CType> implements ICNode {
+public final class CTrue extends Node<CType> implements ICNode {
 
     //----------------------------------------
     // Class Properties
@@ -27,7 +27,7 @@ public class CTrue extends Node<CType> implements ICNode {
      * conditions has the same id.
      */
     @Override
-    public int getId() {
+    public final int getId() {
         return getType().hashCode();
     }
 

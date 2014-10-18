@@ -3,7 +3,7 @@ package com.prophecy.processing.input.term;
 /**
  * Created by alpha_000 on 05.05.2014.
  */
-public class Value implements ITerm {
+public final class Value implements ITerm {
 
     //----------------------------------------
     // Class Variables
@@ -13,7 +13,7 @@ public class Value implements ITerm {
     /**
      * Saves the concrete value.
      */
-    private Object _inner = null;
+    private final Object _inner;
 
 
     //----------------------------------------
@@ -24,7 +24,7 @@ public class Value implements ITerm {
     /**
      * Gets the concrete value.
      */
-    public Object getInner() {
+    public final Object getInner() {
         return _inner;
     }
 
@@ -38,7 +38,7 @@ public class Value implements ITerm {
      * Constructor
      * @param inner The concrete value.
      */
-    public Value(Object inner) {
+    public Value(final Object inner) {
         _inner = inner;
     }
 
@@ -47,7 +47,7 @@ public class Value implements ITerm {
      * Gets the sql representation string.
      * @return The sql representation string.
      */
-    public String toSQLString() {
+    public final String toSQLString() {
         return getInner().toString();
     }
 }

@@ -18,11 +18,10 @@ import com.prophecy.processing.processor.contexts.lineage.EventManager;
 import com.prophecy.processing.processor.contexts.lineage.construction.FactorCatalog;
 import com.prophecy.processing.processor.contexts.lineage.construction.GenTuple;
 import com.prophecy.processing.processor.contexts.lineage.tree.*;
-import com.prophecy.utility.ListUtils;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by alpha_000 on 18.07.2014.
@@ -108,7 +107,7 @@ public final class ExactCalculation extends Calculation {
             // order to reset the events.
             final int nextMaskBIDCopy = _nextMaskBID;
 
-            final Set<Mask> masks = genMasks(nextMaskBIDCopy, mask);
+            final Mask[] masks = genMasks(nextMaskBIDCopy, mask);
 
             _nextMaskSource = null;
             _nextMaskBID = -1;
@@ -221,11 +220,16 @@ public final class ExactCalculation extends Calculation {
 
                 prob = 1.0;
 
-                for(final Map.Entry<Integer, List<Event>> entry: ListUtils.GroupBy(
-                        lSource.getEvents(), Event::getBID).entrySet()) {
+                Map<Integer, List<Event>> bidGroups = lSource.getEvents().stream()
+                        .collect(Collectors.groupingBy(Event::getBID));
 
-                    final int bid = entry.getKey();
-                    final List<Event> events = entry.getValue();
+                int bid;
+                List<Event> events;
+
+                for(final Map.Entry<Integer, List<Event>> entry: bidGroups.entrySet()) {
+
+                    bid = entry.getKey();
+                    events = entry.getValue();
 
                     // Check if the mask level is 0.
                     // If it's true the event isn't
