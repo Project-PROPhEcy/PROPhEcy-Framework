@@ -10,17 +10,17 @@ work. If not, see <http://creativecommons.org/licenses/by/4.0/>.
 
 package com.prophecy.processing.input.condition;
 
-import com.prophecy.utility.node.Node;
+import com.prophecy.processing.input.condition.base.CNode;
+import com.prophecy.processing.input.condition.base.ICNodeVisitor;
 
 /**
  * Created by alpha_000 on 05.05.2014.
  */
-public final class CTrue extends Node<CType> implements ICNode {
+public final class CTrue extends CNode {
 
     //----------------------------------------
     // Class Properties
     //----------------------------------------
-
 
     /**
      * Gets the condition id. Equal
@@ -28,19 +28,37 @@ public final class CTrue extends Node<CType> implements ICNode {
      */
     @Override
     public final int getId() {
-        return getType().hashCode();
+        return CTrue.class.hashCode();
     }
-
 
     //----------------------------------------
     // Class Functions
     //----------------------------------------
 
+    /**
+     * Allows a visitor access to the specific object and it's data.
+     * @param visitor The visitor instance.
+     */
+    @Override
+    public void accept(ICNodeVisitor visitor) {
+        visitor.visit(this);
+    }
 
     /**
-     * Constructor
+     * Returns the lineage tree representation.
+     * @return The lineage tree representation.
      */
-    public CTrue() {
-        super(CType.True);
+    @Override
+    public String toTreeString() {
+        return toString();
+    }
+
+    /**
+     * Returns the string representation.
+     * @return The string representation.
+     */
+    @Override
+    public final String toString() {
+        return "T";
     }
 }

@@ -12,11 +12,13 @@ package com.prophecy.processing.processor.contexts.lineage.construction;
 
 import com.prophecy.processing.Task;
 import com.prophecy.processing.input.condition.*;
+import com.prophecy.processing.input.condition.base.CNode;
 import com.prophecy.processing.input.term.Attribute;
 import com.prophecy.processing.input.term.Value;
 import com.prophecy.processing.processor.IProcessorContext;
 import com.prophecy.processing.processor.ProcessorInfo;
 import com.prophecy.processing.processor.contexts.formulapattern.tree.*;
+import com.prophecy.processing.processor.contexts.formulapattern.tree.base.FPNode;
 import com.prophecy.processing.processor.contexts.inputrelation.DomainTuple;
 import com.prophecy.processing.processor.contexts.inputrelation.IInputRelation;
 import com.prophecy.processing.processor.contexts.inputrelation.InputRelationList;
@@ -77,8 +79,8 @@ public final class LineageConstructionContext implements IProcessorContext {
 
         final InputRelationList relList = task.getData()
                 .require(InputRelationList.class);
-        final IFPNode fpRoot = task.getData()
-                .require(IFPNode.class);
+        final FPNode fpRoot = task.getData()
+                .require(FPNode.class);
 
         for(final IInputRelation rel: relList) {
 
@@ -146,7 +148,7 @@ public final class LineageConstructionContext implements IProcessorContext {
      * @param d The domain tuple.
      * @param sourceId The source id.
      */
-    private void insertPath(ILNode lin, final IFPNode fp, final DomainTuple d, final int sourceId)
+    private void insertPath(ILNode lin, final FPNode fp, final DomainTuple d, final int sourceId)
             throws Exception {
 
         // If lin is null, we have an root
@@ -242,7 +244,7 @@ public final class LineageConstructionContext implements IProcessorContext {
             case Not: {
 
                 final FPNot fpNot = (FPNot) fp;
-                final LNot lNot = (LNot) lin;
+                final LUNot lNot = (LUNot) lin;
 
                 if(lNot.getChild().getType() == LType.False) {
 
@@ -289,7 +291,7 @@ public final class LineageConstructionContext implements IProcessorContext {
      * @param parent The parent node.
      * @return The configured lineage node.
      */
-    private ILNode setupNode(final IFPNode fp, final DomainTuple d, final ILNode parent)
+    private ILNode setupNode(final FPNode fp, final DomainTuple d, final ILNode parent)
             throws Exception {
 
         if( ! evaluate( fp.getCondition(), d ) ) {
@@ -309,7 +311,7 @@ public final class LineageConstructionContext implements IProcessorContext {
         switch(fp.getType()) {
 
             case NOr: return factCat.put(key, new LOr(true));
-            case Not: return factCat.put(key, new LNot());
+            case Not: return factCat.put(key, new LUNot());
             case And: {
 
                 final LAnd lAnd = new LAnd(false);
@@ -376,7 +378,7 @@ public final class LineageConstructionContext implements IProcessorContext {
      * @param d The domain tuple.
      * @return The boolean value.
      */
-    private boolean evaluate(final ICNode condition, final DomainTuple d)
+    private boolean evaluate(final CNode condition, final DomainTuple d)
             throws Exception {
 
         switch(condition.getType()) {

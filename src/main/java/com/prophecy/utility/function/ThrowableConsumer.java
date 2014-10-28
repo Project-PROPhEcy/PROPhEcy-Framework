@@ -1,4 +1,4 @@
-package com.prophecy.utility;
+package com.prophecy.utility.function;
 
 /**
  * Created by alpha_000 on 04.09.2014.

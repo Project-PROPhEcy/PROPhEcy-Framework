@@ -2,7 +2,7 @@ package com.prophecy.measure.types.prophecy.queries.tests;
 
 import com.prophecy.measure.types.prophecy.PROPhEcyMeasureInput;
 import com.prophecy.processing.input.condition.COpType;
-import com.prophecy.processing.processor.contexts.formulapattern.tree.*;
+import com.prophecy.processing.processor.contexts.formulapattern.tree.base.FPNode;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -64,7 +64,7 @@ public final class PROPhEcy_Q_P2_Tract extends PROPhEcyMeasureInput {
      * @return The formula pattern.
      */
     @Override
-    final public IFPNode getFormulaPattern(final boolean factorize) {
+    final public FPNode getFormulaPattern(final boolean factorize) {
 
         return FPOr( factorize,
 

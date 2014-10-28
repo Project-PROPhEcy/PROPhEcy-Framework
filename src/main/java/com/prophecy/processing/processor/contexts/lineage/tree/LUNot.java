@@ -10,22 +10,25 @@ work. If not, see <http://creativecommons.org/licenses/by/4.0/>.
 
 package com.prophecy.processing.processor.contexts.lineage.tree;
 
+import com.prophecy.processing.processor.contexts.lineage.tree.base.ILNodeVisitor;
+import com.prophecy.processing.processor.contexts.lineage.tree.base.LUNode;
+
 /**
  * Created by alpha_000 on 27.06.2014.
  */
-public final class LOr extends LNNode{
+public final class LUNot extends LUNode {
 
     //----------------------------------------
     // Class Functions
     //----------------------------------------
 
-
     /**
-     * Constructor
-     * @param unique The unique state.
+     * Allows a visitor access to the specific object and it's data.
+     * @param visitor The visitor instance.
      */
-    public LOr(final boolean unique) {
-        super(LType.Or, unique, new LFalse());
+    @Override
+    public void accept(ILNodeVisitor visitor) {
+        visitor.visit(this);
     }
 
     /**
@@ -34,6 +37,6 @@ public final class LOr extends LNNode{
      */
     @Override
     public final String toString() {
-        return "Or";
+        return "Not";
     }
 }

@@ -10,8 +10,8 @@ work. If not, see <http://creativecommons.org/licenses/by/4.0/>.
 
 package com.prophecy.processing.processor.contexts.lineage;
 
-import com.prophecy.processing.processor.contexts.lineage.tree.ILNode;
 import com.prophecy.processing.processor.contexts.lineage.tree.LSource;
+import com.prophecy.processing.processor.contexts.lineage.tree.base.LNode;
 
 import java.util.*;
 
@@ -23,7 +23,6 @@ public final class Event implements Comparable<Event> {
     //----------------------------------------
     // Static Functions
     //----------------------------------------
-
 
     /**
      * Generates an unique hashcode for the specific input.
@@ -45,47 +44,39 @@ public final class Event implements Comparable<Event> {
         return result;
     }
 
-
     //----------------------------------------
     // Class Variables
     //----------------------------------------
-
 
     /**
      * Saves the block id.
      */
     private final int _bid;
 
-
     /**
      * Saves the tuple id.
      */
     private final int _tid;
-
 
     /**
      * Saves the initial probability.
      */
     private final double _prob;
 
-
     /**
      * Saves the current probability.
      */
     private double _currentProb = -1.0;
-
 
     /**
      * Saves the current upper bound.
      */
     private double _currentUB = -1.0;
 
-
     /**
      * Saves the current lower bound.
      */
     private double _currentLB = -1.0;
-
 
     /**
      * Saves whether this event has the
@@ -93,25 +84,21 @@ public final class Event implements Comparable<Event> {
      */
     private boolean _hasMaxProb = false;
 
-
     /**
      * Saves the current mask level.
      */
     private int _maskLevel = 0;
-
 
     /**
      * Saves the hash code.
      */
     private final int _hashCode;
 
-
     /**
      * Saves the need mask state.
      */
-    private final Set<ILNode> _needMask
+    private final Set<LNode> _needMask
             = new HashSet<>();
-
 
     /**
      * Saves the responsible source parents.
@@ -119,11 +106,9 @@ public final class Event implements Comparable<Event> {
     private final Set<LSource> _parents
             = new LinkedHashSet<>();
 
-
     //----------------------------------------
     // Class Properties
     //----------------------------------------
-
 
     /**
      * Gets the block id.
@@ -132,14 +117,12 @@ public final class Event implements Comparable<Event> {
         return _bid;
     }
 
-
     /**
      * Gets the tuple id.
      */
     public final int getTID() {
         return _tid;
     }
-
 
     /**
      * Gets the initial probability.
@@ -148,14 +131,12 @@ public final class Event implements Comparable<Event> {
         return _prob;
     }
 
-
     /**
      * Gets the responsible source parents.
      */
     public final Set<LSource> getParents() {
         return _parents;
     }
-
 
     /**
      * Determines whether this event has the
@@ -165,7 +146,6 @@ public final class Event implements Comparable<Event> {
         return _hasMaxProb;
     }
 
-
     /**
      * Sets the value whether this event has
      * the maximum probability within the block id.
@@ -174,14 +154,12 @@ public final class Event implements Comparable<Event> {
         _hasMaxProb = value;
     }
 
-
     /**
      * Gets the current mask level.
      */
     public final int getMaskLevel() {
         return _maskLevel;
     }
-
 
     /**
      * Sets the current mask level.
@@ -190,14 +168,12 @@ public final class Event implements Comparable<Event> {
         _maskLevel = value;
     }
 
-
     /**
      * Gets the current probability.
      */
     public final double getCurrentProb() {
         return _currentProb;
     }
-
 
     /**
      * Sets the current probability.
@@ -206,14 +182,12 @@ public final class Event implements Comparable<Event> {
         _currentProb = value;
     }
 
-
     /**
      * Gets the current upper bound.
      */
     public final double getCurrentUB() {
         return _currentUB;
     }
-
 
     /**
      * Sets the current upper bound.
@@ -222,7 +196,6 @@ public final class Event implements Comparable<Event> {
         _currentUB = value;
     }
 
-
     /**
      * Gets the current lower bound.
      */
@@ -230,14 +203,12 @@ public final class Event implements Comparable<Event> {
         return _currentLB;
     }
 
-
     /**
      * Sets the current lower bound.
      */
     public final void setCurrentLB(final double value) {
         _currentLB = value;
     }
-
 
     /**
      * Gets the hash code for the event.
@@ -247,11 +218,9 @@ public final class Event implements Comparable<Event> {
         return _hashCode;
     }
 
-
     //----------------------------------------
     // Class Functions
     //----------------------------------------
-
 
     /**
      * Constructor
@@ -273,7 +242,6 @@ public final class Event implements Comparable<Event> {
                 bid, tid, prob);
     }
 
-
     /**
      * Adds the parent source to this event.
      * @param source The parent source.
@@ -282,7 +250,6 @@ public final class Event implements Comparable<Event> {
     public final boolean addParent(final LSource source) {
         return _parents.add(source);
     }
-
 
     /**
      * Removes the parent source from this event.
@@ -293,24 +260,21 @@ public final class Event implements Comparable<Event> {
         return _parents.remove(source);
     }
 
-
     /**
      * Adds a root node for which the event needs a mask.
      * @param root The root node.
      */
-    public final void addNeedMask(final ILNode root) {
+    public final void addNeedMask(final LNode root) {
         _needMask.add(root);
     }
-
 
     /**
      * Removes a root node for which the event needs a mask.
      * @param root The root node.
      */
-    public final void removeNeedMask(final ILNode root) {
+    public final void removeNeedMask(final LNode root) {
         _needMask.remove(root);
     }
-
 
     /**
      * Determines whether the event needs to be masked
@@ -319,10 +283,9 @@ public final class Event implements Comparable<Event> {
      * check the mask level which is greater than zero
      * if the block id is masked.
      */
-    public final boolean needMask(final ILNode root) {
+    public final boolean needMask(final LNode root) {
         return _needMask.contains(root);
     }
-
 
     /**
      * Used to order the events by their block id.
@@ -337,7 +300,6 @@ public final class Event implements Comparable<Event> {
         if(_bid < o._bid) return 1;
         else return -1;
     }
-
 
     /**
      * Determines whether the two events are equal.

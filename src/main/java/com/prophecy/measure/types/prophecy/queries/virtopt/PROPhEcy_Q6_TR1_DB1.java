@@ -1,7 +1,7 @@
 package com.prophecy.measure.types.prophecy.queries.virtopt;
 
 import com.prophecy.measure.types.prophecy.PROPhEcyMeasureInput;
-import com.prophecy.processing.processor.contexts.formulapattern.tree.IFPNode;
+import com.prophecy.processing.processor.contexts.formulapattern.tree.base.FPNode;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -59,7 +59,7 @@ public final class PROPhEcy_Q6_TR1_DB1 extends PROPhEcyMeasureInput {
      * @return The formula pattern.
      */
     @Override
-    final public IFPNode getFormulaPattern(final boolean factorize) {
+    final public FPNode getFormulaPattern(final boolean factorize) {
         return FPAnd(factorize,
             FPNOr(factorize, HeadAttrs(
                 "suppkey"

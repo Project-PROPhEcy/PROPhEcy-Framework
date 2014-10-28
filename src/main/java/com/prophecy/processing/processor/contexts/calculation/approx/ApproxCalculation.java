@@ -10,7 +10,6 @@ work. If not, see <http://creativecommons.org/licenses/by/4.0/>.
 
 package com.prophecy.processing.processor.contexts.calculation.approx;
 
-import com.prophecy.processing.output.TupleResults;
 import com.prophecy.processing.processor.contexts.calculation.Calculation;
 import com.prophecy.processing.processor.contexts.calculation.Mask;
 import com.prophecy.processing.processor.contexts.calculation.Probability;
@@ -19,11 +18,9 @@ import com.prophecy.processing.processor.contexts.lineage.EventManager;
 import com.prophecy.processing.processor.contexts.lineage.construction.FactorCatalog;
 import com.prophecy.processing.processor.contexts.lineage.construction.GenTuple;
 import com.prophecy.processing.processor.contexts.lineage.tree.*;
-import com.prophecy.utility.ListUtils;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -243,7 +240,7 @@ public class ApproxCalculation extends Calculation {
             }
             case Not: {
 
-                final LNot lNot = (LNot)current;
+                final LUNot lNot = (LUNot)current;
 
                 prob = simplAndApprox(
                         root, lNot.getChild(), mask);

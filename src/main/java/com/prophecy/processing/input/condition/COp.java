@@ -10,41 +10,26 @@ work. If not, see <http://creativecommons.org/licenses/by/4.0/>.
 
 package com.prophecy.processing.input.condition;
 
+import com.prophecy.processing.input.condition.base.CNode;
+import com.prophecy.processing.input.condition.base.ICNodeVisitor;
 import com.prophecy.processing.input.term.ITerm;
-import com.prophecy.utility.node.Node;
 
 /**
  * Created by alpha_000 on 05.05.2014.
  */
-public final class COp extends Node<CType> implements ICNode {
+public final class COp extends CNode {
 
     //----------------------------------------
     // Class Variables
     //----------------------------------------
 
-
-    /**
-     * Saves the operation type.
-     */
     private final COpType _opType;
-
-
-    /**
-     * Saves the left term.
-     */
     private final ITerm _lTerm;
-
-
-    /**
-     * Saves the right term.
-     */
     private final ITerm _rTerm;
-
 
     //----------------------------------------
     // Class Properties
     //----------------------------------------
-
 
     /**
      * Gets the operation type.
@@ -75,30 +60,52 @@ public final class COp extends Node<CType> implements ICNode {
     public final int getId() {
         return String.format("%s %s %s",
                 getLTerm(),
-                getOpType().getSign(),
+                getOpType().sign(),
                 getRTerm()
         ).hashCode();
     }
-
 
     //----------------------------------------
     // Class Functions
     //----------------------------------------
 
-
     /**
      * Constructor
      * @param lTerm The left term.
-     * @param rTerm The right term.
      * @param opType The operation type.
+     * @param rTerm The right term.
      */
     public COp(final ITerm lTerm, final COpType opType, final ITerm rTerm) {
-        super(CType.Op);
-
-        _opType = opType;
-
         _lTerm = lTerm;
+        _opType = opType;
         _rTerm = rTerm;
+    }
 
+    /**
+     * Allows a visitor access to the specific object and it's data.
+     * @param visitor The visitor instance.
+     */
+    @Override
+    public final void accept(final ICNodeVisitor visitor) {
+        visitor.visit(this);
+    }
+
+    /**
+     * Returns the lineage tree representation.
+     * @return The lineage tree representation.
+     */
+    @Override
+    public String toTreeString() {
+        return String.format("( %s %s %s )"
+                , _lTerm, _opType.sign(), _rTerm);
+    }
+
+    /**
+     * Returns the string representation.
+     * @return The string representation.
+     */
+    @Override
+    public final String toString() {
+        return _opType.sign();
     }
 }

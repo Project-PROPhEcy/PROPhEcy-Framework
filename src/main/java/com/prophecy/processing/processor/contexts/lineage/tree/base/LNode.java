@@ -1,6 +1,6 @@
-package com.prophecy.processing.processor.contexts.lineage.tree;
+package com.prophecy.processing.processor.contexts.lineage.tree.base;
 
-import com.prophecy.utility.node.Node;
+import com.prophecy.utility.IVisitable;
 
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -9,32 +9,24 @@ import java.util.Set;
 /**
  * Created by alpha_000 on 30.06.2014.
  */
-public abstract class LNode extends Node<LType> implements ILNode {
+public abstract class LNode implements IVisitable<ILNodeVisitor> {
 
     //----------------------------------------
     // Class Variables
     //----------------------------------------
 
-
-    /**
-     * Saves the mask level of current calculations.
-     */
     private int _maskLevel = -1;
     private Double _currentProb = -1.0;
-
-    private final Set<ILNode> _parents
+    private final Set<LNode> _parents
             = new LinkedHashSet<>();
-
 
     //----------------------------------------
     // Class Properties
     //----------------------------------------
 
-
     /**
      * Gets the mask level of current calculations.
      */
-    @Override
     public final int getMaskLevel() {
         return _maskLevel;
     }
@@ -42,7 +34,6 @@ public abstract class LNode extends Node<LType> implements ILNode {
     /**
      * Sets the mask level of current calculations.
      */
-    @Override
     public final void setMaskLevel(final int value) {
         _maskLevel = value;
     }
@@ -50,7 +41,6 @@ public abstract class LNode extends Node<LType> implements ILNode {
     /**
      * Gets the current calculated probability.
      */
-    @Override
     public final Double getCurrentProb() {
         return _currentProb;
     }
@@ -58,7 +48,6 @@ public abstract class LNode extends Node<LType> implements ILNode {
     /**
      * Sets the current calculation probability.
      */
-    @Override
     public final void setCurrentProb(final Double value) {
         _currentProb = value;
     }
@@ -66,31 +55,20 @@ public abstract class LNode extends Node<LType> implements ILNode {
     /**
      * Gets the parent nodes.
      */
-    @Override
-    public final Set<ILNode> getParents() {
+    public final Set<LNode> getParents() {
         return Collections.unmodifiableSet(_parents);
     }
-
 
     //----------------------------------------
     // Class Functions
     //----------------------------------------
-
-
-    /**
-     * Constructor
-     * @param type The node type.
-     */
-    public LNode(final LType type) {
-        super(type);
-    }
 
     /**
      * Adds the parent node to the set.
      * @param parent The parent node.
      * @return The boolean value.
      */
-    public final boolean addParent(final ILNode parent) {
+    public final boolean addParent(final LNode parent) {
         return _parents.add(parent);
     }
 
@@ -99,7 +77,13 @@ public abstract class LNode extends Node<LType> implements ILNode {
      * @param parent The parent node.
      * @return The boolean value.
      */
-    public final boolean removeParent(final ILNode parent) {
+    public final boolean removeParent(final LNode parent) {
         return _parents.remove(parent);
     }
+
+    /**
+     * Returns the lineage tree representation.
+     * @return The lineage tree representation.
+     */
+    public abstract String toTreeString();
 }

@@ -8,74 +8,46 @@ You should have received a copy of the license along with this
 work. If not, see <http://creativecommons.org/licenses/by/4.0/>.
 */
 
-package com.prophecy.processing.processor.contexts.formulapattern.tree;
+package com.prophecy.processing.processor.contexts.formulapattern.tree.base;
 
 import com.prophecy.processing.input.condition.base.CNode;
-import com.prophecy.processing.processor.contexts.formulapattern.tree.base.FPNode;
-import com.prophecy.utility.node.UNode;
+import com.prophecy.processing.processor.contexts.formulapattern.tree.FPSource;
+import com.prophecy.utility.IVisitable;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by alpha_000 on 27.05.2014.
  */
-public final class FPNot extends UNode<FPType, FPNode> implements FPNode {
+public abstract class FPNode implements IVisitable<IFPNodeVisitor> {
 
     //----------------------------------------
     // Class Variables
     //----------------------------------------
 
-
-    /**
-     * Saves the factorized state.
-     */
     private final boolean _factorized;
-
-    /**
-     * Saves the head attributes.
-     */
-    private List<String> _headAttrs = null;
-
-    /**
-     * Saves the condition.
-     */
     private final CNode _condition;
-
 
     //----------------------------------------
     // Class Properties
     //----------------------------------------
 
-
     /**
      * Gets the formula pattern head attributes.
-     * @return The head attributes.
      */
-    @Override
-    public final List<String> getHeadAttrs() throws Exception {
-
-        if(_headAttrs == null) {
-            _headAttrs = new ArrayList<String>() {{
-                addAll( getChild().getHeadAttrs() );
-            }};
-        }
-
-        return _headAttrs;
-    }
+    public abstract List<String> getHeadAttrs()
+            throws Exception;
 
     /**
      * Gets the formula pattern sources.
      */
-    @Override
-    public final Map<Integer, FPSource> getSources() {
-        return getChild().getSources();
-    }
+    public abstract Map<Integer, FPSource> getSources();
 
     /**
      * Gets the construction condition.
      */
-    @Override
-    public final CNode getCondition() {
+    public CNode getCondition() {
         return _condition;
     }
 
@@ -83,8 +55,7 @@ public final class FPNot extends UNode<FPType, FPNode> implements FPNode {
      * Determines whether the lineage
      * nodes should be factorized.
      */
-    @Override
-    public final boolean isFactorized() {
+    public boolean isFactorized() {
         return _factorized;
     }
 
@@ -92,31 +63,35 @@ public final class FPNot extends UNode<FPType, FPNode> implements FPNode {
      * Gets the formula pattern id. Equal
      * formula patterns has the same id.
      */
-    @Override
-    public final int getId() {
-
-        return Arrays.hashCode(new int[]{
-                getType().hashCode(),
-                getCondition().getId(),
-                getChild().getId()
-        });
-    }
-
+    public abstract int getId();
 
     //----------------------------------------
     // Class Functions
     //----------------------------------------
 
-
     /**
      * Constructor
      * @param factorize Use factorization for the lineage construction.
-     * @param condition The construction Condition.
+     * @param condition The construction condition.
      */
-    public FPNot(final boolean factorize, final CNode condition) {
-        super(FPType.Not);
-
+    public FPNode(final boolean factorize, final CNode condition) {
         _factorized = factorize;
         _condition = condition;
     }
+
+    /**
+     * Determines whether this formula pattern
+     * contains the specific source id.
+     * @param sourceId The source id.
+     * @return The boolean value.
+     */
+    public boolean containsSourceId(int sourceId) {
+        return getSources().keySet().contains(sourceId);
+    }
+
+    /**
+     * Returns the lineage tree representation.
+     * @return The lineage tree representation.
+     */
+    public abstract String toTreeString();
 }

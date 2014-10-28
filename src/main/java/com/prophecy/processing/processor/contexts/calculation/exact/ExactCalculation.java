@@ -203,7 +203,7 @@ public final class ExactCalculation extends Calculation {
             }
             case Not: {
 
-                final LNot lNot = (LNot)current;
+                final LUNot lNot = (LUNot)current;
 
                 prob = simplAndCalc(
                         root, lNot.getChild(), mask);

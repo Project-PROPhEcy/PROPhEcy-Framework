@@ -10,6 +10,9 @@ work. If not, see <http://creativecommons.org/licenses/by/4.0/>.
 
 package com.prophecy.processing.processor.contexts.lineage.tree;
 
+import com.prophecy.processing.processor.contexts.lineage.tree.base.ILNodeVisitor;
+import com.prophecy.processing.processor.contexts.lineage.tree.base.LNode;
+
 /**
  * Created by alpha_000 on 27.06.2014.
  */
@@ -19,15 +22,21 @@ public final class LFalse extends LNode {
     // Class Functions
     //----------------------------------------
 
-
     /**
      * Constructor
      */
     public LFalse() {
-        super(LType.False);
-
         setCurrentProb(0.0);
         setMaskLevel(0);
+    }
+
+    /**
+     * Allows a visitor access to the specific object and it's data.
+     * @param visitor The visitor instance.
+     */
+    @Override
+    public final void accept(final ILNodeVisitor visitor) {
+        visitor.visit(this);
     }
 
     /**

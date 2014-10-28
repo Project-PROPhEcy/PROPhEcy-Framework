@@ -10,19 +10,18 @@ work. If not, see <http://creativecommons.org/licenses/by/4.0/>.
 
 package com.prophecy.processing.processor.contexts.formulapattern.tree;
 
-import com.prophecy.processing.input.condition.CTrue;
-import com.prophecy.processing.input.condition.ICNode;
+import com.prophecy.processing.input.condition.base.CNode;
+import com.prophecy.processing.processor.contexts.formulapattern.tree.base.FPNode;
 import com.prophecy.utility.node.UNode;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by alpha_000 on 27.05.2014.
  */
-public final class FPNOr extends UNode<FPType, IFPNode> implements IFPNode {
+public final class FPNOr extends UNode<FPType, FPNode> implements FPNode {
 
     //----------------------------------------
     // Class Variables
@@ -42,7 +41,7 @@ public final class FPNOr extends UNode<FPType, IFPNode> implements IFPNode {
     /**
      * Saves the condition.
      */
-    private final ICNode _condition;
+    private final CNode _condition;
 
 
     //----------------------------------------
@@ -71,7 +70,7 @@ public final class FPNOr extends UNode<FPType, IFPNode> implements IFPNode {
      * Gets the construction condition.
      */
     @Override
-    public final ICNode getCondition() {
+    public final CNode getCondition() {
         return _condition;
     }
 
@@ -110,7 +109,7 @@ public final class FPNOr extends UNode<FPType, IFPNode> implements IFPNode {
      * @param headAttrs The projection head attributes.
      * @param condition The construction Condition.
      */
-    public FPNOr(final boolean factorize, final List<String> headAttrs, final ICNode condition) {
+    public FPNOr(final boolean factorize, final List<String> headAttrs, final CNode condition) {
         super(FPType.NOr);
 
         _factorized = factorize;

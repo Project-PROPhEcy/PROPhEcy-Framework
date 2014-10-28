@@ -10,12 +10,13 @@ work. If not, see <http://creativecommons.org/licenses/by/4.0/>.
 
 package com.prophecy.processing.input.condition;
 
-import com.prophecy.utility.node.Node;
+import com.prophecy.processing.input.condition.base.CNode;
+import com.prophecy.processing.input.condition.base.ICNodeVisitor;
 
 /**
  * Created by alpha_000 on 05.05.2014.
  */
-public final class CFalse extends Node<CType> implements ICNode {
+public final class CFalse extends CNode {
 
     //----------------------------------------
     // Class Properties
@@ -27,7 +28,7 @@ public final class CFalse extends Node<CType> implements ICNode {
      */
     @Override
     public final int getId() {
-        return getType().hashCode();
+        return CFalse.class.hashCode();
     }
 
     //----------------------------------------
@@ -35,9 +36,29 @@ public final class CFalse extends Node<CType> implements ICNode {
     //----------------------------------------
 
     /**
-     * Constructor
+     * Allows a visitor access to the specific object and it's data.
+     * @param visitor The visitor instance.
      */
-    public CFalse() {
-        super(CType.False);
+    @Override
+    public final void accept(final ICNodeVisitor visitor) {
+        visitor.visit(this);
+    }
+
+    /**
+     * Returns the lineage tree representation.
+     * @return The lineage tree representation.
+     */
+    @Override
+    public final String toTreeString() {
+        return toString();
+    }
+
+    /**
+     * Returns the string representation.
+     * @return The string representation.
+     */
+    @Override
+    public final String toString() {
+        return "F";
     }
 }

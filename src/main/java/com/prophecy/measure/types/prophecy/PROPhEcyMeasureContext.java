@@ -3,7 +3,7 @@ package com.prophecy.measure.types.prophecy;
 import com.prophecy.processing.Task;
 import com.prophecy.processing.processor.IProcessorContext;
 import com.prophecy.processing.processor.ProcessorInfo;
-import com.prophecy.processing.processor.contexts.formulapattern.tree.IFPNode;
+import com.prophecy.processing.processor.contexts.formulapattern.tree.base.FPNode;
 import com.prophecy.processing.processor.contexts.inputrelation.InputRelation;
 import com.prophecy.processing.processor.contexts.inputrelation.InputRelationList;
 
@@ -51,7 +51,7 @@ public final class PROPhEcyMeasureContext implements IProcessorContext {
 
         task.getData().insert(
                 InputRelationList.class, inputRelations);
-        task.getData().insert(IFPNode.class, measureInput
+        task.getData().insert(FPNode.class, measureInput
                 .getFormulaPattern(factorize));
     }
 }

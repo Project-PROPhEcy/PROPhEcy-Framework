@@ -10,14 +10,15 @@ work. If not, see <http://creativecommons.org/licenses/by/4.0/>.
 
 package com.prophecy.processing.input.condition;
 
-import com.prophecy.utility.node.UNode;
+import com.prophecy.processing.input.condition.base.CUNode;
+import com.prophecy.processing.input.condition.base.ICNodeVisitor;
 
 import java.util.Arrays;
 
 /**
  * Created by alpha_000 on 05.05.2014.
  */
-public final class CNot extends UNode<CType, ICNode> implements ICNode {
+public final class CNot extends CUNode {
 
     //----------------------------------------
     // Class Properties
@@ -29,8 +30,9 @@ public final class CNot extends UNode<CType, ICNode> implements ICNode {
      */
     @Override
     public final int getId() {
-        return Arrays.asList(getType(),
-                getChild().getId()
+        return Arrays.asList(
+                  CNot.class.hashCode()
+                , getChild().getId()
         ).hashCode();
     }
 
@@ -39,10 +41,20 @@ public final class CNot extends UNode<CType, ICNode> implements ICNode {
     //----------------------------------------
 
     /**
-     * Constructor
+     * Allows a visitor access to the specific object and it's data.
+     * @param visitor The visitor instance.
      */
-    public CNot() {
-        super(CType.Not);
-        setChild(new CFalse());
+    @Override
+    public final void accept(final ICNodeVisitor visitor) {
+        visitor.visit(this);
+    }
+
+    /**
+     * Returns the string representation.
+     * @return The string representation.
+     */
+    @Override
+    public final String toString() {
+        return "Not";
     }
 }

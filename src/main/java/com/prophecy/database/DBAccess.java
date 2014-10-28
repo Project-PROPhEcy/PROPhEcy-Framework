@@ -10,11 +10,10 @@ work. If not, see <http://creativecommons.org/licenses/by/4.0/>.
 
 package com.prophecy.database;
 
-import com.prophecy.utility.ThrowableConsumer;
+import com.prophecy.utility.function.ThrowableConsumer;
 import oracle.jdbc.OracleConnection;
 
 import java.sql.*;
-import java.util.function.Consumer;
 
 /**
  * Created by alpha_000 on 06.05.2014.

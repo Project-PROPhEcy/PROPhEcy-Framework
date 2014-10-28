@@ -10,7 +10,7 @@ work. If not, see <http://creativecommons.org/licenses/by/4.0/>.
 
 package com.prophecy.processing.processor.contexts.lineage.construction;
 
-import com.prophecy.processing.processor.contexts.formulapattern.tree.IFPNode;
+import com.prophecy.processing.processor.contexts.formulapattern.tree.base.FPNode;
 import com.prophecy.processing.processor.contexts.inputrelation.DomainTuple;
 
 import java.util.Arrays;
@@ -46,7 +46,7 @@ public final class GenTuple {
      * @param additions Optional keys.
      * @return The gentuple.
      */
-    public static GenTuple From(final IFPNode fp, final DomainTuple d, final Object... additions)
+    public static GenTuple From(final FPNode fp, final DomainTuple d, final Object... additions)
             throws Exception {
 
         final List<String> headAttrs

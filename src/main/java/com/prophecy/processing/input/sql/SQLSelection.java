@@ -11,10 +11,8 @@ work. If not, see <http://creativecommons.org/licenses/by/4.0/>.
 package com.prophecy.processing.input.sql;
 
 import com.prophecy.database.DBAccess;
-import com.prophecy.processing.input.condition.ICNode;
+import com.prophecy.processing.input.condition.base.CNode;
 import com.prophecy.utility.node.UNode;
-
-import java.util.Arrays;
 
 /**
  * Created by alpha_000 on 03.05.2014.
@@ -29,7 +27,7 @@ public class SQLSelection extends UNode<SQLType, ISQLNode> implements ISQLNode {
     /**
      * Saves the selection condition.
      */
-    private ICNode _condition = null;
+    private CNode _condition = null;
 
 
     //----------------------------------------
@@ -40,7 +38,7 @@ public class SQLSelection extends UNode<SQLType, ISQLNode> implements ISQLNode {
     /**
      * Gets the selection condition.
      */
-    public ICNode getCondition() {
+    public CNode getCondition() {
         return _condition;
     }
 
@@ -54,7 +52,7 @@ public class SQLSelection extends UNode<SQLType, ISQLNode> implements ISQLNode {
      * Constructor
      * @param condition The selection condition.
      */
-    public SQLSelection(ICNode condition) {
+    public SQLSelection(CNode condition) {
         super(SQLType.Selection);
 
         _condition = condition;

@@ -10,7 +10,7 @@ work. If not, see <http://creativecommons.org/licenses/by/4.0/>.
 
 package com.prophecy.processing;
 
-import com.prophecy.utility.ThrowableRunnable;
+import com.prophecy.utility.function.ThrowableRunnable;
 
 import java.util.HashMap;
 import java.util.Map;

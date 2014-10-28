@@ -19,7 +19,6 @@ public enum COpType {
     // Enumeration Values
     //----------------------------------------
 
-
     GreaterEqual(">="),
     LessEqual("<="),
     Unequal("!="),
@@ -27,46 +26,35 @@ public enum COpType {
     Equal("="),
     Less("<");
 
-
     //----------------------------------------
     // Enumeration Variables
     //----------------------------------------
-
 
     /**
      * Saves the operation sign.
      */
     private String _sign = null;
 
-
     //----------------------------------------
     // Enumeration Properties
     //----------------------------------------
 
-
     /**
      * Gets the operation sign.
      */
-    public String getSign() {
-
+    public String sign() {
         return _sign;
-
-    } // getSign
-
+    }
 
     //----------------------------------------
     // Enumeration Functions
     //----------------------------------------
-
 
     /**
      * Constructor
      * @param sign The sign.
      */
     COpType(String sign) {
-
         _sign = sign;
-
-    } // Constructor
-
-} // enum COpType
+    }
+}

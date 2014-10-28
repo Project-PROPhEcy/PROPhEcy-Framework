@@ -11,13 +11,12 @@ work. If not, see <http://creativecommons.org/licenses/by/4.0/>.
 package com.prophecy.processing.processor.contexts.inputrelation;
 
 import com.prophecy.processing.Task;
+import com.prophecy.processing.input.condition.base.CNode;
 import com.prophecy.processing.input.sql.*;
 import com.prophecy.processing.input.term.Attribute;
 import com.prophecy.processing.processor.IProcessorContext;
 import com.prophecy.processing.input.condition.*;
 import com.prophecy.processing.processor.ProcessorInfo;
-
-import java.sql.ResultSet;
 
 /**
  * Created by alpha_000 on 03.05.2014.
@@ -158,7 +157,7 @@ public final class InputRelationContext implements IProcessorContext {
      * @param node The current condition node.
      * @return The condition string.
      */
-    private String constructConditionString(ICNode node)
+    private String constructConditionString(CNode node)
             throws Exception {
 
         switch(node.getType()) {
@@ -197,7 +196,7 @@ public final class InputRelationContext implements IProcessorContext {
 
                 return String.format("%s %s %s",
                         op.getLTerm(),
-                        op.getOpType().getSign(),
+                        op.getOpType().sign(),
                         op.getRTerm()
                 );
 

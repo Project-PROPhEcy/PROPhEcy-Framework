@@ -10,14 +10,15 @@ work. If not, see <http://creativecommons.org/licenses/by/4.0/>.
 
 package com.prophecy.processing.input.condition;
 
-import com.prophecy.utility.node.BNode;
+import com.prophecy.processing.input.condition.base.CBNode;
+import com.prophecy.processing.input.condition.base.ICNodeVisitor;
 
 import java.util.Arrays;
 
 /**
  * Created by alpha_000 on 05.05.2014.
  */
-public final class COr extends BNode<CType, ICNode> implements ICNode {
+public final class COr extends CBNode {
 
     //----------------------------------------
     // Class Properties
@@ -29,9 +30,9 @@ public final class COr extends BNode<CType, ICNode> implements ICNode {
      */
     @Override
     public final int getId() {
-        return Arrays.asList(getType(),
-                getLeftChild().getId(),
-                getRightChild().getId()
+        return Arrays.asList(COr.class.hashCode()
+                , getLeftChild().getId()
+                , getRightChild().getId()
         ).hashCode();
     }
 
@@ -40,12 +41,20 @@ public final class COr extends BNode<CType, ICNode> implements ICNode {
     //----------------------------------------
 
     /**
-     * Constructor
+     * Allows a visitor access to the specific object and it's data.
+     * @param visitor The visitor instance.
      */
-    public COr() {
-        super(CType.Or);
+    @Override
+    public final void accept(final ICNodeVisitor visitor) {
+        visitor.visit(this);
+    }
 
-        setLeftChild(new CTrue());
-        setRightChild(new CTrue());
+    /**
+     * Returns the string representation.
+     * @return The string representation.
+     */
+    @Override
+    public final String toString() {
+        return "Or";
     }
 }

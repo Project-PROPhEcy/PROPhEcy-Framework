@@ -10,21 +10,25 @@ work. If not, see <http://creativecommons.org/licenses/by/4.0/>.
 
 package com.prophecy.processing.processor.contexts.lineage.tree;
 
+import com.prophecy.processing.processor.contexts.lineage.tree.base.ILNodeVisitor;
+import com.prophecy.processing.processor.contexts.lineage.tree.base.LNNode;
+
 /**
  * Created by alpha_000 on 27.06.2014.
  */
-public final class LNot extends LUNode {
+public final class LNOr extends LNNode {
 
     //----------------------------------------
     // Class Functions
     //----------------------------------------
 
-
     /**
-     * Constructor
+     * Allows a visitor access to the specific object and it's data.
+     * @param visitor The visitor instance.
      */
-    public LNot() {
-        super(LType.Not, new LFalse());
+    @Override
+    public final void accept(final ILNodeVisitor visitor) {
+        visitor.visit(this);
     }
 
     /**
@@ -33,6 +37,6 @@ public final class LNot extends LUNode {
      */
     @Override
     public final String toString() {
-        return "Not";
+        return "Or";
     }
 }

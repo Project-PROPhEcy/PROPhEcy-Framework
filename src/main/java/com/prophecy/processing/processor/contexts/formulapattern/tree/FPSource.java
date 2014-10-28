@@ -10,8 +10,8 @@ work. If not, see <http://creativecommons.org/licenses/by/4.0/>.
 
 package com.prophecy.processing.processor.contexts.formulapattern.tree;
 
-import com.prophecy.processing.input.condition.CTrue;
-import com.prophecy.processing.input.condition.ICNode;
+import com.prophecy.processing.input.condition.base.CNode;
+import com.prophecy.processing.processor.contexts.formulapattern.tree.base.FPNode;
 import com.prophecy.utility.node.Node;
 
 import java.util.*;
@@ -20,7 +20,7 @@ import java.util.*;
  * Created by alpha_000 on 27.05.2014.
  */
 // TODO Typ3 Source
-public final class FPSource extends Node<FPType> implements IFPNode {
+public final class FPSource extends Node<FPType> implements FPNode {
 
     //----------------------------------------
     // Class Variables
@@ -56,7 +56,7 @@ public final class FPSource extends Node<FPType> implements IFPNode {
     /**
      * Saves the condition.
      */
-    private final ICNode _condition;
+    private final CNode _condition;
 
 
     //----------------------------------------
@@ -105,7 +105,7 @@ public final class FPSource extends Node<FPType> implements IFPNode {
      * Gets the construction condition.
      */
     @Override
-    public final ICNode getCondition() {
+    public final CNode getCondition() {
         return _condition;
     }
 
@@ -154,7 +154,7 @@ public final class FPSource extends Node<FPType> implements IFPNode {
      */
     public FPSource(final int sourceId, final String relation,
                     final boolean factorize, final int maskPriority,
-                    final List<String> headAttrs, final ICNode condition) {
+                    final List<String> headAttrs, final CNode condition) {
         super(FPType.Source);
 
         _sourceId = sourceId;

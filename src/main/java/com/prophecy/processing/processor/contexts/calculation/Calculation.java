@@ -17,7 +17,6 @@ import com.prophecy.processing.processor.contexts.lineage.construction.FactorCat
 import com.prophecy.processing.processor.contexts.lineage.tree.*;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -157,7 +156,7 @@ public abstract class Calculation implements ICalculation {
             }
             case Not: {
 
-                final LNot lNot = (LNot)current;
+                final LUNot lNot = (LUNot)current;
 
                 countEvents(root, lNot.getChild(),
                         rootBlockIds);
