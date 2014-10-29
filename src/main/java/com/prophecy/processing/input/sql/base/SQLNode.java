@@ -8,25 +8,25 @@ You should have received a copy of the license along with this
 work. If not, see <http://creativecommons.org/licenses/by/4.0/>.
 */
 
-package com.prophecy.processing.input.sql;
+package com.prophecy.processing.input.sql.base;
 
 import com.prophecy.database.DBAccess;
-import com.prophecy.utility.node.INode;
+import com.prophecy.utility.IVisitable;
 
 /**
  * Created by Christian Winkel on 23.04.14.
  */
-public interface ISQLNode extends INode<SQLType> {
+public abstract class SQLNode implements IVisitable<ISQLNodeVisitor> {
 
     //----------------------------------------
     // Interface Functions
     //----------------------------------------
 
-
     /**
-     * Prepares the sql data for the specific database access.
+     * Prepares the sql node for the specific database access.
      * @param dbAccess The database access.
      */
-    public void prepareFor(DBAccess dbAccess);
+    public void prepareFor(DBAccess dbAccess) {
 
+    }
 }

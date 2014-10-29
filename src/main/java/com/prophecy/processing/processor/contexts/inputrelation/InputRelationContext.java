@@ -13,6 +13,7 @@ package com.prophecy.processing.processor.contexts.inputrelation;
 import com.prophecy.processing.Task;
 import com.prophecy.processing.input.condition.base.CNode;
 import com.prophecy.processing.input.sql.*;
+import com.prophecy.processing.input.sql.base.SQLNode;
 import com.prophecy.processing.input.term.Attribute;
 import com.prophecy.processing.processor.IProcessorContext;
 import com.prophecy.processing.input.condition.*;
@@ -62,7 +63,7 @@ public final class InputRelationContext implements IProcessorContext {
      * @param sql The current sql node.
      * @return The input relation request.
      */
-    private String constructIRRequest(ISQLNode sql)
+    private String constructIRRequest(SQLNode sql)
             throws Exception {
 
         switch(sql.getType()) {

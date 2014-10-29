@@ -10,9 +10,9 @@ work. If not, see <http://creativecommons.org/licenses/by/4.0/>.
 
 package com.prophecy.processing.input.sql;
 
-import com.prophecy.database.DBAccess;
+import com.prophecy.processing.input.sql.base.ISQLNodeVisitor;
+import com.prophecy.processing.input.sql.base.SQLNode;
 import com.prophecy.processing.input.term.Attribute;
-import com.prophecy.utility.node.Node;
 
 import java.util.Collections;
 import java.util.List;
@@ -20,30 +20,18 @@ import java.util.List;
 /**
  * Created by alpha_000 on 03.05.2014.
  */
-public class SQLRelation extends Node<SQLType> implements ISQLNode {
+public class SQLRelation extends SQLNode {
 
     //----------------------------------------
     // Class Variables
     //----------------------------------------
 
-
-    /**
-     * Saves the relation name.
-     */
     private String _name = null;
-
-
-    /**
-     * Saves the relation attributes
-     * without probabilistic columns.
-     */
     private List<Attribute> _attributes = null;
-
 
     //----------------------------------------
     // Class Properties
     //----------------------------------------
-
 
     /**
      * Gets the relation name.
@@ -51,7 +39,6 @@ public class SQLRelation extends Node<SQLType> implements ISQLNode {
     public String getName() {
         return _name;
     }
-
 
     /**
      * Gets the relation attributes
@@ -62,29 +49,24 @@ public class SQLRelation extends Node<SQLType> implements ISQLNode {
                 .unmodifiableList(_attributes);
     }
 
-
     //----------------------------------------
     // Class Functions
     //----------------------------------------
-
 
     /**
      * Constructor
      * @param name The relation name.
      */
     public SQLRelation(String name) {
-        super(SQLType.Relation);
-
         _name = name;
     }
 
-
     /**
-     * Prepares the sql node for the specific database access.
-     * @param dbAccess The database access.
+     * Allows a visitor access to the specific object and it's data.
+     * @param visitor The visitor instance.
      */
     @Override
-    public void prepareFor(DBAccess dbAccess) {
-
+    public final void accept(final ISQLNodeVisitor visitor) {
+        visitor.visit(this);
     }
 }

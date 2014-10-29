@@ -12,57 +12,31 @@ package com.prophecy.processing.processor.contexts.formulapattern.tree;
 
 import com.prophecy.processing.input.condition.base.CNode;
 import com.prophecy.processing.processor.contexts.formulapattern.tree.base.FPNode;
-import com.prophecy.utility.node.Node;
+import com.prophecy.processing.processor.contexts.formulapattern.tree.base.IFPNodeVisitor;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by alpha_000 on 27.05.2014.
  */
 // TODO Typ3 Source
-public final class FPSource extends Node<FPType> implements FPNode {
+public final class FPSource extends FPNode {
 
     //----------------------------------------
     // Class Variables
     //----------------------------------------
 
-
-    /**
-     * Saves the source id for the
-     * later vertical construction.
-     */
     private final int _sourceId;
-
-    /**
-     * Saves the source relation.
-     */
-    private final String _relation;
-
-    /**
-     * Saves the factorized state.
-     */
-    private final boolean _factorized;
-
-    /**
-     * Saves the mask priority.
-     */
     private final int _maskPriority;
 
-    /**
-     * Saves the head attributes.
-     */
+    private final String _relation;
+
     private List<String> _headAttrs = null;
-
-    /**
-     * Saves the condition.
-     */
-    private final CNode _condition;
-
 
     //----------------------------------------
     // Class Properties
     //----------------------------------------
-
 
     /**
      * Gets the source id for the
@@ -72,14 +46,12 @@ public final class FPSource extends Node<FPType> implements FPNode {
         return _sourceId;
     }
 
-
     /**
      * Gets the source relation.
      */
     public final String getRelation() {
         return _relation;
     }
-
 
     /**
      * Gets the formula pattern head attributes.
@@ -94,28 +66,10 @@ public final class FPSource extends Node<FPType> implements FPNode {
      */
     @Override
     public final Map<Integer, FPSource> getSources() {
-
         Map<Integer, FPSource> sources
                 = new HashMap<>();
         sources.put(_sourceId, this);
         return sources;
-    }
-
-    /**
-     * Gets the construction condition.
-     */
-    @Override
-    public final CNode getCondition() {
-        return _condition;
-    }
-
-    /**
-     * Determines whether the lineage
-     * nodes should be factorized.
-     */
-    @Override
-    public final boolean isFactorized() {
-        return _factorized;
     }
 
     /**
@@ -137,11 +91,9 @@ public final class FPSource extends Node<FPType> implements FPNode {
         });
     }
 
-
     //----------------------------------------
     // Class Functions
     //----------------------------------------
-
 
     /**
      * Constructor
@@ -155,13 +107,39 @@ public final class FPSource extends Node<FPType> implements FPNode {
     public FPSource(final int sourceId, final String relation,
                     final boolean factorize, final int maskPriority,
                     final List<String> headAttrs, final CNode condition) {
-        super(FPType.Source);
+        super(factorize, condition);
 
         _sourceId = sourceId;
         _relation = relation;
-        _factorized = factorize;
         _maskPriority = maskPriority;
-        _condition = condition;
         _headAttrs = headAttrs;
+    }
+
+    /**
+     * Allows a visitor access to the specific object and it's data.
+     * @param visitor The visitor instance.
+     */
+    @Override
+    public final void accept(final IFPNodeVisitor visitor) {
+        visitor.visit(this);
+    }
+
+    /**
+     * Returns the lineage tree representation.
+     * @return The lineage tree representation.
+     */
+    public String toTreeString() {
+        return String.format("%s[%s|%s|(%s)]"
+                , toString(), getSourceId(), getRelation()
+                , _headAttrs.stream().collect(Collectors.joining(", ")));
+    }
+
+    /**
+     * Returns the string representation.
+     * @return The string representation.
+     */
+    @Override
+    public final String toString() {
+        return "Source";
     }
 }

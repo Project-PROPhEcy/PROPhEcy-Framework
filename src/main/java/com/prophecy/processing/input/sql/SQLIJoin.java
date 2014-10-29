@@ -10,58 +10,40 @@ work. If not, see <http://creativecommons.org/licenses/by/4.0/>.
 
 package com.prophecy.processing.input.sql;
 
-import com.prophecy.database.DBAccess;
 import com.prophecy.processing.input.condition.base.CNode;
-import com.prophecy.utility.node.BNode;
+import com.prophecy.processing.input.sql.base.ISQLNodeVisitor;
+import com.prophecy.processing.input.sql.base.SQLNode;
 
 /**
  * Created by alpha_000 on 13.05.2014.
  */
-public class SQLIJoin extends BNode<SQLType, ISQLNode> implements ISQLNode {
+public final class SQLIJoin extends SQLNode {
 
     //----------------------------------------
     // Class Variables
     //----------------------------------------
 
-
-    /**
-     * Saves the left child namespace.
-     */
     private String _leftNS = null;
-
-
-    /**
-     * Saves the right child namespace.
-     */
     private String _rightNS = null;
-
-
-    /**
-     * Saves the selection condition.
-     */
     private CNode _condition = null;
-
 
     //----------------------------------------
     // Class Properties
     //----------------------------------------
 
-
     /**
      * Gets the left child namespace.
      */
-    public String getLeftNS() {
+    public final String getLeftNS() {
         return _leftNS;
     }
-
 
     /**
      * Gets the right child namespace.
      */
-    public String getRightNS() {
+    public final String getRightNS() {
         return _rightNS;
     }
-
 
     /**
      * Gets the selection condition.
@@ -70,27 +52,12 @@ public class SQLIJoin extends BNode<SQLType, ISQLNode> implements ISQLNode {
         return _condition;
     }
 
-
-    //----------------------------------------
-    // Class Functions
-    //----------------------------------------
-
-
     /**
-     * Constructor
-     */
-    public SQLIJoin() {
-        super(SQLType.IJoin);
-
-    }
-
-
-    /**
-     * Prepares the sql node for the specific database access.
-     * @param dbAccess The database access.
+     * Allows a visitor access to the specific object and it's data.
+     * @param visitor The visitor instance.
      */
     @Override
-    public void prepareFor(DBAccess dbAccess) {
-
+    public final void accept(final ISQLNodeVisitor visitor) {
+        visitor.visit(this);
     }
 }

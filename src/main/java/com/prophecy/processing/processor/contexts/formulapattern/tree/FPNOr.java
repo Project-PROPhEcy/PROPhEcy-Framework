@@ -11,8 +11,8 @@ work. If not, see <http://creativecommons.org/licenses/by/4.0/>.
 package com.prophecy.processing.processor.contexts.formulapattern.tree;
 
 import com.prophecy.processing.input.condition.base.CNode;
-import com.prophecy.processing.processor.contexts.formulapattern.tree.base.FPNode;
-import com.prophecy.utility.node.UNode;
+import com.prophecy.processing.processor.contexts.formulapattern.tree.base.FPUNode;
+import com.prophecy.processing.processor.contexts.formulapattern.tree.base.IFPNodeVisitor;
 
 import java.util.Arrays;
 import java.util.List;
@@ -21,33 +21,17 @@ import java.util.Map;
 /**
  * Created by alpha_000 on 27.05.2014.
  */
-public final class FPNOr extends UNode<FPType, FPNode> implements FPNode {
+public final class FPNOr extends FPUNode {
 
     //----------------------------------------
     // Class Variables
     //----------------------------------------
 
-
-    /**
-     * Saves the factorized state.
-     */
-    private final boolean _factorized;
-
-    /**
-     * Saves the head attributes.
-     */
     private List<String> _headAttrs = null;
-
-    /**
-     * Saves the condition.
-     */
-    private final CNode _condition;
-
 
     //----------------------------------------
     // Class Properties
     //----------------------------------------
-
 
     /**
      * Gets the formula pattern head attributes.
@@ -67,41 +51,21 @@ public final class FPNOr extends UNode<FPType, FPNode> implements FPNode {
     }
 
     /**
-     * Gets the construction condition.
-     */
-    @Override
-    public final CNode getCondition() {
-        return _condition;
-    }
-
-    /**
-     * Determines whether the lineage
-     * nodes should be factorized.
-     */
-    @Override
-    public final boolean isFactorized() {
-        return _factorized;
-    }
-
-    /**
      * Gets the formula pattern id. Equal
      * formula patterns has the same id.
      */
     @Override
     public final int getId() {
-
         return Arrays.hashCode(new int[]{
-                getType().hashCode(),
+                FPNOr.class.hashCode(),
                 getCondition().getId(),
                 getChild().getId()
         });
     }
 
-
     //----------------------------------------
     // Class Functions
     //----------------------------------------
-
 
     /**
      * Constructor
@@ -110,10 +74,25 @@ public final class FPNOr extends UNode<FPType, FPNode> implements FPNode {
      * @param condition The construction Condition.
      */
     public FPNOr(final boolean factorize, final List<String> headAttrs, final CNode condition) {
-        super(FPType.NOr);
-
-        _factorized = factorize;
+        super(factorize, condition);
         _headAttrs = headAttrs;
-        _condition = condition;
+    }
+
+    /**
+     * Allows a visitor access to the specific object and it's data.
+     * @param visitor The visitor instance.
+     */
+    @Override
+    public final void accept(final IFPNodeVisitor visitor) {
+        visitor.visit(this);
+    }
+
+    /**
+     * Returns the string representation.
+     * @return The string representation.
+     */
+    @Override
+    public final String toString() {
+        return "NOr";
     }
 }

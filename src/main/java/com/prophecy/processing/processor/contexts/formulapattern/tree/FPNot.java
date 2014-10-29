@@ -11,41 +11,25 @@ work. If not, see <http://creativecommons.org/licenses/by/4.0/>.
 package com.prophecy.processing.processor.contexts.formulapattern.tree;
 
 import com.prophecy.processing.input.condition.base.CNode;
-import com.prophecy.processing.processor.contexts.formulapattern.tree.base.FPNode;
-import com.prophecy.utility.node.UNode;
+import com.prophecy.processing.processor.contexts.formulapattern.tree.base.FPUNode;
+import com.prophecy.processing.processor.contexts.formulapattern.tree.base.IFPNodeVisitor;
 
 import java.util.*;
 
 /**
  * Created by alpha_000 on 27.05.2014.
  */
-public final class FPNot extends UNode<FPType, FPNode> implements FPNode {
+public final class FPNot extends FPUNode {
 
     //----------------------------------------
     // Class Variables
     //----------------------------------------
 
-
-    /**
-     * Saves the factorized state.
-     */
-    private final boolean _factorized;
-
-    /**
-     * Saves the head attributes.
-     */
     private List<String> _headAttrs = null;
-
-    /**
-     * Saves the condition.
-     */
-    private final CNode _condition;
-
 
     //----------------------------------------
     // Class Properties
     //----------------------------------------
-
 
     /**
      * Gets the formula pattern head attributes.
@@ -53,13 +37,11 @@ public final class FPNot extends UNode<FPType, FPNode> implements FPNode {
      */
     @Override
     public final List<String> getHeadAttrs() throws Exception {
-
         if(_headAttrs == null) {
             _headAttrs = new ArrayList<String>() {{
                 addAll( getChild().getHeadAttrs() );
             }};
         }
-
         return _headAttrs;
     }
 
@@ -72,41 +54,21 @@ public final class FPNot extends UNode<FPType, FPNode> implements FPNode {
     }
 
     /**
-     * Gets the construction condition.
-     */
-    @Override
-    public final CNode getCondition() {
-        return _condition;
-    }
-
-    /**
-     * Determines whether the lineage
-     * nodes should be factorized.
-     */
-    @Override
-    public final boolean isFactorized() {
-        return _factorized;
-    }
-
-    /**
      * Gets the formula pattern id. Equal
      * formula patterns has the same id.
      */
     @Override
     public final int getId() {
-
         return Arrays.hashCode(new int[]{
-                getType().hashCode(),
+                FPNot.class.hashCode(),
                 getCondition().getId(),
                 getChild().getId()
         });
     }
 
-
     //----------------------------------------
     // Class Functions
     //----------------------------------------
-
 
     /**
      * Constructor
@@ -114,9 +76,24 @@ public final class FPNot extends UNode<FPType, FPNode> implements FPNode {
      * @param condition The construction Condition.
      */
     public FPNot(final boolean factorize, final CNode condition) {
-        super(FPType.Not);
+        super(factorize, condition);
+    }
 
-        _factorized = factorize;
-        _condition = condition;
+    /**
+     * Allows a visitor access to the specific object and it's data.
+     * @param visitor The visitor instance.
+     */
+    @Override
+    public final void accept(final IFPNodeVisitor visitor) {
+        visitor.visit(this);
+    }
+
+    /**
+     * Returns the string representation.
+     * @return The string representation.
+     */
+    @Override
+    public final String toString() {
+        return "Not";
     }
 }

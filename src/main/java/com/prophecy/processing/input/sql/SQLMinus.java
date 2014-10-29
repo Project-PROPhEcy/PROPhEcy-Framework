@@ -10,35 +10,24 @@ work. If not, see <http://creativecommons.org/licenses/by/4.0/>.
 
 package com.prophecy.processing.input.sql;
 
-import com.prophecy.database.DBAccess;
-import com.prophecy.utility.node.BNode;
-
-import java.util.Arrays;
+import com.prophecy.processing.input.sql.base.ISQLNodeVisitor;
+import com.prophecy.processing.input.sql.base.SQLNode;
 
 /**
  * Created by alpha_000 on 04.05.2014.
  */
-public class SQLMinus extends BNode<SQLType, ISQLNode> implements ISQLNode {
+public class SQLMinus extends SQLNode {
 
     //----------------------------------------
     // Class Functions
     //----------------------------------------
 
-
     /**
-     * Constructor
-     */
-    public SQLMinus() {
-        super(SQLType.Minus);
-    }
-
-
-    /**
-     * Prepares the sql node for the specific database access.
-     * @param dbAccess The database access.
+     * Allows a visitor access to the specific object and it's data.
+     * @param visitor The visitor instance.
      */
     @Override
-    public void prepareFor(DBAccess dbAccess) {
-
+    public final void accept(final ISQLNodeVisitor visitor) {
+        visitor.visit(this);
     }
 }

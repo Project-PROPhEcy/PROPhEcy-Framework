@@ -11,41 +11,25 @@ work. If not, see <http://creativecommons.org/licenses/by/4.0/>.
 package com.prophecy.processing.processor.contexts.formulapattern.tree;
 
 import com.prophecy.processing.input.condition.base.CNode;
-import com.prophecy.processing.processor.contexts.formulapattern.tree.base.FPNode;
-import com.prophecy.utility.node.BNode;
+import com.prophecy.processing.processor.contexts.formulapattern.tree.base.FPBNode;
+import com.prophecy.processing.processor.contexts.formulapattern.tree.base.IFPNodeVisitor;
 
 import java.util.*;
 
 /**
  * Created by alpha_000 on 27.05.2014.
  */
-public final class FPOr extends BNode<FPType, FPNode> implements FPNode {
+public final class FPOr extends FPBNode {
 
     //----------------------------------------
     // Class Variables
     //----------------------------------------
 
-
-    /**
-     * Saves the factorized state.
-     */
-    private boolean _factorized;
-
-    /**
-     * Saves the head attributes.
-     */
     private List<String> _headAttrs = null;
-
-    /**
-     * Saves the condition.
-     */
-    private final CNode _condition;
-
 
     //----------------------------------------
     // Class Properties
     //----------------------------------------
-
 
     /**
      * Gets the formula pattern head attributes.
@@ -53,11 +37,9 @@ public final class FPOr extends BNode<FPType, FPNode> implements FPNode {
      */
     @Override
     public final List<String> getHeadAttrs() throws Exception {
-
         if(_headAttrs == null) {
 
             _headAttrs = new ArrayList<>();
-
             final List<String> lHeadAttrs = getLeftChild().getHeadAttrs();
             final List<String> rHeadAttrs = getRightChild().getHeadAttrs();
 
@@ -68,7 +50,6 @@ public final class FPOr extends BNode<FPType, FPNode> implements FPNode {
 
             _headAttrs.addAll(lHeadAttrs);
         }
-
         return _headAttrs;
     }
 
@@ -77,29 +58,10 @@ public final class FPOr extends BNode<FPType, FPNode> implements FPNode {
      */
     @Override
     public final Map<Integer, FPSource> getSources() {
-
         final Map<Integer, FPSource> sources
                 = getLeftChild().getSources();
         sources.putAll(getRightChild().getSources());
-
         return sources;
-    }
-
-    /**
-     * Gets the construction condition.
-     */
-    @Override
-    public final CNode getCondition() {
-        return _condition;
-    }
-
-    /**
-     * Determines whether the lineage
-     * nodes should be factorized.
-     */
-    @Override
-    public final boolean isFactorized() {
-        return false;
     }
 
     /**
@@ -108,20 +70,17 @@ public final class FPOr extends BNode<FPType, FPNode> implements FPNode {
      */
     @Override
     public final int getId() {
-
         return Arrays.hashCode(new int[]{
-                getType().hashCode(),
+                FPOr.class.hashCode(),
                 getCondition().getId(),
                 getLeftChild().getId(),
                 getRightChild().getId()
         });
     }
 
-
     //----------------------------------------
     // Class Functions
     //----------------------------------------
-
 
     /**
      * Constructor
@@ -129,9 +88,24 @@ public final class FPOr extends BNode<FPType, FPNode> implements FPNode {
      * @param condition The construction Condition.
      */
     public FPOr(final boolean factorize, final CNode condition) {
-        super(FPType.Or);
+        super(factorize, condition);
+    }
 
-        _factorized = factorize;
-        _condition = condition;
+    /**
+     * Allows a visitor access to the specific object and it's data.
+     * @param visitor The visitor instance.
+     */
+    @Override
+    public final void accept(final IFPNodeVisitor visitor) {
+        visitor.visit(this);
+    }
+
+    /**
+     * Returns the string representation.
+     * @return The string representation.
+     */
+    @Override
+    public final String toString() {
+        return "Or";
     }
 }

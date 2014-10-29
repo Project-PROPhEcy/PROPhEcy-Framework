@@ -114,7 +114,7 @@ public final class FPAnd extends FPBNode {
      */
     @Override
     public final void accept(final IFPNodeVisitor visitor) {
-
+        visitor.visit(this);
     }
 
     /**

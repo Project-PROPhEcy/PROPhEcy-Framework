@@ -10,30 +10,24 @@ work. If not, see <http://creativecommons.org/licenses/by/4.0/>.
 
 package com.prophecy.processing.input.sql;
 
-import com.prophecy.database.DBAccess;
 import com.prophecy.processing.input.condition.base.CNode;
-import com.prophecy.utility.node.UNode;
+import com.prophecy.processing.input.sql.base.ISQLNodeVisitor;
+import com.prophecy.processing.input.sql.base.SQLNode;
 
 /**
  * Created by alpha_000 on 03.05.2014.
  */
-public class SQLSelection extends UNode<SQLType, ISQLNode> implements ISQLNode {
+public class SQLSelection extends SQLNode {
 
     //----------------------------------------
     // Class Variables
     //----------------------------------------
 
-
-    /**
-     * Saves the selection condition.
-     */
     private CNode _condition = null;
-
 
     //----------------------------------------
     // Class Properties
     //----------------------------------------
-
 
     /**
      * Gets the selection condition.
@@ -42,29 +36,24 @@ public class SQLSelection extends UNode<SQLType, ISQLNode> implements ISQLNode {
         return _condition;
     }
 
-
     //----------------------------------------
     // Class Functions
     //----------------------------------------
-
 
     /**
      * Constructor
      * @param condition The selection condition.
      */
     public SQLSelection(CNode condition) {
-        super(SQLType.Selection);
-
         _condition = condition;
     }
 
-
     /**
-     * Prepares the sql node for the specific database access.
-     * @param dbAccess The database access.
+     * Allows a visitor access to the specific object and it's data.
+     * @param visitor The visitor instance.
      */
     @Override
-    public void prepareFor(DBAccess dbAccess) {
-
+    public final void accept(final ISQLNodeVisitor visitor) {
+        visitor.visit(this);
     }
 }

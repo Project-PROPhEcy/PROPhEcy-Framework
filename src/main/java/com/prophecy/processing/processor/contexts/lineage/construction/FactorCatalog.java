@@ -1,6 +1,6 @@
 package com.prophecy.processing.processor.contexts.lineage.construction;
 
-import com.prophecy.processing.processor.contexts.lineage.tree.ILNode;
+import com.prophecy.processing.processor.contexts.lineage.tree.base.LNode;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -15,15 +15,12 @@ public final class FactorCatalog {
     // Class Variables
     //----------------------------------------
 
-
-    private final Map<GenTuple, ILNode> _nodes
+    private final Map<GenTuple, LNode> _nodes
             = new HashMap<>();
-
 
     //----------------------------------------
     // Class Properties
     //----------------------------------------
-
 
     /**
      * Gets the number of nodes in the node catalog.
@@ -35,10 +32,9 @@ public final class FactorCatalog {
     /**
      * Gets the already known nodes in this catalog.
      */
-    public final Map<GenTuple, ILNode> getNodes() {
+    public final Map<GenTuple, LNode> getNodes() {
         return Collections.unmodifiableMap(_nodes);
     }
-
 
     //----------------------------------------
     // Class Functions
