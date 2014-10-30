@@ -57,7 +57,7 @@ public final class FactorCatalog {
      * @param key The gentuple key.
      * @return The node.
      */
-    public final ILNode get(final GenTuple key) {
+    public final LNode get(final GenTuple key) {
         return _nodes.get(key);
     }
 
@@ -69,7 +69,7 @@ public final class FactorCatalog {
      * @param node The node
      * @return The node.
      */
-    public final ILNode put(final GenTuple key, final ILNode node) {
+    public final LNode put(final GenTuple key, final LNode node) {
         _nodes.putIfAbsent(key, node);
         return _nodes.get(key);
     }

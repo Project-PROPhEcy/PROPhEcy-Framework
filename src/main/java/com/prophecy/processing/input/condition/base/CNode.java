@@ -10,12 +10,10 @@ work. If not, see <http://creativecommons.org/licenses/by/4.0/>.
 
 package com.prophecy.processing.input.condition.base;
 
-import com.prophecy.utility.IVisitable;
-
 /**
  * Created by alpha_000 on 03.05.2014.
  */
-public abstract class CNode implements IVisitable<ICNodeVisitor> {
+public abstract class CNode implements ICNodeVisitable {
 
     //----------------------------------------
     // Interface Properties

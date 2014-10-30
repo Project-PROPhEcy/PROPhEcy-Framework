@@ -11,12 +11,11 @@ work. If not, see <http://creativecommons.org/licenses/by/4.0/>.
 package com.prophecy.processing.input.sql.base;
 
 import com.prophecy.database.DBAccess;
-import com.prophecy.utility.IVisitable;
 
 /**
  * Created by Christian Winkel on 23.04.14.
  */
-public abstract class SQLNode implements IVisitable<ISQLNodeVisitor> {
+public abstract class SQLNode implements ISQLNodeVisitable {
 
     //----------------------------------------
     // Interface Functions

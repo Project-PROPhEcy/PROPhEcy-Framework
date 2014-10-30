@@ -1,7 +1,5 @@
 package com.prophecy.processing.processor.contexts.lineage.tree.base;
 
-import com.prophecy.utility.IVisitable;
-
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -9,7 +7,7 @@ import java.util.Set;
 /**
  * Created by alpha_000 on 30.06.2014.
  */
-public abstract class LNode implements IVisitable<ILNodeVisitor> {
+public abstract class LNode implements ILNodeVisitable {
 
     //----------------------------------------
     // Class Variables

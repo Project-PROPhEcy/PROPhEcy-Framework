@@ -12,7 +12,6 @@ package com.prophecy.processing.processor.contexts.formulapattern.tree.base;
 
 import com.prophecy.processing.input.condition.base.CNode;
 import com.prophecy.processing.processor.contexts.formulapattern.tree.FPSource;
-import com.prophecy.utility.IVisitable;
 
 import java.util.List;
 import java.util.Map;
@@ -20,7 +19,7 @@ import java.util.Map;
 /**
  * Created by alpha_000 on 27.05.2014.
  */
-public abstract class FPNode implements IVisitable<IFPNodeVisitor> {
+public abstract class FPNode implements IFPNodeVisitable {
 
     //----------------------------------------
     // Class Variables

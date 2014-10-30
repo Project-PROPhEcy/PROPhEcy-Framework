@@ -1,9 +1,9 @@
-package com.prophecy.utility;
+package com.prophecy.processing.processor.contexts.lineage.tree.base;
 
 /**
- * Created by alpha_000 on 27.10.2014.
+ * Created by alpha_000 on 30.10.2014.
  */
-public interface IVisitable<VisitorT> {
+public interface ILNodeVisitable {
 
     //----------------------------------------
     // Interface Functions
@@ -13,5 +13,5 @@ public interface IVisitable<VisitorT> {
      * Allows a visitor access to the specific object and it's data.
      * @param visitor The visitor instance.
      */
-    public void accept(final VisitorT visitor);
+    public void accept(final ILNodeVisitor visitor);
 }

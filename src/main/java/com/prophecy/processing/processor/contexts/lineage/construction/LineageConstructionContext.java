@@ -25,6 +25,7 @@ import com.prophecy.processing.processor.contexts.inputrelation.InputRelationLis
 import com.prophecy.processing.processor.contexts.lineage.Event;
 import com.prophecy.processing.processor.contexts.lineage.EventManager;
 import com.prophecy.processing.processor.contexts.lineage.tree.*;
+import com.prophecy.processing.processor.contexts.lineage.tree.base.ILNodeVisitor;
 import com.prophecy.utility.ListUtils;
 
 import java.math.BigDecimal;
@@ -35,12 +36,11 @@ import java.util.Map;
  * Created by alpha_000 on 02.05.2014.
  */
 @ProcessorInfo(name = "Lineage Construction Processor", config = {})
-public final class LineageConstructionContext implements IProcessorContext {
+public final class LineageConstructionContext implements IProcessorContext, ILNodeVisitor {
 
     //----------------------------------------
     // Class Variables
     //----------------------------------------
-
 
     private final Map<Integer, FactorCatalog> _catalogs
             = new HashMap<>();
@@ -48,11 +48,9 @@ public final class LineageConstructionContext implements IProcessorContext {
     private final EventManager _eventManager
             = new EventManager();
 
-
     //----------------------------------------
     // Class Properties
     //----------------------------------------
-
 
     /**
      * Counts the number of nodes.
@@ -63,11 +61,9 @@ public final class LineageConstructionContext implements IProcessorContext {
                 0, _catalogs.values(), (a, b) -> a + b.size());
     }
 
-
     //----------------------------------------
     // Class Functions
     //----------------------------------------
-
 
     /**
      * Runs the processor context with the specific task.
@@ -131,7 +127,7 @@ public final class LineageConstructionContext implements IProcessorContext {
             }
         }
 
-        // Todo Event count hier auch erledigen udn nicht in calculation
+        // Todo Event count hier auch erledigen und nicht in calculation
         task.getInfo().setInfo("Unique Events", _eventManager.size());
         task.getInfo().setInfo("Nodes", getNodeCount());
         task.getData().insert(FactorCatalog.class,
@@ -468,4 +464,75 @@ public final class LineageConstructionContext implements IProcessorContext {
         }
     }
 
+    /**
+     * Visits the lineage binary and-node.
+     * @param lbAnd The lineage binary and-node.
+     */
+    @Override
+    public void visit(LBAnd lbAnd) {
+
+    }
+
+    /**
+     * Visits the lineage binary or-node.
+     * @param lbOr The lineage binary or-node.
+     */
+    @Override
+    public void visit(LBOr lbOr) {
+
+    }
+
+    /**
+     * Visits the lineage false-node.
+     * @param lFalse The lineage false-node.
+     */
+    @Override
+    public void visit(LFalse lFalse) {
+
+    }
+
+    /**
+     * Visits the lineage true-node.
+     * @param lTrue The lineage true-node.
+     */
+    @Override
+    public void visit(LTrue lTrue) {
+
+    }
+
+    /**
+     * Visits the lineage n-are and-node.
+     * @param lnAnd The lineage n-are and-node.
+     */
+    @Override
+    public void visit(LNAnd lnAnd) {
+
+    }
+
+    /**
+     * Visits the lineage n-are or-node.
+     * @param lnOr The lineage n-are or-node.
+     */
+    @Override
+    public void visit(LNOr lnOr) {
+
+    }
+
+    /**
+     * Visits the lineage unary not-node.
+     * @param luNot The lineage unary not-node.
+     */
+    @Override
+    public void visit(LUNot luNot) {
+
+    }
+
+    /**
+     * Visits the lineage source-node.
+     * @param lSource The lineage source-node.
+     */
+    @Override
+    public void visit(LSource lSource) {
+
+    }
 }
