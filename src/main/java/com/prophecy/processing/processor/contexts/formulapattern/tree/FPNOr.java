@@ -13,6 +13,9 @@ package com.prophecy.processing.processor.contexts.formulapattern.tree;
 import com.prophecy.processing.input.condition.base.CNode;
 import com.prophecy.processing.processor.contexts.formulapattern.tree.base.FPUNode;
 import com.prophecy.processing.processor.contexts.formulapattern.tree.base.IFPNodeVisitor;
+import com.prophecy.processing.processor.contexts.inputrelation.DomainTuple;
+import com.prophecy.processing.processor.contexts.lineage.tree.LNOr;
+import com.prophecy.processing.processor.contexts.lineage.tree.base.LNode;
 
 import java.util.Arrays;
 import java.util.List;
@@ -79,12 +82,25 @@ public final class FPNOr extends FPUNode {
     }
 
     /**
-     * Allows a visitor access to the specific object and it's data.
-     * @param visitor The visitor instance.
+     * Creates a lineage node from the formula pattern node.
+     * @return The lineage node.
      */
     @Override
-    public final void accept(final IFPNodeVisitor visitor) {
-        visitor.visit(this);
+    public LNode createLineageNode() {
+        return new LNOr();
+    }
+
+    /**
+     * Allows a visitor access to the specific object and it's data.
+     *
+     * @param visitor The visitor instance.
+     * @param lNode The lineage node.
+     * @param d The current domain tuple.
+     * @param sourceId current The source id.
+     */
+    @Override
+    public void accept(IFPNodeVisitor visitor, LNode lNode, DomainTuple d, int sourceId) {
+        visitor.visit(this, lNode, d, sourceId);
     }
 
     /**
@@ -95,4 +111,5 @@ public final class FPNOr extends FPUNode {
     public final String toString() {
         return "NOr";
     }
+
 }

@@ -19,13 +19,14 @@ import com.prophecy.processing.processor.IProcessorContext;
 import com.prophecy.processing.processor.ProcessorInfo;
 import com.prophecy.processing.processor.contexts.formulapattern.tree.*;
 import com.prophecy.processing.processor.contexts.formulapattern.tree.base.FPNode;
+import com.prophecy.processing.processor.contexts.formulapattern.tree.base.IFPNodeVisitor;
 import com.prophecy.processing.processor.contexts.inputrelation.DomainTuple;
 import com.prophecy.processing.processor.contexts.inputrelation.IInputRelation;
 import com.prophecy.processing.processor.contexts.inputrelation.InputRelationList;
 import com.prophecy.processing.processor.contexts.lineage.Event;
 import com.prophecy.processing.processor.contexts.lineage.EventManager;
 import com.prophecy.processing.processor.contexts.lineage.tree.*;
-import com.prophecy.processing.processor.contexts.lineage.tree.base.ILNodeVisitor;
+import com.prophecy.processing.processor.contexts.lineage.tree.base.LNode;
 import com.prophecy.utility.ListUtils;
 
 import java.math.BigDecimal;
@@ -36,7 +37,7 @@ import java.util.Map;
  * Created by alpha_000 on 02.05.2014.
  */
 @ProcessorInfo(name = "Lineage Construction Processor", config = {})
-public final class LineageConstructionContext implements IProcessorContext, ILNodeVisitor {
+public final class LineageConstructionContext implements IProcessorContext, IFPNodeVisitor {
 
     //----------------------------------------
     // Class Variables
@@ -134,149 +135,6 @@ public final class LineageConstructionContext implements IProcessorContext, ILNo
                 getFactorCatalog(fpRoot.getId()));
         task.getData().insert(EventManager.class,
                 _eventManager);
-    }
-
-
-    /**
-     * Inserts the path into the lineage.
-     * @param lin The current lineage node.
-     * @param fp The current formula pattern node.
-     * @param d The domain tuple.
-     * @param sourceId The source id.
-     */
-    private void insertPath(ILNode lin, final FPNode fp, final DomainTuple d, final int sourceId)
-            throws Exception {
-
-        // If lin is null, we have an root
-        // node, which needs to be created.
-        if(lin == null)
-            lin = setupNode(fp, d, null);
-
-        // The lineage type could be false
-        // because of false condition in setupNode.
-        if(lin.getType() == LType.False)
-            return;
-
-        switch(fp.getType()) {
-
-            case NOr: {
-
-                final FPNOr fpNOr = (FPNOr) fp;
-                final LOr lOr = (LOr) lin;
-
-                final ILNode child = setupNode(
-                        fpNOr.getChild(), d, lin);
-
-                if( ! lOr.containsChild(child) )
-                    lOr.addChild(child);
-
-                insertPath(child, fpNOr
-                        .getChild(), d, sourceId);
-
-                break;
-            }
-            case And: {
-
-                final FPAnd fpAnd = (FPAnd) fp;
-                final LAnd lAnd = (LAnd) lin;
-
-                if(fpAnd.getLeftChild().containsSourceId(sourceId)) {
-                    if(lAnd.getChild(0).getType() == LType.False) {
-
-                        final ILNode child = setupNode(
-                                fpAnd.getLeftChild(), d, lin);
-                        lAnd.replaceChild(lAnd.getChild(0), child);
-                    }
-
-                    insertPath(lAnd.getChild(0), fpAnd
-                            .getLeftChild(), d, sourceId);
-                }
-
-                if(fpAnd.getRightChild().containsSourceId(sourceId)) {
-                    if(lAnd.getChild(1).getType() == LType.False) {
-
-                        final ILNode child = setupNode(
-                                fpAnd.getRightChild(), d, lin);
-                        lAnd.replaceChild(lAnd.getChild(1), child);
-                    }
-
-                    insertPath(lAnd.getChild(1), fpAnd
-                            .getRightChild(), d, sourceId);
-                }
-
-                break;
-            }
-            case Or: {
-
-                final FPOr fpOr = (FPOr) fp;
-                final LOr lOr = (LOr) lin;
-
-                if(fpOr.getLeftChild().containsSourceId(sourceId)) {
-                    if(lOr.getChild(0).getType() == LType.False) {
-
-                        final ILNode child = setupNode(
-                                fpOr.getLeftChild(), d, lin);
-                        lOr.replaceChild(lOr.getChild(0), child);
-                    }
-
-                    insertPath(lOr.getChild(0), fpOr
-                            .getLeftChild(), d, sourceId);
-                }
-
-                if(fpOr.getRightChild().containsSourceId(sourceId)) {
-                    if(lOr.getChild(1).getType() == LType.False) {
-
-                        final ILNode child = setupNode(
-                                fpOr.getRightChild(), d, lin);
-                        lOr.replaceChild(lOr.getChild(1), child);
-                    }
-
-                    insertPath(lOr.getChild(1), fpOr
-                            .getRightChild(), d, sourceId);
-                }
-
-                break;
-            }
-            case Not: {
-
-                final FPNot fpNot = (FPNot) fp;
-                final LUNot lNot = (LUNot) lin;
-
-                if(lNot.getChild().getType() == LType.False) {
-
-                    final ILNode child = setupNode(
-                            fpNot.getChild(), d, lin);
-                    lNot.setChild(child);
-                }
-
-                insertPath(lNot.getChild(),
-                        fpNot.getChild(), d, sourceId);
-
-                break;
-            }
-            case Source: {
-
-                final LSource lSource = (LSource) lin;
-
-                if(d.getSourceType(sourceId) == 2) {
-
-                    final Event event = _eventManager.create(
-                            d.getBID(sourceId),
-                            d.getTID(sourceId),
-                            d.getPROB(sourceId)
-                    );
-
-                    lSource.add(event);
-                }
-
-                break;
-            }
-            default:
-
-                throw new Exception(String.format(
-                        "Unknown formula pattern type: %s.",
-                                fp.getType()));
-        }
     }
 
 
@@ -465,74 +323,199 @@ public final class LineageConstructionContext implements IProcessorContext, ILNo
     }
 
     /**
-     * Visits the lineage binary and-node.
-     * @param lbAnd The lineage binary and-node.
+     * Visits the formula pattern and-node.
+     * @param fpAnd The formula pattern and-node.
+     * @param lNode The lineage node.
+     * @param d The current domain tuple.
+     * @param sourceId The current source id.
      */
     @Override
-    public void visit(LBAnd lbAnd) {
+    public void visit(FPAnd fpAnd, LNode lNode, DomainTuple d, int sourceId) {
 
+        // If lNode is null, we have an root
+        // node, which needs to be created.
+        if(lNode == null)
+            lNode = setupNode(fpAnd, d, null);
+
+        // The lineage type could be false
+        // because of false condition in setupNode.
+        if(lNode instanceof LFalse)
+            return;
+
+        final FPAnd fpAnd = (FPAnd) fp;
+        final LAnd lAnd = (LAnd) lin;
+
+        if(fpAnd.getLeftChild().containsSourceId(sourceId)) {
+            if(lAnd.getChild(0).getType() == LType.False) {
+
+                final ILNode child = setupNode(
+                        fpAnd.getLeftChild(), d, lin);
+                lAnd.replaceChild(lAnd.getChild(0), child);
+            }
+
+            insertPath(lAnd.getChild(0), fpAnd
+                    .getLeftChild(), d, sourceId);
+        }
+
+        if(fpAnd.getRightChild().containsSourceId(sourceId)) {
+            if(lAnd.getChild(1).getType() == LType.False) {
+
+                final ILNode child = setupNode(
+                        fpAnd.getRightChild(), d, lin);
+                lAnd.replaceChild(lAnd.getChild(1), child);
+            }
+
+            insertPath(lAnd.getChild(1), fpAnd
+                    .getRightChild(), d, sourceId);
+        }
     }
 
     /**
-     * Visits the lineage binary or-node.
-     * @param lbOr The lineage binary or-node.
+     * Visits the formula pattern or-node.
+     * @param fpOr The formula pattern or-node.
+     * @param lNode The lineage node.
+     * @param d The current domain tuple.
+     * @param sourceId The current source id.
      */
     @Override
-    public void visit(LBOr lbOr) {
+    public void visit(FPOr fpOr, LNode lNode, DomainTuple d, int sourceId) {
 
+        // If lNode is null, we have an root
+        // node, which needs to be created.
+        if(lNode == null)
+            lNode = setupNode(fpOr, d, null);
+
+        // The lineage type could be false
+        // because of false condition in setupNode.
+        if(lNode instanceof LFalse)
+            return;
+
+        final FPOr fpOr = (FPOr) fp;
+        final LOr lOr = (LOr) lin;
+
+        if(fpOr.getLeftChild().containsSourceId(sourceId)) {
+            if(lOr.getChild(0).getType() == LType.False) {
+
+                final ILNode child = setupNode(
+                        fpOr.getLeftChild(), d, lin);
+                lOr.replaceChild(lOr.getChild(0), child);
+            }
+
+            insertPath(lOr.getChild(0), fpOr
+                    .getLeftChild(), d, sourceId);
+        }
+
+        if(fpOr.getRightChild().containsSourceId(sourceId)) {
+            if(lOr.getChild(1).getType() == LType.False) {
+
+                final ILNode child = setupNode(
+                        fpOr.getRightChild(), d, lin);
+                lOr.replaceChild(lOr.getChild(1), child);
+            }
+
+            insertPath(lOr.getChild(1), fpOr
+                    .getRightChild(), d, sourceId);
+        }
     }
 
     /**
-     * Visits the lineage false-node.
-     * @param lFalse The lineage false-node.
+     * Visits the formula pattern n-are or-node.
+     * @param fpNOr The formula pattern n-are or-node.
+     * @param lNode The lineage node.
+     * @param d The current domain tuple.
+     * @param sourceId The current source id.
      */
     @Override
-    public void visit(LFalse lFalse) {
+    public void visit(FPNOr fpNOr, LNode lNode, DomainTuple d, int sourceId) {
 
+        // If lNode is null, we have an root
+        // node, which needs to be created.
+        if(lNode == null)
+            lNode = setupNode(fpNOr, d, null);
+
+        // The lineage type could be false
+        // because of false condition in setupNode.
+        if(lNode instanceof LFalse)
+            return;
+
+        final FPNOr fpNOr = (FPNOr) fp;
+        final LOr lOr = (LOr) lin;
+
+        final ILNode child = setupNode(
+                fpNOr.getChild(), d, lin);
+
+        if( ! lOr.containsChild(child) )
+            lOr.addChild(child);
+
+        insertPath(child, fpNOr
+                .getChild(), d, sourceId);
     }
 
     /**
-     * Visits the lineage true-node.
-     * @param lTrue The lineage true-node.
+     * Visits the formula pattern not-node.
+     * @param fpNot The formula pattern not-node.
+     * @param lNode The lineage node.
+     * @param d The current domain tuple.
+     * @param sourceId The current source id.
      */
     @Override
-    public void visit(LTrue lTrue) {
+    public void visit(FPNot fpNot, LNode lNode, DomainTuple d, int sourceId) {
 
+        // If lNode is null, we have an root
+        // node, which needs to be created.
+        if(lNode == null)
+            lNode = setupNode(fpNot, d, null);
+
+        // The lineage type could be false
+        // because of false condition in setupNode.
+        if(lNode instanceof LFalse)
+            return;
+
+        final FPNot fpNot = (FPNot) fp;
+        final LUNot lNot = (LUNot) lin;
+
+        if(lNot.getChild().getType() == LType.False) {
+
+            final ILNode child = setupNode(
+                    fpNot.getChild(), d, lin);
+            lNot.setChild(child);
+        }
+
+        insertPath(lNot.getChild(),
+                fpNot.getChild(), d, sourceId);
     }
 
     /**
-     * Visits the lineage n-are and-node.
-     * @param lnAnd The lineage n-are and-node.
+     * Visits the formula pattern source-node.
+     * @param fpSource The formula pattern source-node.
+     * @param lNode The lineage node.
+     * @param d The current domain tuple.
+     * @param sourceId The current source id.
      */
     @Override
-    public void visit(LNAnd lnAnd) {
+    public void visit(FPSource fpSource, LNode lNode, DomainTuple d, int sourceId) {
 
-    }
+        // If lNode is null, we have an root
+        // node, which needs to be created.
+        if(lNode == null)
+            lNode = setupNode(fpSource, d, null);
 
-    /**
-     * Visits the lineage n-are or-node.
-     * @param lnOr The lineage n-are or-node.
-     */
-    @Override
-    public void visit(LNOr lnOr) {
+        // The lineage type could be false
+        // because of false condition in setupNode.
+        if(lNode instanceof LFalse)
+            return;
 
-    }
+        final LSource lSource = (LSource) lin;
 
-    /**
-     * Visits the lineage unary not-node.
-     * @param luNot The lineage unary not-node.
-     */
-    @Override
-    public void visit(LUNot luNot) {
+        if(d.getSourceType(sourceId) == 2) {
 
-    }
+            final Event event = _eventManager.create(
+                    d.getBID(sourceId),
+                    d.getTID(sourceId),
+                    d.getPROB(sourceId)
+            );
 
-    /**
-     * Visits the lineage source-node.
-     * @param lSource The lineage source-node.
-     */
-    @Override
-    public void visit(LSource lSource) {
-
+            lSource.add(event);
+        }
     }
 }

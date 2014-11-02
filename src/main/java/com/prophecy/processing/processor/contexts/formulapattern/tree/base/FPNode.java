@@ -12,6 +12,7 @@ package com.prophecy.processing.processor.contexts.formulapattern.tree.base;
 
 import com.prophecy.processing.input.condition.base.CNode;
 import com.prophecy.processing.processor.contexts.formulapattern.tree.FPSource;
+import com.prophecy.processing.processor.contexts.lineage.tree.base.LNode;
 
 import java.util.List;
 import java.util.Map;
@@ -77,6 +78,12 @@ public abstract class FPNode implements IFPNodeVisitable {
         _factorized = factorize;
         _condition = condition;
     }
+
+    /**
+     * Creates a lineage node from the formula pattern node.
+     * @return The lineage node.
+     */
+    public abstract LNode createLineageNode();
 
     /**
      * Determines whether this formula pattern
