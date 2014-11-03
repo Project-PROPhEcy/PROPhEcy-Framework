@@ -38,10 +38,11 @@ public final class CTrue extends CNode {
     /**
      * Allows a visitor access to the specific object and it's data.
      * @param visitor The visitor instance.
+     * @param retValue A possible return value.
      */
     @Override
-    public void accept(ICNodeVisitor visitor) {
-        visitor.visit(this);
+    public final <ReturnT> void accept(final ICNodeVisitor<ReturnT> visitor, ReturnT retValue) {
+        visitor.visit(this, retValue);
     }
 
     /**

@@ -43,10 +43,11 @@ public final class CNot extends CUNode {
     /**
      * Allows a visitor access to the specific object and it's data.
      * @param visitor The visitor instance.
+     * @param retValue A possible return value.
      */
     @Override
-    public final void accept(final ICNodeVisitor visitor) {
-        visitor.visit(this);
+    public final <ReturnT> void accept(final ICNodeVisitor<ReturnT> visitor, ReturnT retValue) {
+        visitor.visit(this, retValue);
     }
 
     /**

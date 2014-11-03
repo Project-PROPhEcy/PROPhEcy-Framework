@@ -13,6 +13,7 @@ package com.prophecy.processing.processor.contexts.lineage.construction;
 import com.prophecy.processing.Task;
 import com.prophecy.processing.input.condition.*;
 import com.prophecy.processing.input.condition.base.CNode;
+import com.prophecy.processing.input.condition.base.ICNodeVisitor;
 import com.prophecy.processing.input.term.Attribute;
 import com.prophecy.processing.input.term.Value;
 import com.prophecy.processing.processor.IProcessorContext;
@@ -28,6 +29,7 @@ import com.prophecy.processing.processor.contexts.lineage.EventManager;
 import com.prophecy.processing.processor.contexts.lineage.tree.*;
 import com.prophecy.processing.processor.contexts.lineage.tree.base.LNode;
 import com.prophecy.utility.ListUtils;
+import com.prophecy.utility.Reference;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -83,6 +85,7 @@ public final class LineageConstructionContext implements IProcessorContext, IFPN
 
             rel.prepareNextIteration();
             for (final DomainTuple d : rel) {
+                _currentDomainTuple = d;
                 task.getInfo().measureTime("Lineage", () -> {
                     for (final FPSource source : fpRoot.getSources().values()) {
 
@@ -125,6 +128,8 @@ public final class LineageConstructionContext implements IProcessorContext, IFPN
                         }
                     }
                 });
+
+                _currentDomainTuple = null;
             }
         }
 

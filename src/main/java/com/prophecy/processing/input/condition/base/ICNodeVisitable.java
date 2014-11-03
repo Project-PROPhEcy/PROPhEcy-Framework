@@ -12,6 +12,7 @@ public interface ICNodeVisitable {
     /**
      * Allows a visitor access to the specific object and it's data.
      * @param visitor The visitor instance.
+     * @param param A possible parameter.
      */
-    public void accept(final ICNodeVisitor visitor);
+    public <ParamT> void accept(final ICNodeVisitor<ParamT> visitor, ParamT param);
 }
