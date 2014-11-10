@@ -172,12 +172,13 @@ public class ConditionInterpreter implements ICNodeVisitor<Reference<Boolean>>, 
     @Override
     public void visit(Attribute attribute, Void param) {
         try {
-            if(_value1 == null) _value1 = _domainTuple.getAttr(attribute.getName());
-            else _value2 = _domainTuple.getAttr(attribute.getName());
+            if(_value1 == null)
+                _value1 = _domainTuple.getAttr(attribute.getName());
+            else
+                _value2 = _domainTuple.getAttr(attribute.getName());
         }
         catch (SQLException e) {
-            System.err.println(String.format(
-                    "Unknown attribute: %s", attribute.getName()));
+            e.printStackTrace();
         }
     }
 
@@ -188,7 +189,9 @@ public class ConditionInterpreter implements ICNodeVisitor<Reference<Boolean>>, 
      */
     @Override
     public void visit(Value value, Void param) {
-        if(_value1 == null) _value1 = value.getInner();
-        else _value2 = value.getInner();
+        if(_value1 == null)
+            _value1 = value.getInner();
+        else
+            _value2 = value.getInner();
     }
 }

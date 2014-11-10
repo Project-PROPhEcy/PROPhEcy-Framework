@@ -16,6 +16,7 @@ public abstract class LNNode extends LNode {
     // Class Variables
     //----------------------------------------
 
+    private final LNode _defaultChild = new LFalse();
     private final Set<LNode> _children
             = new LinkedHashSet<>();
 
@@ -46,7 +47,7 @@ public abstract class LNNode extends LNode {
      * Constructor
      */
     public LNNode() {
-        insert(new LFalse());
+        insert(_defaultChild);
     }
 
     /**
@@ -64,6 +65,8 @@ public abstract class LNNode extends LNode {
      * @return The boolean value.
      */
     final public boolean insert(final LNode child) {
+        if(contains(_defaultChild))
+            _children.remove(_defaultChild);
         return _children.add(child);
     }
 
@@ -74,7 +77,7 @@ public abstract class LNNode extends LNode {
      */
     public boolean remove(final LNode child) {
         return (_children.remove(child))
-                && ((size() != 0) || insert(new LFalse()));
+                && ((size() != 0) || insert(_defaultChild));
     }
 
     /**

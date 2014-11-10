@@ -150,70 +150,31 @@ public final class LineageConstructionContext implements IProcessorContext, IFPN
      * @param parent The parent node.
      * @return The configured lineage node.
      */
-    private ILNode setupNode(final FPNode fp, final DomainTuple d, final ILNode parent)
-            throws Exception {
+    private LNode setupNode(final FPNode fp, final DomainTuple d, final LNode parent) {
 
-        if( ! evaluate( fp.getCondition(), d ) ) {
+        ConditionInterpreter cInterpreter
+                = new ConditionInterpreter(fp.getCondition(), d);
+
+        if( ! cInterpreter.evaluate()) {
             return new LFalse();
         }
 
         final FactorCatalog factCat
                 = getFactorCatalog(fp.getId());
 
-        final GenTuple key = (fp.isFactorized() || parent == null)
-                ? GenTuple.From(fp, d)
-                : GenTuple.From(fp, d, parent.hashCode());
+        GenTuple key = null;
+        try {
+            key = (fp.isFactorized() || parent == null)
+                    ? GenTuple.From(fp, d)
+                    : GenTuple.From(fp, d, parent.hashCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         if(factCat.contains(key))
             return factCat.get(key);
 
-        switch(fp.getType()) {
-
-            case NOr: return factCat.put(key, new LOr(true));
-            case Not: return factCat.put(key, new LUNot());
-            case And: {
-
-                final LAnd lAnd = new LAnd(false);
-
-                // We explicit need to set two child nodes,
-                // because NNode sets only one default node.
-                lAnd.addChild(new LFalse());
-                lAnd.addChild(new LFalse());
-
-                return factCat.put(key, lAnd);
-            }
-            case Or: {
-
-                final LOr lOr = new LOr(false);
-
-                // We explicit need to set two child nodes,
-                // because NNode sets only one default node.
-                lOr.addChild(new LFalse());
-                lOr.addChild(new LFalse());
-
-                return factCat.put(key, lOr);
-            }
-            case Source: {
-
-                final FPSource fpSource = (FPSource)fp;
-                final LSource lSource = new LSource();
-
-                // The mask priority is later used
-                // for the probability calculation
-                // in order to decide which bid's
-                // need to be masked first.
-
-                lSource.setMaskPriority(
-                        fpSource.getMaskPriority());
-
-                return factCat.put(key, lSource);
-            }
-            default:
-
-                throw new Exception(String.format(
-                        "Unknown formula pattern type: %s.",
-                                fp.getType()));
-        }
+        return factCat.put(key, fp.createLineageNode());
     }
 
 
@@ -223,108 +184,10 @@ public final class LineageConstructionContext implements IProcessorContext, IFPN
      * @return The factor catalog.
      */
     private FactorCatalog getFactorCatalog(final int id) {
-
         if(!_catalogs.containsKey(id))
             _catalogs.put(id, new FactorCatalog());
 
         return _catalogs.get(id);
-    }
-
-
-    /**
-     * Evaluates the condition tree with the specific domain tuple.
-     * @param condition The condition tree.
-     * @param d The domain tuple.
-     * @return The boolean value.
-     */
-    private boolean evaluate(final CNode condition, final DomainTuple d)
-            throws Exception {
-
-        switch(condition.getType()) {
-            case And:
-
-                final CAnd and = (CAnd) condition;
-
-                return evaluate(and.getLeftChild(), d)
-                        && evaluate(and.getRightChild(), d);
-
-            case Or:
-
-                final COr or = (COr) condition;
-
-                return evaluate(or.getLeftChild(), d)
-                        || evaluate(or.getRightChild(), d);
-
-            case Not:
-
-                final CNot not = (CNot) condition;
-
-                return !evaluate(not.getChild(), d);
-
-            case Op:
-
-                final COp op = (COp) condition;
-
-                Object value1;
-                Object value2;
-
-                if(op.getLTerm() instanceof Attribute)
-                    value1 = d.getAttr(((Attribute) op.getLTerm()).getName());
-                else if(op.getLTerm() instanceof Value)
-                    value1 = ((Value) op.getLTerm()).getInner();
-                else
-                    throw new Exception(
-                            String.format("Unknown term type: %s",
-                                    op.getLTerm().getClass()));
-
-                if(op.getRTerm() instanceof Attribute)
-                    value2 = d.getAttr(((Attribute) op.getRTerm()).getName());
-                else if(op.getRTerm() instanceof Value)
-                    value2 = ((Value) op.getRTerm()).getInner();
-                else
-                    throw new Exception(
-                            String.format("Unknown term type: %s",
-                                    op.getRTerm().getClass()));
-
-                if(value1 instanceof BigDecimal)
-                    value1 = ((BigDecimal) value1).doubleValue();
-                if(value2 instanceof BigDecimal)
-                    value2 = ((BigDecimal) value2).doubleValue();
-                if(value1 instanceof Integer)
-                    value1 = ((Integer) value1).doubleValue();
-                if(value2 instanceof Integer)
-                    value2 = ((Integer) value2).doubleValue();
-
-                switch(op.getOpType()) {
-
-                    case Equal: return value1.equals(value2);
-                    case Unequal: return !value1.equals(value2);
-                    case Greater: return ((Double)value1) > ((Double)value2);
-                    case Less: return ((Double)value1) < ((Double)value2);
-                    case GreaterEqual: return ((Double)value1) >= ((Double)value2);
-                    case LessEqual: return ((Double)value1) <= ((Double)value2);
-
-                    default:
-
-                        throw new Exception(
-                                String.format("Unknown operation type: %s.",
-                                        op.getOpType()));
-                }
-
-            case True:
-
-                return true;
-
-            case False:
-
-                return false;
-
-            default:
-
-                throw new Exception(
-                        String.format("Unknown condition type: %s.",
-                                condition.getType()));
-        }
     }
 
     /**
@@ -347,31 +210,27 @@ public final class LineageConstructionContext implements IProcessorContext, IFPN
         if(lNode instanceof LFalse)
             return;
 
-        final FPAnd fpAnd = (FPAnd) fp;
-        final LAnd lAnd = (LAnd) lin;
-
+        final LBAnd lAnd = (LBAnd) lNode;
         if(fpAnd.getLeftChild().containsSourceId(sourceId)) {
-            if(lAnd.getChild(0).getType() == LType.False) {
-
-                final ILNode child = setupNode(
-                        fpAnd.getLeftChild(), d, lin);
-                lAnd.replaceChild(lAnd.getChild(0), child);
+            if(lAnd.getLeftChild() instanceof LFalse) {
+                final LNode child = setupNode(
+                        fpAnd.getLeftChild(), d, lNode);
+                lAnd.setLeftChild(child);
             }
 
-            insertPath(lAnd.getChild(0), fpAnd
-                    .getLeftChild(), d, sourceId);
+            fpAnd.getLeftChild().accept(
+                    this, lAnd.getLeftChild(), d, sourceId);
         }
 
         if(fpAnd.getRightChild().containsSourceId(sourceId)) {
-            if(lAnd.getChild(1).getType() == LType.False) {
-
-                final ILNode child = setupNode(
-                        fpAnd.getRightChild(), d, lin);
-                lAnd.replaceChild(lAnd.getChild(1), child);
+            if(lAnd.getRightChild() instanceof LFalse) {
+                final LNode child = setupNode(
+                        fpAnd.getRightChild(), d, lNode);
+                lAnd.setRightChild(child);
             }
 
-            insertPath(lAnd.getChild(1), fpAnd
-                    .getRightChild(), d, sourceId);
+            fpAnd.getRightChild().accept(
+                    this, lAnd.getRightChild(), d, sourceId);
         }
     }
 
@@ -395,31 +254,27 @@ public final class LineageConstructionContext implements IProcessorContext, IFPN
         if(lNode instanceof LFalse)
             return;
 
-        final FPOr fpOr = (FPOr) fp;
-        final LOr lOr = (LOr) lin;
-
+        final LBOr lOr = (LBOr) lNode;
         if(fpOr.getLeftChild().containsSourceId(sourceId)) {
-            if(lOr.getChild(0).getType() == LType.False) {
-
-                final ILNode child = setupNode(
-                        fpOr.getLeftChild(), d, lin);
-                lOr.replaceChild(lOr.getChild(0), child);
+            if(lOr.getLeftChild() instanceof LFalse) {
+                final LNode child = setupNode(
+                        fpOr.getLeftChild(), d, lNode);
+                lOr.setLeftChild(child);
             }
 
-            insertPath(lOr.getChild(0), fpOr
-                    .getLeftChild(), d, sourceId);
+            fpOr.getLeftChild().accept(
+                    this, lOr.getLeftChild(), d, sourceId);
         }
 
         if(fpOr.getRightChild().containsSourceId(sourceId)) {
-            if(lOr.getChild(1).getType() == LType.False) {
-
-                final ILNode child = setupNode(
-                        fpOr.getRightChild(), d, lin);
-                lOr.replaceChild(lOr.getChild(1), child);
+            if(lOr.getRightChild() instanceof LFalse) {
+                final LNode child = setupNode(
+                        fpOr.getRightChild(), d, lNode);
+                lOr.setRightChild(child);
             }
 
-            insertPath(lOr.getChild(1), fpOr
-                    .getRightChild(), d, sourceId);
+            fpOr.getRightChild().accept(
+                    this, lOr.getRightChild(), d, sourceId);
         }
     }
 
@@ -443,17 +298,15 @@ public final class LineageConstructionContext implements IProcessorContext, IFPN
         if(lNode instanceof LFalse)
             return;
 
-        final FPNOr fpNOr = (FPNOr) fp;
-        final LOr lOr = (LOr) lin;
+        final LNOr lOr = (LNOr) lNode;
+        final LNode child = setupNode(
+                fpNOr.getChild(), d, lNode);
 
-        final ILNode child = setupNode(
-                fpNOr.getChild(), d, lin);
+        if( ! lOr.contains(child) )
+            lOr.insert(child);
 
-        if( ! lOr.containsChild(child) )
-            lOr.addChild(child);
-
-        insertPath(child, fpNOr
-                .getChild(), d, sourceId);
+        fpNOr.getChild().accept(
+                this, child, d, sourceId);
     }
 
     /**
