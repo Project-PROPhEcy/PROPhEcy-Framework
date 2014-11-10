@@ -12,7 +12,7 @@ package com.prophecy.processing.input.condition;
 
 import com.prophecy.processing.input.condition.base.CNode;
 import com.prophecy.processing.input.condition.base.ICNodeVisitor;
-import com.prophecy.processing.input.term.ITerm;
+import com.prophecy.processing.input.term.base.ITerm;
 
 /**
  * Created by alpha_000 on 05.05.2014.

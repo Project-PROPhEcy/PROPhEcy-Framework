@@ -12,7 +12,7 @@ package com.prophecy.processing.input.sql;
 
 import com.prophecy.processing.input.sql.base.ISQLNodeVisitor;
 import com.prophecy.processing.input.sql.base.SQLNode;
-import com.prophecy.processing.input.term.ITerm;
+import com.prophecy.processing.input.term.base.ITerm;
 
 import java.util.Collections;
 import java.util.List;

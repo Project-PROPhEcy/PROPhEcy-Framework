@@ -4,7 +4,7 @@ import com.prophecy.measure.IMeasureInput;
 import com.prophecy.processing.input.condition.*;
 import com.prophecy.processing.input.condition.base.CNode;
 import com.prophecy.processing.input.term.Attribute;
-import com.prophecy.processing.input.term.ITerm;
+import com.prophecy.processing.input.term.base.ITerm;
 import com.prophecy.processing.input.term.Value;
 import com.prophecy.processing.processor.contexts.formulapattern.tree.*;
 import com.prophecy.processing.processor.contexts.formulapattern.tree.base.FPNode;

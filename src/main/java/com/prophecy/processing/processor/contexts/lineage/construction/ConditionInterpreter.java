@@ -5,15 +5,17 @@ import com.prophecy.processing.input.condition.base.CNode;
 import com.prophecy.processing.input.condition.base.ICNodeVisitor;
 import com.prophecy.processing.input.term.Attribute;
 import com.prophecy.processing.input.term.Value;
+import com.prophecy.processing.input.term.base.ITermVisitor;
 import com.prophecy.processing.processor.contexts.inputrelation.DomainTuple;
 import com.prophecy.utility.Reference;
 
 import java.math.BigDecimal;
+import java.sql.SQLException;
 
 /**
  * Created by alpha_000 on 03.11.2014.
  */
-public class ConditionInterpreter implements ICNodeVisitor<Reference<Boolean>> {
+public class ConditionInterpreter implements ICNodeVisitor<Reference<Boolean>>, ITermVisitor<Void> {
 
     //----------------------------------------
     // Class Variables
@@ -21,6 +23,9 @@ public class ConditionInterpreter implements ICNodeVisitor<Reference<Boolean>> {
 
     private final CNode _condition;
     private final DomainTuple _domainTuple;
+
+    private Object _value1 = null;
+    private Object _value2 = null;
 
     //----------------------------------------
     // Class Functions
@@ -73,10 +78,14 @@ public class ConditionInterpreter implements ICNodeVisitor<Reference<Boolean>> {
      */
     @Override
     public final void visit(final COr cOr, final Reference<Boolean> param) {
-        final COr or = (COr) condition;
 
-        return evaluate(or.getLeftChild(), d)
-                || evaluate(or.getRightChild(), d);
+        final Reference<Boolean> leftResult = new Reference<>(false);
+        final Reference<Boolean> rightResult = new Reference<>(false);
+
+        cOr.getLeftChild().accept(this, leftResult);
+        cOr.getRightChild().accept(this, rightResult);
+
+        param.value = leftResult.value || rightResult.value;
     }
 
     /**
@@ -86,6 +95,7 @@ public class ConditionInterpreter implements ICNodeVisitor<Reference<Boolean>> {
      */
     @Override
     public final void visit(final CFalse cFalse, final Reference<Boolean> param) {
+        param.value = false;
     }
 
     /**
@@ -95,7 +105,7 @@ public class ConditionInterpreter implements ICNodeVisitor<Reference<Boolean>> {
      */
     @Override
     public final void visit(final CTrue cTrue, final Reference<Boolean> param) {
-
+        param.value = true;
     }
 
     /**
@@ -105,9 +115,12 @@ public class ConditionInterpreter implements ICNodeVisitor<Reference<Boolean>> {
      */
     @Override
     public final void visit(final CNot cNot, final Reference<Boolean> param) {
-        final CNot not = (CNot) condition;
 
-        return !evaluate(not.getChild(), d);
+        final Reference<Boolean> result
+                = new Reference<>(false);
+
+        cNot.getChild().accept(this, result);
+        param.value = ! result.value;
     }
 
     /**
@@ -117,52 +130,65 @@ public class ConditionInterpreter implements ICNodeVisitor<Reference<Boolean>> {
      */
     @Override
     public final void visit(final COp cOp, final Reference<Boolean> param) {
-        final COp op = (COp) condition;
 
-        Object value1;
-        Object value2;
+        cOp.getLTerm().accept(this, null);
+        cOp.getRTerm().accept(this, null);
 
-        if(op.getLTerm() instanceof Attribute)
-            value1 = d.getAttr(((Attribute) op.getLTerm()).getName());
-        else if(op.getLTerm() instanceof Value)
-            value1 = ((Value) op.getLTerm()).getInner();
-        else
-            throw new Exception(
-                    String.format("Unknown term type: %s",
-                            op.getLTerm().getClass()));
-
-        if(op.getRTerm() instanceof Attribute)
-            value2 = d.getAttr(((Attribute) op.getRTerm()).getName());
-        else if(op.getRTerm() instanceof Value)
-            value2 = ((Value) op.getRTerm()).getInner();
-        else
-            throw new Exception(
-                    String.format("Unknown term type: %s",
-                            op.getRTerm().getClass()));
-
-        if(value1 instanceof BigDecimal)
-            value1 = ((BigDecimal) value1).doubleValue();
-        if(value2 instanceof BigDecimal)
-            value2 = ((BigDecimal) value2).doubleValue();
-        if(value1 instanceof Integer)
-            value1 = ((Integer) value1).doubleValue();
-        if(value2 instanceof Integer)
-            value2 = ((Integer) value2).doubleValue();
-
-        switch(op.getOpType()) {
-
-            case Equal: return value1.equals(value2);
-            case Unequal: return !value1.equals(value2);
-            case Greater: return ((Double)value1) > ((Double)value2);
-            case Less: return ((Double)value1) < ((Double)value2);
-            case GreaterEqual: return ((Double)value1) >= ((Double)value2);
-            case LessEqual: return ((Double)value1) <= ((Double)value2);
-
-            default:
-
-                throw new Exception(
-                        String.format("Unknown operation type: %s.",
-                                op.getOpType()));
+        if(_value1 == null || _value2 == null) {
+            param.value = false;
+            return;
         }
+
+        if(_value1 instanceof BigDecimal)
+            _value1 = ((BigDecimal) _value1).doubleValue();
+        if(_value2 instanceof BigDecimal)
+            _value2 = ((BigDecimal) _value2).doubleValue();
+        if(_value1 instanceof Integer)
+            _value1 = ((Integer) _value1).doubleValue();
+        if(_value2 instanceof Integer)
+            _value2 = ((Integer) _value2).doubleValue();
+
+        switch(cOp.getOpType()) {
+
+            case Equal: param.value = _value1.equals(_value2);
+            case Unequal: param.value = ! _value1.equals(_value2);
+            case Greater: param.value = ((Double)_value1) > ((Double)_value2);
+            case Less: param.value = ((Double)_value1) < ((Double)_value2);
+            case GreaterEqual: param.value = ((Double)_value1) >= ((Double)_value2);
+            case LessEqual: param.value = ((Double)_value1) <= ((Double)_value2);
+
+            default: param.value = false;
+        }
+
+        _value1 = null;
+        _value2 = null;
+    }
+
+    /**
+     * Visits the attribute.
+     * @param attribute The attribute.
+     * @param param A possible parameter.
+     */
+    @Override
+    public void visit(Attribute attribute, Void param) {
+        try {
+            if(_value1 == null) _value1 = _domainTuple.getAttr(attribute.getName());
+            else _value2 = _domainTuple.getAttr(attribute.getName());
+        }
+        catch (SQLException e) {
+            System.err.println(String.format(
+                    "Unknown attribute: %s", attribute.getName()));
+        }
+    }
+
+    /**
+     * Visits the value.
+     * @param value The value.
+     * @param param A possible parameter.
+     */
+    @Override
+    public void visit(Value value, Void param) {
+        if(_value1 == null) _value1 = value.getInner();
+        else _value2 = value.getInner();
     }
 }

@@ -1,5 +1,8 @@
 package com.prophecy.processing.input.term;
 
+import com.prophecy.processing.input.term.base.ITerm;
+import com.prophecy.processing.input.term.base.ITermVisitor;
+
 /**
  * Created by alpha_000 on 05.05.2014.
  */
@@ -9,17 +12,11 @@ public final class Value implements ITerm {
     // Class Variables
     //----------------------------------------
 
-
-    /**
-     * Saves the concrete value.
-     */
     private final Object _inner;
-
 
     //----------------------------------------
     // Class Variables
     //----------------------------------------
-
 
     /**
      * Gets the concrete value.
@@ -28,11 +25,9 @@ public final class Value implements ITerm {
         return _inner;
     }
 
-
     //----------------------------------------
     // Class Properties
     //----------------------------------------
-
 
     /**
      * Constructor
@@ -42,6 +37,15 @@ public final class Value implements ITerm {
         _inner = inner;
     }
 
+    /**
+     * Allows a visitor access to the specific object and it's data.
+     * @param visitor The visitor instance.
+     * @param param A possible parameter.
+     */
+    @Override
+    public <ParamT> void accept(ITermVisitor<ParamT> visitor, ParamT param) {
+        visitor.visit(this, param);
+    }
 
     /**
      * Gets the sql representation string.
