@@ -11,11 +11,6 @@ work. If not, see <http://creativecommons.org/licenses/by/4.0/>.
 package com.prophecy.processing.processor.contexts.lineage.construction;
 
 import com.prophecy.processing.Task;
-import com.prophecy.processing.input.condition.*;
-import com.prophecy.processing.input.condition.base.CNode;
-import com.prophecy.processing.input.condition.base.ICNodeVisitor;
-import com.prophecy.processing.input.term.Attribute;
-import com.prophecy.processing.input.term.Value;
 import com.prophecy.processing.processor.IProcessorContext;
 import com.prophecy.processing.processor.ProcessorInfo;
 import com.prophecy.processing.processor.contexts.formulapattern.tree.*;
@@ -29,9 +24,8 @@ import com.prophecy.processing.processor.contexts.lineage.EventManager;
 import com.prophecy.processing.processor.contexts.lineage.tree.*;
 import com.prophecy.processing.processor.contexts.lineage.tree.base.LNode;
 import com.prophecy.utility.ListUtils;
-import com.prophecy.utility.Reference;
 
-import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -85,7 +79,7 @@ public final class LineageConstructionContext implements IProcessorContext, IFPN
 
             rel.prepareNextIteration();
             for (final DomainTuple d : rel) {
-                _currentDomainTuple = d;
+
                 task.getInfo().measureTime("Lineage", () -> {
                     for (final FPSource source : fpRoot.getSources().values()) {
 
@@ -93,7 +87,8 @@ public final class LineageConstructionContext implements IProcessorContext, IFPN
                         if (d.getSourceType(sourceId) == 1
                                 || d.getSourceType(sourceId) == 2) {
 
-                            insertPath(null, fpRoot, d, sourceId);
+                            fpRoot.accept(this, null, d, sourceId);
+                            
                         } else if (d.getSourceType(sourceId) == 3) {
 
                             // Specific source needs to be factorized
@@ -128,8 +123,6 @@ public final class LineageConstructionContext implements IProcessorContext, IFPN
                         }
                     }
                 });
-
-                _currentDomainTuple = null;
             }
         }
 
@@ -329,18 +322,15 @@ public final class LineageConstructionContext implements IProcessorContext, IFPN
         if(lNode instanceof LFalse)
             return;
 
-        final FPNot fpNot = (FPNot) fp;
-        final LUNot lNot = (LUNot) lin;
-
-        if(lNot.getChild().getType() == LType.False) {
-
-            final ILNode child = setupNode(
-                    fpNot.getChild(), d, lin);
+        final LUNot lNot = (LUNot) lNode;
+        if(lNot.getChild() instanceof LFalse) {
+            final LNode child = setupNode(
+                    fpNot.getChild(), d, lNode);
             lNot.setChild(child);
         }
 
-        insertPath(lNot.getChild(),
-                fpNot.getChild(), d, sourceId);
+        fpNot.getChild().accept(
+                this, lNot.getChild(), d, sourceId);
     }
 
     /**
@@ -363,17 +353,20 @@ public final class LineageConstructionContext implements IProcessorContext, IFPN
         if(lNode instanceof LFalse)
             return;
 
-        final LSource lSource = (LSource) lin;
+        final LSource lSource = (LSource) lNode;
+        try {
+            if(d.getSourceType(sourceId) == 2) {
 
-        if(d.getSourceType(sourceId) == 2) {
+                final Event event = _eventManager.create(
+                        d.getBID(sourceId),
+                        d.getTID(sourceId),
+                        d.getPROB(sourceId)
+                );
 
-            final Event event = _eventManager.create(
-                    d.getBID(sourceId),
-                    d.getTID(sourceId),
-                    d.getPROB(sourceId)
-            );
-
-            lSource.add(event);
+                lSource.add(event);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }

@@ -43,11 +43,11 @@ public final class CAnd extends CBNode {
     /**
      * Allows a visitor access to the specific object and it's data.
      * @param visitor The visitor instance.
-     * @param retValue A possible return value.
+     * @param param A possible parameter.
      */
     @Override
-    public final <ReturnT> void accept(final ICNodeVisitor<ReturnT> visitor, ReturnT retValue) {
-        visitor.visit(this, retValue);
+    public <ParamT> void accept(ICNodeVisitor<ParamT> visitor, ParamT param) {
+        visitor.visit(this, param);
     }
 
     /**
