@@ -12,6 +12,7 @@ public interface ILNodeVisitable {
     /**
      * Allows a visitor access to the specific object and it's data.
      * @param visitor The visitor instance.
+     * @param param A possible parameter.
      */
-    public void accept(final ILNodeVisitor visitor);
+    public <ParamT> void accept(final ILNodeVisitor<ParamT> visitor, ParamT param);
 }

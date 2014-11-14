@@ -15,20 +15,19 @@ import com.prophecy.processing.processor.contexts.lineage.Event;
 import com.prophecy.processing.processor.contexts.lineage.EventManager;
 import com.prophecy.processing.processor.contexts.lineage.construction.FactorCatalog;
 import com.prophecy.processing.processor.contexts.lineage.tree.*;
+import com.prophecy.processing.processor.contexts.lineage.tree.base.ILNodeVisitor;
+import com.prophecy.processing.processor.contexts.lineage.tree.base.LNode;
+import com.prophecy.utility.Reference;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Created by alpha_000 on 18.07.2014.
- */
 public abstract class Calculation implements ICalculation {
 
     //----------------------------------------
     // Class Variables
     //----------------------------------------
-
 
     private final FactorCatalog _factorCatalog;
     private final EventManager _eventManager;
@@ -40,11 +39,9 @@ public abstract class Calculation implements ICalculation {
     private int _variablesCount = 0;
     protected int _maskCount = 0;
 
-
     //----------------------------------------
     // Class Properties
     //----------------------------------------
-
 
     /**
      * Gets the used root factor catalog.
@@ -92,14 +89,12 @@ public abstract class Calculation implements ICalculation {
     // Class Functions
     //----------------------------------------
 
-
     /**
      * Constructor
      * @param factorCatalog The used root factor catalog.
      * @param eventManager The used event manager.
      */
     public Calculation(final FactorCatalog factorCatalog, final EventManager eventManager) {
-
         _factorCatalog = factorCatalog;
         _eventManager = eventManager;
     }
@@ -107,9 +102,7 @@ public abstract class Calculation implements ICalculation {
     /**
      * Initializes the probability calculations.
      */
-    public final void initialize()
-            throws Exception {
-
+    public final void initialize() {
         countEvents();
         initEvents();
     }
@@ -118,54 +111,61 @@ public abstract class Calculation implements ICalculation {
      * Counts all events for later masking algorithm,
      * starting from the root nodes.
      */
-    private void countEvents()
-            throws Exception {
-
-        for(final ILNode root: _factorCatalog
-                .getNodes().values()){
-                countEvents(root, root, new HashSet<>());}
+    private void countEvents() {
+        _factorCatalog.getNodes()
+                .values().forEach(this::countEvents);
     }
 
     /**
      * Recursive count the events for later masking algorithm.
      * @param root The lineage root node.
-     * @param current The current lineage node.
-     * @param rootBlockIds All current known block ids.
      */
-    private void countEvents(final ILNode root, final ILNode current, final Set<Integer> rootBlockIds)
-            throws Exception {
+    private void countEvents(final LNode root) {
 
-        switch(current.getType()) {
-            case And: {
+        final Set<Integer> rootBlockIds = new HashSet<>();
+        final ILNodeVisitor visitor = new ILNodeVisitor<Void>() {
 
-                final LAnd lAnd = (LAnd) current;
-
-                for (final ILNode child : lAnd.getChildren())
-                    countEvents(root, child, rootBlockIds);
-
-                break;
+            @Override
+            public void visit(final LBAnd lbAnd, final Void param) {
+                lbAnd.getLeftChild().accept(this, null);
+                lbAnd.getRightChild().accept(this, null);
             }
-            case Or: {
 
-                final LOr lOr = (LOr) current;
-
-                for (final ILNode child : lOr.getChildren())
-                    countEvents(root, child, rootBlockIds);
-
-                break;
+            @Override
+            public void visit(final LBOr lbOr, final Void param) {
+                lbOr.getLeftChild().accept(this, null);
+                lbOr.getRightChild().accept(this, null);
             }
-            case Not: {
 
-                final LUNot lNot = (LUNot)current;
-
-                countEvents(root, lNot.getChild(),
-                        rootBlockIds);
-
-                break;
+            @Override
+            public void visit(final LFalse lFalse, final Void param) {
             }
-            case Source: {
 
-                final LSource lSource = (LSource) current;
+            @Override
+            public void visit(final LTrue lTrue, final Void param) {
+            }
+
+            @Override
+            public void visit(final LNAnd lnAnd, final Void param) {
+                for(final LNode child: lnAnd.children()) {
+                    child.accept(this, null);
+                }
+            }
+
+            @Override
+            public void visit(final LNOr lnOr, final Void param) {
+                for(final LNode child: lnOr.children()) {
+                    child.accept(this, null);
+                }
+            }
+
+            @Override
+            public void visit(final LUNot luNot, final Void param) {
+                luNot.getChild().accept(this, null);
+            }
+
+            @Override
+            public void visit(final LSource lSource, final Void param) {
 
                 // We first save here all known source block ids,
                 // before we push all of them to the global known
@@ -207,25 +207,10 @@ public abstract class Calculation implements ICalculation {
                 // So we can recognize block ids which occur in
                 // different sources from the same root.
                 rootBlockIds.addAll(sourceBlockIds);
-
-                break;
             }
-            case True: {
+        };
 
-                // Ignore this case.
-                break;
-            }
-            case False: {
-
-                // Ignore this case.
-                break;
-            }
-            default:
-
-                throw new Exception(String.format(
-                        "The lineage node: %s is unknown.",
-                        current.getType()));
-        }
+        root.accept(visitor, null);
     }
 
     /**
@@ -234,7 +219,6 @@ public abstract class Calculation implements ICalculation {
      * the count events function.
      */
     private void initEvents() {
-
         _eventManager.getBIDs()
                 .forEach(this::resetEvents);
     }
@@ -313,7 +297,7 @@ public abstract class Calculation implements ICalculation {
      * @param current The current node.
      * @param childProb The child probability.
      */
-    private void setMask(final Mask mask, final ILNode current, final Double childProb) {
+    private void setMask(final Mask mask, final LNode current, final Double childProb) {
 
         if(current == null) {
 
@@ -330,74 +314,90 @@ public abstract class Calculation implements ICalculation {
                         mask.getProb(event.getTID()));
 
                 // Optimize the parents.
-                for(final ILNode parent: event.getParents())
+                for(final LNode parent: event.getParents())
                     setMask(mask, parent, event.getCurrentProb());
             }
         }
         else {
 
-            Double currentProb = childProb;
-            boolean optimize = false;
+            final Reference<Double> currentProb = new Reference<>(childProb);
+            final Reference<Boolean> optimize = new Reference<>(false);
+            ILNodeVisitor visitor = new ILNodeVisitor<Void>() {
 
-            switch(current.getType()) {
-                case And: {
-
-                    final LAnd lAnd = (LAnd) current;
-
-                    if (childProb == 0.0)
-                        optimize = true;
-
-                    if (lAnd.childCount() == 1)
-                        optimize = true;
-
-                        break;
-                }
-                case Or: {
-
-                    final LOr lOr = (LOr) current;
-
-                    if (childProb == 1.0)
-                        optimize = true;
-
-                    if (lOr.childCount() == 1)
-                        optimize = true;
-
-                    break;
-                }
-                case Not: {
-
-                    if (childProb == 1.0) {
-                        currentProb = 0.0;
-                        optimize = true;
-                    }
-
+                @Override
+                public void visit(LBAnd lbAnd, Void param) {
                     if (childProb == 0.0) {
-                        currentProb = 1.0;
-                        optimize = true;
+                        optimize.value = true;
                     }
-
-                    break;
                 }
-                case Source: {
 
-                    final LSource source = (LSource) current;
-
-                    if (childProb == 1.0)
-                        optimize = true;
-
-                    if (source.getEventCount() == 1)
-                        optimize = true;
-
-                    break;
+                @Override
+                public void visit(LBOr lbOr, Void param) {
+                    if (childProb == 1.0) {
+                        optimize.value = true;
+                    }
                 }
-            }
 
-            if(optimize && current.getMaskLevel() == -1
+                @Override
+                public void visit(LFalse lFalse, Void param) {
+                }
+
+                @Override
+                public void visit(LTrue lTrue, Void param) {
+                }
+
+                @Override
+                public void visit(LNAnd lnAnd, Void param) {
+                    if (childProb == 0.0) {
+                        optimize.value = true;
+                    }
+                    if (lnAnd.size() == 1) {
+                        optimize.value = true;
+                    }
+                }
+
+                @Override
+                public void visit(LNOr lnOr, Void param) {
+                    if (childProb == 1.0) {
+                        optimize.value = true;
+                    }
+                    if (lnOr.size() == 1) {
+                        optimize.value = true;
+                    }
+                }
+
+                @Override
+                public void visit(LUNot luNot, Void param) {
+                    if (childProb == 1.0) {
+                        currentProb.value = 0.0;
+                        optimize.value = true;
+                    }
+                    if (childProb == 0.0) {
+                        currentProb.value = 1.0;
+                        optimize.value = true;
+                    }
+                }
+
+                @Override
+                public void visit(LSource lSource, Void param) {
+                    if (childProb == 1.0) {
+                        optimize.value = true;
+                    }
+                    if (lSource.getEventCount() == 1) {
+                        optimize.value = true;
+                    }
+                }
+            };
+
+            // Start checking for optimizations.
+            current.accept(visitor, null);
+
+            if(optimize.value && current.getMaskLevel() == -1
                     && !current.isRoot()) {
 
                 // Set the current values
                 // according to the mask.
-                current.setCurrentProb(currentProb);
+                current.setCurrentProb(currentProb.value);
 
                 // Set the mask level.
                 current.setMaskLevel(
@@ -406,9 +406,8 @@ public abstract class Calculation implements ICalculation {
                 // Mark the node for de-masking.
                 mask.addInvolvedNode(current);
 
-                for(final ILNode parent: current.getParents())
-                    setMask(mask, parent, currentProb);
-
+                for(final LNode parent: current.getParents())
+                    setMask(mask, parent, currentProb.value);
             }
         }
     }
@@ -419,9 +418,7 @@ public abstract class Calculation implements ICalculation {
      * @param mask The mask.
      */
     public final void unsetMask(final Mask mask) {
-
-        for(final ILNode node: mask.getInvolvedNodes()) {
-
+        for(final LNode node: mask.getInvolvedNodes()) {
             node.setCurrentProb(-1.0);
             node.setMaskLevel(-1);
         }

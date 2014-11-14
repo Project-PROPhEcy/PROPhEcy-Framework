@@ -88,7 +88,7 @@ public final class LineageConstructionContext implements IProcessorContext, IFPN
                                 || d.getSourceType(sourceId) == 2) {
 
                             fpRoot.accept(this, null, d, sourceId);
-                            
+
                         } else if (d.getSourceType(sourceId) == 3) {
 
                             // Specific source needs to be factorized

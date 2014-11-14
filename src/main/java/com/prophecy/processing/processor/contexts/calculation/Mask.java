@@ -11,6 +11,7 @@ work. If not, see <http://creativecommons.org/licenses/by/4.0/>.
 package com.prophecy.processing.processor.contexts.calculation;
 
 import com.prophecy.processing.processor.contexts.lineage.tree.ILNode;
+import com.prophecy.processing.processor.contexts.lineage.tree.base.LNode;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -131,7 +132,7 @@ public final class Mask implements Comparable<Mask> {
     /**
      * Gets the involved nodes for this mask.
      */
-    public final Set<ILNode> getInvolvedNodes() {
+    public final Set<LNode> getInvolvedNodes() {
         return Collections.unmodifiableSet(_involvedNodes);
     }
 
@@ -190,7 +191,7 @@ public final class Mask implements Comparable<Mask> {
      * @param node The involved node.
      * @return The boolean value.
      */
-    public final boolean addInvolvedNode(final ILNode node) {
+    public final boolean addInvolvedNode(final LNode node) {
         return _involvedNodes.add(node);
     }
 

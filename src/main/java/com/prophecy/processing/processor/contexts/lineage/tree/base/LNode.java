@@ -23,6 +23,13 @@ public abstract class LNode implements ILNodeVisitable {
     //----------------------------------------
 
     /**
+     * Determines whether this node is a root.
+     */
+    public final boolean isRoot() {
+        return this._parents.size() == 0;
+    }
+
+    /**
      * Gets the mask level of current calculations.
      */
     public final int getMaskLevel() {
